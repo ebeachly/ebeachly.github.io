@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<title>MTG Deck Prototyper</title>
+	<style>
+		body {
+			margin: 0px;
+			background-color:rgb(32,32,32);
+			min-width: 100%;
+			min-height: 100%;
+			height:100%;
+			width:100%;
+			margin:0px;
+			padding:0px;
+		}
+
+		html {
+			height:100%;
+			width:100%;
+			min-height: 100%;
+			min-width: 100%;
+			margin:0px;
+			padding:0px;
+		}
+
+		.rotated {
+			-webkit-transform: rotate(90deg);
+			-moz-transform: rotate(90deg);
+			-o-transform: rotate(90deg);
+			-ms-transform: rotate(90deg);
+			transform: rotate(90deg);
+		}
+
+		.selected {
+			border-style: dotted;
+			border-color: white;
+			border-width: 1px;
+		}
+
+		.sideboard {
+			border: 5px solid rgb(0,0,0);
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			visibility: hidden;
+		}
+
+		.sideboarded {
+			position: relative;
+			cursor: move;
+			top: 20px;
+		}
+
+		.green_selector {
+			position: absolute;
+			border-color: white;
+			border-width: 1px;
+			border-style: dashed;
+			background: rgba(0,255,0,0.2);
+		}
+
+		.blue_selector {
+			position: absolute;
+			border-color: white;
+			border-width: 1px;
+			border-style: solid;
+			background: rgba(0,0,255,0.2);
+		}
+
+		.invisible_selector {
+			position: absolute;
+			border-color: white;
+			border-width: 0px;
+			border-style: solid;
+			background: transparent;
+		}
+
+		.preferences_menu {
+			position: fixed; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
+			left: 25px;
+			right: 25px;
+			top: 25px;
+			bottom: 25px;
+			display: none;
+			background-color: rgba(255,255,255,0.4);
+			border: 1px solid black;
+			box-shadow: 2px 2px 4px rgba(0,0,0,0.4)
+		}
+		
+		.preferences_menu .close_btn {
+			position: absolute;
+			top:0;
+			right:0;
+		}
+
+		.playmat {
+			height:100%;
+			width:100%;
+		}
+
+		.left {
+			left:0px;
+		}
+
+		.secondleft {
+			left:104px;
+		}
+
+		.right {
+			right:0px;
+		}
+
+		.main_control_panel {
+			position: absolute;
+			height: 30px;
+		}
+
+		.card_info_popup {
+			position: absolute;
+			background-color: black;
+			height: 495px;
+			width: 312px;
+			top: 0px;
+			left: 0px;
+			border: 5px solid rgb(0,0,0);
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			visibility: hidden;
+		}
+		.magnfied_card_view{
+			width: 312px;
+			height: 445px;
+			border-spacing: 0px;
+		}
+		.card_popup_control_panel {
+			width:312px;
+			height: 50px;
+		}
+		.card_popup_control_panel_button {
+			width: 104px;
+			height: 50px;
+			top: 445px;
+			position:absolute;
+		}
+		.edit_card_control_panel {
+			width:180px;
+			height: 495px;
+			margin: 0px;
+			top: -5px;
+			left: 312px;
+			border: 5px solid rgb(0,0,0);
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			position: absolute;
+			background-color:rgb(127,127,127);
+			visibility: hidden;
+		}
+
+		.card{
+			width: 156px;
+			height: 222px;
+		}
+
+		.draggable{
+			position:absolute;
+			cursor: move;
+			top:0px;
+			left:0px;
+		}
+		
+		#counter_container {
+			position:absolute;
+			left:0;
+			top:0;
+		}
+		
+		#counter_container #counter_template {
+			display: none;
+		}
+		
+		#counter_container .counter {
+			position: absolute;
+			width: 75px;
+			height: 75px;
+			border-radius: 75px;
+			box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+		}
+		
+		#counter_container .counter .value {
+			border: none;
+			background: none;
+			text-align: center;
+			position: absolute;
+			left:0;
+			right:0;
+			padding:28px;
+		}
+		
+		#counter_container .counter .btn {
+			position: absolute;
+			right: 0;
+		}
+		
+		#counter_container .counter .increment {
+			top: 0;
+		}
+		
+		#counter_container .counter .decrement {
+			bottom: 0;
+		}
+	</style>
+</head>
+<body id="body">
+	
+	<div id="main control panel" class="main_control_panel">
+		<input type="text" id="cardimageurl" value="Enter card image URL here" onclick="clearCardImageUrlEntry()"/>
+		<button id="add card button" onclick="addCard()">Add Card</button>
+		<button id="shuffle button" onclick="shuffle()">Shuffle</button>
+		<button id="stack button" onclick="stack()">Stack</button>
+		<button id="cost sort button" onclick="costSort()">Sort by Cost</button>
+		<button id="color sort button" onclick="colorSort()">Sort by Color</button>
+		<button id="purpose sort button" onclick="purposeSort()">Sort by Purpose</button>
+		<button id="sideboard button" onclick="toggleSideboard()">Sideboard</button>
+		<button id="add counter button" onclick="addCounter()">Add Counter</button>
+		<button id="preferences button" onclick="togglePreferences()">Preferences</button>
+		<button id="help button" onclick="toggleHelp()">Help</button>
+		<img id="card sleeve" style="visibility: hidden; height:0px; width:0px" src="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg" />
+	</div>
+
+<div id="playmat" class="playmat">
+	
+	<img src="http://magiccards.info/scans/en/chk/277.jpg" class="draggable card" front="http://magiccards.info/scans/en/chk/277.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Haste Enabler" name="Hall of the Bandit Lord" casting_cost="" activation_cost="" commander="false" mana_production="1" damage="" etb_tapped="true" style="top: 200px; left: 100px;" mana_production_bitvector="32" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/cs/151.jpg" class="draggable card" front="http://magiccards.info/scans/en/cs/151.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Snow-Covered Plains" casting_cost="" activation_cost="" commander="false" mana_production="W" damage="" etb_tapped="false" style="top: 222px; left: 100px;" mana_production_bitvector="1" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/sh/137.jpg" class="draggable card" front="http://magiccards.info/scans/en/sh/137.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Recursion" name="Volrath's Stronghold" casting_cost="" activation_cost="" commander="false" mana_production="1" damage="" etb_tapped="false" style="top: 244px; left: 100px;" mana_production_bitvector="32" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/bfz/253b.jpg" class="draggable card" front="http://magiccards.info/scans/en/bfz/253b.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Plains" casting_cost="" activation_cost="" commander="false" mana_production="W" damage="" etb_tapped="false" style="top: 266px; left: 100px;" mana_production_bitvector="1" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/cs/153.jpg" class="draggable card" front="http://magiccards.info/scans/en/cs/153.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Snow-Covered Swamp" casting_cost="" activation_cost="" commander="false" mana_production="B" damage="" etb_tapped="false" style="top: 288px; left: 100px;" mana_production_bitvector="4" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/bfz/262b.jpg" class="draggable card" front="http://magiccards.info/scans/en/bfz/262b.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Swamp" casting_cost="" activation_cost="" commander="false" mana_production="B" damage="" etb_tapped="false" style="top: 310px; left: 100px;" mana_production_bitvector="4" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/pc/165.jpg" class="draggable card" front="http://magiccards.info/scans/en/pc/165.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Urborg, Tomb of Yawgmoth" casting_cost="" activation_cost="" commander="false" mana_production="B" damage="" etb_tapped="false" style="top: 332px; left: 100px;" mana_production_bitvector="4" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/bfz/268b.jpg" class="draggable card" front="http://magiccards.info/scans/en/bfz/268b.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Mountain" casting_cost="" activation_cost="" commander="false" mana_production="R" damage="" etb_tapped="false" style="top: 354px; left: 100px;" mana_production_bitvector="8" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/ktk/230.jpg" class="draggable card" front="http://magiccards.info/scans/en/ktk/230.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Bloodstained Mire" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 376px; left: 100px;" mana_production_bitvector="12" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/10e/359.jpg" class="draggable card" front="http://magiccards.info/scans/en/10e/359.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Sulfurous Springs" casting_cost="" activation_cost="" commander="false" mana_production="B|R" damage="" etb_tapped="false" style="top: 398px; left: 100px;" mana_production_bitvector="12" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/di/171.jpg" class="draggable card" front="http://magiccards.info/scans/en/di/171.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Blood Crypt" casting_cost="" activation_cost="" commander="false" mana_production="B|R" damage="" etb_tapped="false" style="top: 420px; left: 100px;" mana_production_bitvector="12" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/shm/272.jpg" class="draggable card" front="http://magiccards.info/scans/en/shm/272.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Graven Cairns" casting_cost="" activation_cost="" commander="false" mana_production="B|R" damage="" etb_tapped="false" style="top: 442px; left: 100px;" mana_production_bitvector="12" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/gp/157.jpg" class="draggable card" front="http://magiccards.info/scans/en/gp/157.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Godless Shrine" casting_cost="" activation_cost="" commander="false" mana_production="W|B" damage="" etb_tapped="false" style="top: 464px; left: 100px;" mana_production_bitvector="5" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/10e/350.jpg" class="draggable card" front="http://magiccards.info/scans/en/10e/350.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Caves of Koilos" casting_cost="" activation_cost="" commander="false" mana_production="W|B" damage="" etb_tapped="false" style="top: 486px; left: 100px;" mana_production_bitvector="5" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/isd/242.jpg" class="draggable card" front="http://magiccards.info/scans/en/isd/242.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Isolated Chapel" casting_cost="" activation_cost="" commander="false" mana_production="W|B" damage="" etb_tapped="false" style="top: 508px; left: 100px;" mana_production_bitvector="5" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/eve/176.jpg" class="draggable card" front="http://magiccards.info/scans/en/eve/176.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Fetid Heath" casting_cost="" activation_cost="" commander="false" mana_production="W|B" damage="" etb_tapped="false" style="top: 530px; left: 100px;" mana_production_bitvector="5" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/eve/178.jpg" class="draggable card" front="http://magiccards.info/scans/en/eve/178.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Rugged Prairie" casting_cost="" activation_cost="" commander="false" mana_production="W|R" damage="" etb_tapped="false" style="top: 552px; left: 100px;" mana_production_bitvector="9" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/zen/211.jpg" class="draggable card" front="http://magiccards.info/scans/en/zen/211.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Arid Mesa" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 574px; left: 100px;" mana_production_bitvector="9" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/rav/280.jpg" class="draggable card" front="http://magiccards.info/scans/en/rav/280.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Sacred Foundry" casting_cost="" activation_cost="" commander="false" mana_production="W|R" damage="" etb_tapped="false" style="top: 596px; left: 100px;" mana_production_bitvector="9" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/ori/244.jpg" class="draggable card" front="http://magiccards.info/scans/en/ori/244.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Battlefield Forge" casting_cost="" activation_cost="" commander="false" mana_production="R|W" damage="" etb_tapped="false" style="top: 618px; left: 100px;" mana_production_bitvector="9" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/avr/226.jpg" class="draggable card" front="http://magiccards.info/scans/en/avr/226.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Protection" name="Cavern of Souls" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 640px; left: 100px;" mana_production_bitvector="45" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/cmd/269.jpg" class="draggable card" front="http://magiccards.info/scans/en/cmd/269.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Command Tower" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 662px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/ktk/248.jpg" class="draggable card" front="http://magiccards.info/scans/en/ktk/248.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Windswept Heath" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 684px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/ktk/249.jpg" class="draggable card" front="http://magiccards.info/scans/en/ktk/249.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Wooded Foothills" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 706px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/ktk/239.jpg" class="draggable card" front="http://magiccards.info/scans/en/ktk/239.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Polluted Delta" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 728px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/jou/163.jpg" class="draggable card" front="http://magiccards.info/scans/en/jou/163.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Mana Confluence" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 750px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/ktk/233.jpg" class="draggable card" front="http://magiccards.info/scans/en/ktk/233.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Flooded Strand" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 772px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/zen/219.jpg" class="draggable card" front="http://magiccards.info/scans/en/zen/219.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="Marsh Flats" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 794px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/mma/221.jpg" class="draggable card" front="http://magiccards.info/scans/en/mma/221.jpg" back="" land="true" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="" name="City of Brass" casting_cost="" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 816px; left: 100px;" mana_production_bitvector="13" mana_production_multiplier=""><img src="http://magiccards.info/scans/en/gpx/3.jpg" class="draggable card" front="http://magiccards.info/scans/en/gpx/3.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Ramp" name="Chrome Mox" casting_cost="0" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 200px; left: 266px;"><img src="http://magiccards.info/scans/en/fvr/10.jpg" class="draggable card" front="http://magiccards.info/scans/en/fvr/10.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Ramp" name="Mox Diamond" casting_cost="0" activation_cost="" commander="false" mana_production="W|B|R" damage="" etb_tapped="false" style="top: 222px; left: 266px;"><img src="http://magiccards.info/scans/en/zen/201.jpg" class="draggable card" front="http://magiccards.info/scans/en/zen/201.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Tutor" name="Expedition Map" casting_cost="1" activation_cost="2" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 200px; left: 432px;"><img src="http://magiccards.info/scans/en/md1/25.jpg" class="draggable card" front="http://magiccards.info/scans/en/md1/25.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Spot Removal" name="Dismember" casting_cost="1" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 222px; left: 432px;"><img src="http://magiccards.info/scans/en/ddf/22.jpg" class="draggable card" front="http://magiccards.info/scans/en/ddf/22.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Spot Removal" name="Swords to Plowshares" casting_cost="W" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 244px; left: 432px;"><img src="http://magiccards.info/scans/en/pc/25.jpg" class="draggable card" front="http://magiccards.info/scans/en/pc/25.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Counterspell" name="Mana Tithe" casting_cost="W" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 266px; left: 432px;"><img src="http://magiccards.info/scans/en/on/59.jpg" class="draggable card" front="http://magiccards.info/scans/en/on/59.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Tutor" name="Weathered Wayfarer" casting_cost="W" activation_cost="WT" commander="false" mana_production="" damage="1" etb_tapped="true" style="top: 288px; left: 432px;"><img src="http://magiccards.info/scans/en/vi/123.jpg" class="draggable card" front="http://magiccards.info/scans/en/vi/123.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Card Filtering" name="Tithe" casting_cost="W" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 310px; left: 432px;"><img src="http://magiccards.info/scans/en/ddo/20.jpg" class="draggable card" front="http://magiccards.info/scans/en/ddo/20.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Protection" name="Mother of Runes" casting_cost="W" activation_cost="T" commander="false" mana_production="" damage="1" etb_tapped="true" style="top: 332px; left: 432px;"><img src="http://magiccards.info/scans/en/grc/24.jpg" class="draggable card" front="http://magiccards.info/scans/en/grc/24.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Creature Removal" name="Path to Exile" casting_cost="W" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 354px; left: 432px;"><img src="http://magiccards.info/scans/en/ths/107.jpg" class="draggable card" front="http://magiccards.info/scans/en/ths/107.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Targeted Discard" style="top: 376px; left: 432px;" name="Thoughtseize" casting_cost="B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false"><img src="http://magiccards.info/scans/en/roe/115.jpg" class="draggable card" front="http://magiccards.info/scans/en/roe/115.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Disruption" name="Inquisition of Kozilek" casting_cost="B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 398px; left: 432px;"><img src="http://magiccards.info/scans/en/m14/97.jpg" class="draggable card" front="http://magiccards.info/scans/en/m14/97.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Targeted Discard" name="Duress" casting_cost="B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 420px; left: 432px;"><img src="http://magiccards.info/scans/en/ia/9.jpg" class="draggable card" front="http://magiccards.info/scans/en/ia/9.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Tutor" name="Demonic Consultation" casting_cost="B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 442px; left: 432px;"><img src="http://magiccards.info/scans/en/m11/149.jpg" class="draggable card" front="http://magiccards.info/scans/en/m11/149.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Creature Removal" name="Lightning Bolt" casting_cost="R" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 464px; left: 432px;"><img src="http://magiccards.info/scans/en/dka/87.jpg" class="draggable card" front="http://magiccards.info/scans/en/dka/87.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Card Filtering" name="Faithless Looting" casting_cost="R" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 486px; left: 432px;"><img src="http://magiccards.info/scans/en/fnmp/111.jpg" class="draggable card" front="http://magiccards.info/scans/en/fnmp/111.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Haste Enabler" name="Lightning Greaves" casting_cost="2" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 200px; left: 598px;"><img src="http://magiccards.info/scans/en/m12/19.jpg" class="draggable card" front="http://magiccards.info/scans/en/m12/19.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Protection" name="Grand Abolisher" casting_cost="WW" activation_cost="" commander="false" mana_production="" damage="2" etb_tapped="true" style="top: 222px; left: 598px;"><img src="http://magiccards.info/scans/en/c13/25.jpg" class="draggable card" front="http://magiccards.info/scans/en/c13/25.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Removal" name="Unexpectedly Absent" casting_cost="XWW" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 244px; left: 598px;"><img src="http://magiccards.info/scans/en/od/21.jpg" class="draggable card" front="http://magiccards.info/scans/en/od/21.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Protection" name="Earnest Fellowship" casting_cost="1W" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 266px; left: 598px;"><img src="http://magiccards.info/scans/en/fnmp/174.jpg" class="draggable card" front="http://magiccards.info/scans/en/fnmp/174.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Targeted Discard" name="Brain Maggot" casting_cost="1B" activation_cost="" commander="false" mana_production="" damage="1" etb_tapped="true" style="top: 288px; left: 598px;"><img src="http://magiccards.info/scans/en/jr/48.jpg" class="draggable card" front="http://magiccards.info/scans/en/jr/48.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Disruption, Spot Removal" name="Sinkhole" casting_cost="BB" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 310px; left: 598px;"><img src="http://magiccards.info/scans/en/v13/3.jpg" class="draggable card" front="http://magiccards.info/scans/en/v13/3.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Disruption" name="Hymn to Tourach" casting_cost="BB" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 332px; left: 598px;"><img src="http://magiccards.info/scans/en/chk/111.jpg" class="draggable card" front="http://magiccards.info/scans/en/chk/111.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Disruption" name="Distress" casting_cost="BB" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 354px; left: 598px;"><img src="http://magiccards.info/scans/en/5dn/57.jpg" class="draggable card" front="http://magiccards.info/scans/en/5dn/57.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Filtering" name="Plunge into Darkness" casting_cost="1B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 376px; left: 598px;"><img src="http://magiccards.info/scans/en/dvd/49.jpg" class="draggable card" front="http://magiccards.info/scans/en/dvd/49.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Tutor" name="Demonic Tutor" casting_cost="1B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 398px; left: 598px;"><img src="http://magiccards.info/scans/en/mr/50.jpg" class="draggable card" front="http://magiccards.info/scans/en/mr/50.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Spot Removal" name="Withering Boon" casting_cost="1B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 420px; left: 598px;"><img src="http://magiccards.info/scans/en/od/164.jpg" class="draggable card" front="http://magiccards.info/scans/en/od/164.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Tutor" name="Tainted Pact" casting_cost="1B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 442px; left: 598px;"><img src="http://magiccards.info/scans/en/mma/75.jpg" class="draggable card" front="http://magiccards.info/scans/en/mma/75.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Draw" name="Dark Confidant" casting_cost="1B" activation_cost="" commander="false" mana_production="" damage="2" etb_tapped="true" style="top: 464px; left: 598px;"><img src="http://magiccards.info/scans/en/dtk/136.jpg" class="draggable card" front="http://magiccards.info/scans/en/dtk/136.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Haste Enabler" name="Dragon Tempest" casting_cost="1R" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 486px; left: 598px;"><img src="http://magiccards.info/scans/en/rtr/184.jpg" class="draggable card" front="http://magiccards.info/scans/en/rtr/184.jpg" back="" land="false" purely_reactive="true" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Spot Removal" name="Rakdos Charm" casting_cost="BR" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 508px; left: 598px;"><img src="http://magiccards.info/scans/en/gp/106.jpg" class="draggable card" front="http://magiccards.info/scans/en/gp/106.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Disruption" name="Castigate" casting_cost="WB" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 530px; left: 598px;"><img src="http://magiccards.info/scans/en/mma/184.jpg" class="draggable card" front="http://magiccards.info/scans/en/mma/184.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Disruption" name="Tidehollow Sculler" casting_cost="WB" activation_cost="" commander="false" mana_production="" damage="2" etb_tapped="true" style="top: 552px; left: 598px;"><img src="http://magiccards.info/scans/en/cns/16.jpg" class="draggable card" front="http://magiccards.info/scans/en/cns/16.jpg" back="" land="false" purely_reactive="true" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Spot Removal" name="Council's Judgment" casting_cost="1WW" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 200px; left: 764px;"><img src="http://magiccards.info/scans/en/c13/96.jpg" class="draggable card" front="http://magiccards.info/scans/en/c13/96.jpg" back="" land="false" purely_reactive="true" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Mass Removal" name="Toxic Deluge" casting_cost="2B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 222px; left: 764px;"><img src="http://magiccards.info/scans/en/cns/124.jpg" class="draggable card" front="http://magiccards.info/scans/en/cns/124.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Draw" name="Skeletal Scrying" casting_cost="X2B" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 244px; left: 764px;"><img src="http://magiccards.info/scans/en/pvc/27.jpg" class="draggable card" front="http://magiccards.info/scans/en/pvc/27.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Draw" name="Phyrexian Arena" casting_cost="1BB" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 266px; left: 764px;"><img src="http://magiccards.info/scans/en/ia/367.jpg" class="draggable card" front="http://magiccards.info/scans/en/ia/367.jpg" back="" land="false" purely_reactive="false" instant_speed="true" manacost="0" produces="0" etbtapped="false" purpose="Mass Removal" name="Fire Covenant" casting_cost="1BR" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 288px; left: 764px;"><img src="http://magiccards.info/scans/en/jr/31.jpg" class="draggable card" front="http://magiccards.info/scans/en/jr/31.jpg" back="" land="false" purely_reactive="true" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Spot Removal" name="Vindicate" casting_cost="1WB" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 310px; left: 764px;"><img src="http://magiccards.info/scans/en/v14/3.jpg" class="draggable card" front="http://magiccards.info/scans/en/v14/3.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Land Destruction" name="Cataclysm" casting_cost="2WW" activation_cost="" commander="false" mana_production="" damage="" etb_tapped="false" style="top: 200px; left: 930px;"><img src="http://magiccards.info/scans/en/cmd/206.jpg" class="draggable card" front="http://magiccards.info/scans/en/cmd/206.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Cheat" style="top: 222px; left: 930px;" name="Kaalia of the Vast" casting_cost="1WBR" activation_cost="" commander="true" mana_production="" damage="2" etb_tapped="true"><img src="http://magiccards.info/scans/en/m10/4.jpg" class="draggable card" front="http://magiccards.info/scans/en/m10/4.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Beatstick" name="Baneslayer Angel" casting_cost="3WW" activation_cost="" commander="false" mana_production="" damage="5" etb_tapped="true" style="top: 200px; left: 1096px;"><img src="http://magiccards.info/scans/en/dgm/82.jpg" class="draggable card" front="http://magiccards.info/scans/en/dgm/82.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Beatstick" name="Master of Cruelties" casting_cost="3BR" activation_cost="" commander="false" mana_production="" damage="9001" etb_tapped="true" style="top: 222px; left: 1096px;"><img src="http://magiccards.info/scans/en/di/129.jpg" class="draggable card" front="http://magiccards.info/scans/en/di/129.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Beatstick" name="Rakdos the Defiler" casting_cost="2BBRR" activation_cost="" commander="false" mana_production="" damage="7" etb_tapped="true" style="top: 200px; left: 1262px;"><img src="http://magiccards.info/scans/en/avr/209.jpg" class="draggable card" front="http://magiccards.info/scans/en/avr/209.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Beatstick" style="top: 200px; left: 1428px;" name="Gisela, Blade of Goldnight" casting_cost="4RWW" activation_cost="" commander="false" mana_production="" damage="10" etb_tapped="true"><img src="http://magiccards.info/scans/en/gpx/11.jpg" class="draggable card" front="http://magiccards.info/scans/en/gpx/11.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Beatstick" name="Griselbrand" casting_cost="4BBBB" activation_cost="" commander="false" mana_production="" damage="7" etb_tapped="false" style="top: 200px; left: 1594px;"><img src="http://magiccards.info/scans/en/zen/13.jpg" class="draggable card" front="http://magiccards.info/scans/en/zen/13.jpg" back="" land="false" purely_reactive="false" instant_speed="false" manacost="0" produces="0" etbtapped="false" purpose="Beatstick" name="Iona, Shield of Emeria" casting_cost="6WWW" activation_cost="" commander="false" mana_production="7" damage="" etb_tapped="true" style="top: 200px; left: 1760px;"></div>
+
+	<div id="selector" class="invisible_selector">
+	</div>
+
+	<div id="sideboard" class="sideboard">
+	</div>
+
+	<div id="preferences menu" class="preferences_menu">
+		<button class="close_btn" onclick="togglePreferences()">X</button>
+		<button id="delete all button" onclick="deleteAll()">Delete All</button>
+	</div>
+
+	<div id="card info popup" class="card_info_popup">
+		<img id="magnified card view" class="magnfied_card_view" src=""/>
+		<div id="card info control panel" class="card_popup_control_panel">
+			<button class="bottom left card_popup_control_panel_button" onclick="copyCard()">Copy</button>
+			<button class="bottom secondleft card_popup_control_panel_button" onclick="toggleEditCard()">Edit</button>
+			<button class="bottom right card_popup_control_panel_button" onclick="deleteCard()">Delete</button>
+		</div>
+		<div id="edit card control panel" class="edit_card_control_panel">
+			&nbspCard Name:<br>
+			&nbsp<input type="text" id="card name input" value=""/><br>
+			&nbspPurpose:<br>
+			&nbsp<input type="text" id="purpose input" value=""/><br>
+			&nbsp<label><input type="checkbox" id="land checkbox" />Land</label><br>
+			<div id="land menu">
+			</div>
+			<div id="nonland menu">
+				&nbspCasting Cost:<br>
+				&nbsp<input type="text" id="casting cost input" value=""/><br>
+				&nbsp<label><input type="checkbox" id="instant speed checkbox" />Instant/Flash</label><br>
+				
+				&nbspActivation Cost:<br>
+				&nbsp<input type="text" id="activation cost input" value=""/><br>
+				&nbsp<label><input type="checkbox" id="commander checkbox" />Commander</label><br>
+				&nbsp<label><input type="checkbox" id="purely reactive checkbox" />Purely Reactive</label><br>
+			</div>
+			<div id="common details menu">
+				&nbspMana Production:<br>
+				&nbsp<label><input type="checkbox" id="produces white checkbox" />W</label>
+				<label><input type="checkbox" id="produces blue checkbox" />U</label>
+				<label><input type="checkbox" id="produces black checkbox" />B</label><br>
+				&nbsp<label><input type="checkbox" id="produces red checkbox" />R</label>
+				<label><input type="checkbox" id="produces green checkbox" />G</label>
+				<label><input type="checkbox" id="produces colorless checkbox" />C</label><br>
+				&nbspProduction Multiplier:<br>
+				&nbsp<input type="number" id="production multiplier" /><br>
+				&nbspDamage per turn:<br>
+				&nbsp<input type="number" id="dpt input" value=""/><br>
+				&nbsp<label><input type="checkbox" id="etb tapped checkbox" />ETB Tapped</label><br>
+				&nbspFlip Image URL:<br>
+				&nbsp<input type="text" id="card back input" value=""/><br>
+			</div>
+		</div>
+	</div>
+	
+	<!-- whitespace in the counter will mess it up because whitespace/text is considered a child node -->
+	<div id="counter_container" numcounters="0">
+		<div class="counter" id="counter_template"><div class="value" onmousedown="dragCounter()">1</div><button class="increment btn" onclick="incrementCounter()">+</button><button class="decrement btn" onclick="decrementCounter()">-</button></div>
+	</div>
+	
+	<script>
+	
+		function toggleVisibility(element, displayType){
+			var style = window.getComputedStyle(element);
+			if(style.display == "none"){
+				element.style.display = displayType||"block"; // welcome to javascript lol
+			} else {
+				element.style.display = "none";
+			}
+		}
+	
+		function togglePreferences(){
+			var preferencesMenu = document.getElementById("preferences menu");
+			toggleVisibility(preferencesMenu);
+		}
+		
+		function incrementCounter(e){
+			var sender = (e && e.target) || (window.event && window.event.srcElement);
+			var counter = sender.parentNode;
+			var input = counter.childNodes[0];
+			input.innerHTML = parseInt(input.innerHTML)+1;
+		}
+		
+		function decrementCounter(e){
+			var sender = (e && e.target) || (window.event && window.event.srcElement);
+			var counter = sender.parentNode;
+			var input = counter.childNodes[0];
+			input.innerHTML = parseInt(input.innerHTML)-1;
+		}
+		
+		function dragCounter(e){
+			var sender = (e && e.target) || (window.event && window.event.srcElement);
+			var counter = sender.parentNode;
+			counter.style.zIndex = 1;
+			counter.onmousemove = function(e){
+				counter.style.left = e.pageX-37 +"px";
+				counter.style.top = e.pageY-37 +"px";
+				
+			};
+			counter.onmouseup = function(e){
+				counter.onmousemove = function(){};
+				counter.style.zIndex = 0;
+			};
+		}
+		
+		function addCounter(initialValue){
+			var counterCont = document.getElementById("counter_container");
+			var counterNumber = parseInt(counterCont.getAttribute("numcounters"));
+			var counter = document.getElementById("counter_template").cloneNode(true);
+			counter.id = "counter"+counterNumber;
+			counter.style.left = 100 + 100*counterNumber + "px";
+			counter.style.top = 100 + "px";
+			counter.style.backgroundColor = "rgb("+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+")";
+			counterCont.appendChild(counter);
+			counterCont.setAttribute("numcounters", counterNumber+1);
+			if(initialValue && initialValue != 1){
+				var input = counter.childNodes[0];
+				input.innerHTML = initialValue;
+			}
+		}
+
+		function getXCoordOfMouse()
+		{
+			return window.event.x + document.body.scrollLeft - 2;
+		}
+		function getYCoordOfMouse()
+		{
+			return window.event.y + document.body.scrollTop - 2;
+		}
+
+		//Checks if an element has a particular class
+		function hasClass(element, cls) {
+		    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+		}
+		
+		var enableDelayedHover = 0;
+		var hoverEventId = 0;
+		function startHoverOverCard()
+		{
+			enableDelayedHover = 1;
+			hoverEventId++;
+			if (hoverEventId >= 100) {
+				hoverEventId = 0;
+			}
+			setTimeout(delayedHoverOverCard, 1000, hoverEventId);
+		}
+
+		var hoveredElement;
+		function mouseEnterCard(e){
+			// determine event object
+			if (!e) {
+				var e = window.event;
+			}
+			// IE uses srcElement, others use target
+			hoveredElement = e.target ? e.target : e.srcElement;
+			if (hasClass(hoveredElement, 'card')){
+				startHoverOverCard();
+			}
+		}
+
+		function mouseLeaveCard(e){
+			// determine event object
+			if (!e) {
+				var e = window.event;
+			}
+			// IE uses srcElement, others use target
+			var targetElement = e.target ? e.target : e.srcElement;
+			enableDelayedHover = 0;
+		}
+
+		//
+		function delayedHoverOverCard(triggeringHoverEventId){
+			if (!drag && enableDelayedHover && triggeringHoverEventId == hoverEventId) {
+				enableDelayedHover = 0;
+				showCardInfoMenu(hoveredElement);
+			}
+		}
+
+		//Handles mouseDown events
+		var clickedElement;
+		var timeOfPreviousCardClick;
+		var timeOfPreviousPreviousCardClick;
+		var clickCounter = 0;
+		function mouseDownCard(e){
+			// determine event object
+			if (!e) {
+				var e = window.event;
+			}
+			// IE uses srcElement, others use target
+			var tempClickedElement = e.target ? e.target : e.srcElement;
+			//Prevent default behavior
+			if(tempClickedElement.preventDefault) tempClickedElement.preventDefault();
+			//If this is a different element, reset the click counter
+			if ( tempClickedElement != clickedElement )
+			{
+				clickCounter = 0;
+			}
+			clickedElement = tempClickedElement;
+			//Increment the click counter on this element
+			++clickCounter;
+
+			if (hasClass(clickedElement, 'draggable')){
+				startDrag(e);
+			}
+			if (hasClass(clickedElement, 'card')){
+				//console.log('click:' + clickCounter);
+				//Set a delayed function to check for double and triple clicks
+				setTimeout(evaluateNumClicks, 200, clickCounter);
+			}
+			enableDelayedHover = 0;
+		}
+
+		var numClicks = 1;
+		function evaluateNumClicks(triggeringClickCounter){
+			//console.log('resolving click:' + triggeringClickCounter);
+			//Are they trying to drag it?
+			if (moved)
+			{
+				//Reset click counter
+				numClicks = 0;
+			}
+			//Have they stopped clicking?
+			else if (clickCounter == triggeringClickCounter)
+			{
+				//Count this click
+				++numClicks
+				//Resolve the proper action
+				if (numClicks == 2)
+				{
+					//Double click = Tap/Untap
+					tapOrUntapCard(clickedElement);
+				}
+				else if (numClicks == 3)
+				{
+					//Triple click = Flip
+					flipCard(clickedElement);
+				}
+				//Reset click counter
+				numClicks = 0;
+			} else {
+				//They haven't stopped clicking. Increment the click counter without resolving
+				numClicks++;
+			}
+		}
+
+		function mouseUpCard(e){
+			// determine event object
+			if (!e) {
+				var e = window.event;
+			}
+			// IE uses srcElement, others use target
+			hoveredElement = e.target ? e.target : e.srcElement;
+			if (hasClass(hoveredElement, 'card')){
+				startHoverOverCard();
+			}
+		}
+
+		//Prepares to drag the element
+		var startCoordX;
+		var startCoordY;
+		var endCoordX;
+		var endCoordY;
+		var select = false;
+		function startSelection(e) {
+			// determine event object
+			if (!e) {
+				var e = window.event;
+			}
+
+			var playmat = document.getElementById("playmat");
+
+			//Prevent default behavior
+			if(playmat.preventDefault)
+			{
+				playmat.preventDefault();
+			}
+
+			//Check that they weren't clicking on something else
+			var targetElement = e.target ? e.target : e.srcElement;
+			if(playmat == targetElement)
+			{
+				deselectAll();
+
+				// calculate event X, Y coordinates
+				startCoordX = getXCoordOfMouse();
+				startCoordY = getYCoordOfMouse();
+
+				var selector = document.getElementById("selector");
+				selector.style.top = startCoordY + 'px';
+				selector.style.left = startCoordX + 'px';
+				selector.style.width = '0px';
+				selector.style.height = '0px';
+				selector.className = 'blue_selector';
+				
+				// enable moving selector element when the mouse moves
+				select = true;
+			}
+            return false;
+		}
+
+		//Prepares to drag the element
+		var coordX;
+		var coordY;
+		var drag = false;
+		var moved = false;
+		var elementToDrag;
+		function startDrag(e) {
+
+			//Did they click on a selected element?
+			if (hasClass(clickedElement, 'selected'))
+			{
+				//Drag to the whole selection
+				elementToDrag = document.getElementById('selector');
+			} else {
+				//Drag just the element that was clicked
+				elementToDrag = clickedElement;
+				//Bring the element to the front
+				elementToDrag.parentNode.appendChild(elementToDrag);
+			}
+
+			// calculate event X, Y coordinates
+			offsetX = e.clientX;
+			offsetY = e.clientY;
+
+			// assign default values for top and left properties
+			if(!elementToDrag.style.left) { elementToDrag.style.left='0px'};
+			if (!elementToDrag.style.top) { elementToDrag.style.top='0px'};
+
+			// calculate integer values for top and left 
+			// properties
+			coordX = parseInt(elementToDrag.style.left);
+			coordY = parseInt(elementToDrag.style.top);
+			
+
+			// enable moving div element
+			drag = true;
+			moved = false;
+            return false;
+		}
+
+		//Called whenever the mouse moves on the document, so make this fast
+		function dragElement(e) {
+			//If the user is currently dragging an element
+			if (drag)
+			{
+				if (!e) { var e= window.event};
+				// var targ=e.target?e.target:e.srcElement;
+				// move div element
+				if (coordX+e.clientX-offsetX < 0){
+					elementToDrag.style.left='0px';
+				} else {
+					elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+				}
+				if (coordY+e.clientY-offsetY < 0){
+					elementToDrag.style.top='0px';
+				} else {
+					elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
+				}
+				if ((e.clientX-offsetX) != 0 || (e.clientY-offsetY) != 0)
+				{
+					moved = true;
+				}
+				hideSelector();
+				select = false;
+			//Else, if the user is currently trying to select things
+			} else if (select) {
+				var selector = document.getElementById("selector");
+				//Get the current mouse position
+				endCoordX = getXCoordOfMouse();
+				endCoordY = getYCoordOfMouse();
+				//Update the selection box's Y position and height to span the start and end coords
+				if (startCoordY < endCoordY)
+				{
+					selector.style.top = startCoordY + 'px';
+					selector.style.height = (endCoordY - startCoordY) + 'px'
+				} else {
+					selector.style.top = endCoordY + 'px';
+					selector.style.height = (startCoordY - endCoordY) + 'px'
+				}
+				//Update the selection box's X position and width to span the start and end coords
+				if (startCoordX < endCoordX)
+				{
+					selector.style.left = startCoordX + 'px';
+					selector.style.width = (endCoordX - startCoordX) + 'px'
+					//If the user is selecting to the right, use blue selection box
+					selector.className = "blue_selector";
+				} else {
+					selector.style.left = endCoordX + 'px';
+					selector.style.width = (startCoordX - endCoordX) + 'px'
+					//If the user is selecting to the left, use green selection box
+					selector.className = "green_selector";
+				}
+			}
+			return false;
+		}
+
+		//Make the selection box transparent
+		function hideSelector() {
+			var selector = document.getElementById('selector');
+			selector.className = 'invisible_selector';
+			selector.style.width = '0px';
+			selector.style.height = '0px';
+		}
+
+		//Move all listed elements into the "selected" div, and add the 'selected' class
+		function groupSelectedElements(selectedElements) {
+			if (selectedElements.length > 0)
+			{
+				var i;
+				var selector = document.getElementById('selector');
+				//Tighten the top and left of the selector to the selected elements
+				//That way when the selection gets dragged it gets stopped at a reasonable
+				//position when the top or left of the page is hit.
+				var minTop = parseInt(selectedElements[0].style.top);
+				var minLeft = parseInt(selectedElements[0].style.left);
+				for (i = 1; i < selectedElements.length; ++i)
+				{
+					if (parseInt(selectedElements[i].style.top) < minTop )
+					{
+						minTop = parseInt(selectedElements[i].style.top);
+					}
+					if (parseInt(selectedElements[i].style.left) < minLeft )
+					{
+						minLeft = parseInt(selectedElements[i].style.left);
+					}
+				}
+				selector.style.top = minTop + 'px';
+				selector.style.left = minLeft + 'px';
+				//Now move the elements into the selector div
+				for (i = 0; i < selectedElements.length; ++i)
+				{
+					//Also add a class so they look like they are selected
+					selectedElements[i].className += ' selected';
+					selectedElements[i].style.top = parseInt(selectedElements[i].style.top) - parseInt(selector.style.top) + 'px';
+					selectedElements[i].style.left= parseInt(selectedElements[i].style.left) - parseInt(selector.style.left) + 'px';
+					selector.appendChild(selectedElements[i]);
+				}
+				document.getElementById("stack button").style.visibility = 'visible';
+				document.getElementById("cost sort button").style.visibility = 'hidden';
+				document.getElementById("color sort button").style.visibility = 'hidden';
+				document.getElementById("purpose sort button").style.visibility = 'hidden';
+			}
+		}
+
+		//Remove all selected elements from the "selected" div, unset their style, and empty the array of selected elements
+		function deselectAll()
+		{
+			var i = 0;
+			var playmat = document.getElementById('playmat');
+			var selectedElements = [];
+			var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+			for (i = 0; i < elementsInSelector.length; ++i)
+			{
+				selectedElements.push(elementsInSelector[i]);
+			}
+			for (i = 0; i < selectedElements.length; ++i)
+			{
+				selectedElements[i].style.top = parseInt(selectedElements[i].style.top) + parseInt(selector.style.top) + 'px';
+				selectedElements[i].style.left= parseInt(selectedElements[i].style.left) + parseInt(selector.style.left) + 'px';
+				playmat.appendChild(selectedElements[i]);
+			}
+			for (i = 0; i < selectedElements.length; ++i)
+			{
+				selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
+			}
+			document.getElementById("stack button").style.visibility = 'hidden';
+			document.getElementById("cost sort button").style.visibility = 'visible';
+			document.getElementById("color sort button").style.visibility = 'visible';
+			document.getElementById("purpose sort button").style.visibility = 'visible';
+		}
+
+		//Called whenever the mouse button goes up on the document
+		function stopDrag() {
+			if (drag)
+			{
+				drag=false;
+				var playmat = document.getElementById("playmat");
+				//Set document size to extent of interior elements
+				document.body.style.width = '100%';
+				document.body.style.height = '100%';
+				document.body.style.width = document.body.scrollWidth + 'px';
+				document.body.style.height = document.body.scrollHeight + 'px';
+			}
+			
+			if (select)
+			{
+				var selector = document.getElementById("selector");
+				//Go through all cards and check if they are being selected
+				var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
+				var i, element;
+				var topBoundary = parseInt(selector.style.top);
+				var leftBoundary = parseInt(selector.style.left);
+				var bottomBoundary = topBoundary + parseInt(selector.style.height);
+				var rightBoundary = leftBoundary + parseInt(selector.style.width);
+				var elementTop = 0;
+				var elementLeft = 0;
+				var elementBottom = 0;
+				var elementRight = 0;
+				var elementStyle;
+				var i = 0;
+
+				var selectedElements = new Array();
+				if (selector.className == "blue_selector")
+				{
+					hideSelector();
+					//Blue selector only selects elements that are entirely within the selection box	
+					for (i = 0; i < elementsOnMat.length; ++i)
+					{
+						elementStyle = window.getComputedStyle(elementsOnMat[i]);
+						elementTop = parseInt(elementsOnMat[i].style.top);
+						elementLeft = parseInt(elementsOnMat[i].style.left);
+						elementRight = elementLeft + parseInt(elementStyle.width);
+						elementBottom = elementTop + parseInt(elementStyle.height);
+
+						//Check its coordinates
+						if (elementTop >= topBoundary &&
+							elementLeft >= leftBoundary &&
+							elementBottom <= bottomBoundary &&
+							elementRight <= rightBoundary)
+						{
+							selectedElements.push(elementsOnMat[i]);
+						}
+					}
+				} else if (selector.className == "green_selector"){
+					hideSelector();
+					//Green selector slects any elements that overlap the selection box
+					for (i = 0; i < elementsOnMat.length; ++i)
+					{
+						elementStyle = window.getComputedStyle(elementsOnMat[i]);
+						elementTop = parseInt(elementsOnMat[i].style.top);
+						elementLeft = parseInt(elementsOnMat[i].style.left);
+						elementRight = elementLeft + parseInt(elementStyle.width);
+						elementBottom = elementTop + parseInt(elementStyle.height);
+						//Check its coordinates
+						if (elementLeft <= rightBoundary &&
+							elementRight >= leftBoundary &&
+							elementTop <= bottomBoundary &&
+							elementBottom >= topBoundary )
+						{
+							selectedElements.push(elementsOnMat[i]);
+						}
+					}
+				}
+				//Move the selected elements to the "selected" div for O(1) movement
+				groupSelectedElements(selectedElements);
+				
+				select = false
+			}
+		}
+
+		var selectedCard;
+		function showCardInfoMenu(element) {
+			if (hasClass(element, 'card')){
+				selectedCard = element;
+				if (hasClass(element, 'selected'))
+				{
+					var selector = document.getElementById('selector');
+					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + parseInt(selector.style.top)  + 'px';
+					document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + parseInt(selector.style.left) + 'px';
+				} else {
+					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + 'px';
+					document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + 'px';
+				}
+				hideEditCard();
+				document.getElementById('magnified card view').src = selectedCard.src;
+				document.getElementById('card info popup').style.visibility = 'visible';
+			}
+		}
+
+		function hideCardInfoMenu() {
+			hideEditCard();
+			document.getElementById('card info popup').style.visibility = 'hidden';
+		}
+
+		function hideEditCard()
+		{
+			//Check if the user made changes
+			if (document.getElementById("edit card control panel").style.visibility == 'visible')
+			{
+				//Hide the edit card control panel and save the settings
+				selectedCard.setAttribute('name', document.getElementById('card name input').value );
+				selectedCard.setAttribute('purpose', document.getElementById('purpose input').value );
+				selectedCard.setAttribute('land', document.getElementById('land checkbox').checked );
+				selectedCard.setAttribute('casting_cost', document.getElementById('casting cost input').value);
+				selectedCard.setAttribute('instant_speed', document.getElementById('instant speed checkbox').checked );
+				selectedCard.setAttribute('activation_cost', document.getElementById('activation cost input').value);
+				selectedCard.setAttribute('commander', document.getElementById('commander checkbox').checked );
+				selectedCard.setAttribute('purely_reactive', document.getElementById('purely reactive checkbox').checked );
+				var manaProductionBitVector = 0;
+				if (document.getElementById('produces white checkbox').checked) { manaProductionBitVector |= 0x01;}
+				if (document.getElementById('produces blue checkbox').checked) { manaProductionBitVector |= 0x02;}
+				if (document.getElementById('produces black checkbox').checked) { manaProductionBitVector |= 0x04;}
+				if (document.getElementById('produces red checkbox').checked) { manaProductionBitVector |= 0x08;}
+				if (document.getElementById('produces green checkbox').checked) { manaProductionBitVector |= 0x10;}
+				if (document.getElementById('produces colorless checkbox').checked) { manaProductionBitVector |= 0x20;}
+				selectedCard.setAttribute('mana_production_bitvector', manaProductionBitVector );
+				selectedCard.setAttribute('mana_production_multiplier', document.getElementById('production multiplier').value );
+				
+				selectedCard.setAttribute('damage', document.getElementById('dpt input').value);
+				selectedCard.setAttribute('etb_tapped', document.getElementById('etb tapped checkbox').checked );
+				selectedCard.setAttribute('back', document.getElementById('card back input').value );
+				
+				
+				document.getElementById('land menu').style.visibility = 'hidden';
+				document.getElementById('nonland menu').style.visibility = 'hidden';
+				document.getElementById("edit card control panel").style.visibility = 'hidden';
+			}
+		}
+
+		function viewEditCard()
+		{
+			//Load the settings and make the edit card control panel visible
+			document.getElementById('card name input').value = selectedCard.getAttribute('name');
+			document.getElementById('purpose input').value = selectedCard.getAttribute('purpose');
+			document.getElementById('land checkbox').checked = selectedCard.getAttribute('land') == 'true';
+			document.getElementById('casting cost input').value = selectedCard.getAttribute('casting_cost');
+			document.getElementById('instant speed checkbox').checked = selectedCard.getAttribute('instant_speed') == 'true';
+			document.getElementById('activation cost input').value = selectedCard.getAttribute('activation_cost');
+			document.getElementById('commander checkbox').checked = selectedCard.getAttribute('commander') == 'true';
+			document.getElementById('purely reactive checkbox').checked = selectedCard.getAttribute('purely_reactive') == 'true';
+			var manaProductionBitVector = parseInt(selectedCard.getAttribute('mana_production_bitvector'));
+			document.getElementById('produces white checkbox').checked = manaProductionBitVector & 0x01;
+			document.getElementById('produces blue checkbox').checked = manaProductionBitVector & 0x02;
+			document.getElementById('produces black checkbox').checked = manaProductionBitVector & 0x04;
+			document.getElementById('produces red checkbox').checked = manaProductionBitVector & 0x08;
+			document.getElementById('produces green checkbox').checked = manaProductionBitVector & 0x10;
+			document.getElementById('produces colorless checkbox').checked = manaProductionBitVector & 0x20;
+			document.getElementById('production multiplier').value = selectedCard.getAttribute('mana_production_multiplier');
+			document.getElementById('dpt input').value = selectedCard.getAttribute('damage');
+			document.getElementById('etb tapped checkbox').checked = selectedCard.getAttribute('etb_tapped') == 'true';
+			document.getElementById('card back input').value = selectedCard.getAttribute('back');
+			
+			showLandOrNonland();
+			document.getElementById("edit card control panel").style.visibility = 'visible';
+		}
+
+		function toggleEditCard()
+		{
+			//If the edit card panel was visible, hide it and save settings
+			if (document.getElementById("edit card control panel").style.visibility == 'visible')
+			{
+				hideEditCard();
+			}
+			else
+			{
+				viewEditCard();
+			}
+		}
+
+		function showLandOrNonland()
+		{
+			var landMenuElement = document.getElementById('land menu');
+			var nonlandMenuElement = document.getElementById('nonland menu');
+			var commonDetailsMenuElement = document.getElementById('common details menu');
+			if (document.getElementById('land checkbox').checked)
+			{
+				//Show land stuff
+				landMenuElement.style.visibility = 'visible';
+				nonlandMenuElement.style.visibility = 'hidden';
+				//Move hidden element to bottom so there isn't a blank space
+				commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+				nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
+			}
+			else
+			{
+				//Show nonland stuff
+				nonlandMenuElement.style.visibility = 'visible';
+				landMenuElement.style.visibility = 'hidden';
+				//Move hidden element to bottom so there isn't a blank space
+				commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+				landMenuElement.parentNode.appendChild(landMenuElement);
+				
+			}
+		}
+
+		var CardElement = function(imagesource) {
+			this.element = document.createElement("img");
+			this.element.src = imagesource;
+			this.element.className = "draggable card";
+			this.element.setAttribute("front", imagesource);
+			this.element.setAttribute("back", "");
+			this.element.setAttribute("land", false);
+			this.element.setAttribute("purely_reactive", false);
+			this.element.setAttribute("instant_speed", false);
+			this.element.setAttribute("manacost", "0");
+			this.element.setAttribute('mana_production_bitvector', "0");
+			this.element.setAttribute('mana_production_multiplier', "1" );
+			this.element.setAttribute("etbtapped", false);
+			this.element.setAttribute("purpose", "");
+			this.element.style.top = '0px';
+			this.element.style.left = '0px';
+			this.element.addEventListener("mousedown", mouseDownCard);
+			this.element.addEventListener("mouseup", mouseUpCard);
+			this.element.addEventListener("mouseenter", mouseEnterCard);
+			this.element.addEventListener("mouseleave", mouseLeaveCard);
+			document.getElementById("playmat").appendChild(this.element);
+		}
+
+		function addCard() {
+			var newCard = CardElement(document.getElementById("cardimageurl").value);
+		}
+
+		function copyCard() {
+			var clone = selectedCard.cloneNode(true);
+			clone.addEventListener("mousedown", mouseDownCard);
+			clone.addEventListener("mouseup", mouseUpCard);
+			clone.addEventListener("mouseenter", mouseEnterCard);
+			clone.addEventListener("mouseleave", mouseLeaveCard);
+			selectedCard.parentNode.appendChild(clone);
+		}
+
+		function deleteCard() {
+			document.getElementById('magnified card view').src = "";
+			hideCardInfoMenu();
+			selectedCard.parentNode.removeChild(selectedCard);
+		}
+
+		function clearCardImageUrlEntry() {
+			document.getElementById("cardimageurl").value = "";
+		}
+
+		function tapOrUntapCard(element) {
+			//Is the card already tapped?
+			if (hasClass(element, 'rotated')){
+				//Is the card part of a selection?
+				if (hasClass(element, 'selected'))
+				{
+					//Untap all cards in the selection
+					var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+					var i;
+					for (i = 0; i < elementsInSelector.length; ++i)
+					{
+						elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+					}
+				}
+				else
+				{
+					//Untap just this card
+					element.className = element.className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				}
+			} else {
+				//Is the card part of a selection?
+				if (hasClass(element, 'selected'))
+				{
+					//Tap all cards in the selection
+					var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+					var i;
+					for (i = 0; i < elementsInSelector.length; ++i)
+					{
+						if (!hasClass(elementsInSelector[i], 'rotated'))
+						{
+							elementsInSelector[i].className += ' rotated';
+						}
+					}
+				}
+				else
+				{
+					//Tap just this card
+					element.className += ' rotated';
+				}
+			}
+		}
+
+		function flipCard(element)
+		{
+			//Is this card part of a selection?
+			if (hasClass(element, 'selected'))
+			{
+				var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+				var i;
+				//Is the card face up?
+				if (element.src == element.getAttribute("front"))
+				{
+					//Is this a double-faced card?
+					if (element.getAttribute("back") != "")
+					{
+						//Transform all transformable cards
+						for (i = 0; i < elementsInSelector.length; ++i)
+						{
+							//Is this a transformable card?
+							if (elementsInSelector[i].getAttribute("back") != "")
+							{
+								elementsInSelector[i].src = elementsInSelector[i].getAttribute("back");
+							}
+						}
+					}
+					else
+					{
+						//Conceal all cards
+						for (i = 0; i < elementsInSelector.length; ++i)
+						{
+							elementsInSelector[i].src = document.getElementById("card sleeve").src;
+						}
+					}
+				}
+				else
+				{
+					//flip all cards to front side
+					for (i = 0; i < elementsInSelector.length; ++i)
+					{
+						elementsInSelector[i].src = elementsInSelector[i].getAttribute("front");
+					}
+				}
+			}
+			else
+			{
+				//Is the card face up?
+				if (element.src == element.getAttribute("front"))
+				{
+					//Is this a double-faced card?
+					if (element.getAttribute("back") != "")
+					{
+						//Double-faced card, transform
+						element.src = element.getAttribute("back");
+					} else {
+						//Conceal this card
+						element.src = document.getElementById("card sleeve").src;
+					}
+				}
+				else
+				{
+					//flip to front side
+					element.src = element.getAttribute("front");
+				}
+			}
+		}
+
+		function shuffle()
+		{
+			var xOffset = 0;
+			var yOffset = 0;
+			//Are any cards selected?
+			var elementsToShuffle = document.getElementById('selector').getElementsByTagName('*');
+			//If there are no selected elements, shuffle everything on the playmat
+			if (elementsToShuffle.length == 0)
+			{
+				elementsToShuffle = document.getElementById('playmat').getElementsByTagName('*');
+				xOffset = 400;
+				yOffset = 700;
+			}
+
+			//Figure out which of the elements are non-commander cards
+			var cardsToShuffle = [];
+			var i = 0;
+			for (i = 0; i < elementsToShuffle.length; ++i)
+			{
+				if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true')
+				{
+					cardsToShuffle.push(elementsToShuffle[i]);
+				}
+			}
+
+			//Shuffle the cards
+			var numCards = cardsToShuffle.length;
+			
+
+			for (i = 0; i < numCards; ++i)
+			{
+				//Select a card at random
+				var index = Math.floor(Math.random() * cardsToShuffle.length);
+				//Conceal the card
+				cardsToShuffle[index].src = document.getElementById("card sleeve").src;
+				//Put it into the deck
+				cardsToShuffle[index].style.top = yOffset + i + 'px';
+				cardsToShuffle[index].style.left = xOffset + i + 'px';
+				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				//Bring it in front of the other elements
+				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
+				//Remove it from the list of cards to be shuffled
+				cardsToShuffle.splice(index,1);
+			}
+
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+		}
+		function stack()
+		{
+			//Are any cards selected?
+			var elementsToStack = document.getElementById('selector').getElementsByTagName('*');
+
+			//Figure out which of the elements are non-commander cards
+			var cardsToStack = [];
+			var i = 0;
+			for (i = 0; i < elementsToStack.length; ++i)
+			{
+				if (hasClass(elementsToStack[i], "card") )
+				{
+					cardsToStack.push(elementsToStack[i]);
+				}
+			}
+
+			//Stack the cards
+			var xOffset = 0;
+			var yOffset = 0;
+			var nameHeight = 22;
+			
+			for (i = 0; i < cardsToStack.length; ++i)
+			{
+				//Put it into the stack
+				cardsToStack[i].style.top = yOffset + 'px';
+				cardsToStack[i].style.left = xOffset + 'px';
+				//Is this card concealed?
+				if (cardsToStack[i].src == document.getElementById("card sleeve").src)
+				{
+					xOffset = xOffset + 1;
+					yOffset = yOffset + 1;
+				} else {
+					yOffset = yOffset + nameHeight;
+				}
+			}
+
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+		}
+
+		var ManaCost = function(manaCostString)
+		{
+			this.generic = 0;
+			this.w = 0;
+			this.u = 0;
+			this.b = 0;
+			this.r = 0;
+			this.g = 0;
+			this.c = 0;
+			this.wu = 0;
+			this.ub = 0;
+			this.br = 0;
+			this.rg = 0;
+			this.gw = 0;
+			this.wb = 0;
+			this.ur = 0;
+			this.bg = 0;
+			this.rw = 0;
+			this.gu = 0;
+			this.h2w = 0;
+			this.h2u = 0;
+			this.h2b = 0;
+			this.h2r = 0;
+			this.h2g = 0;
+			this.total = 0;
+			this.colorBitVector = 0;
+
+			if(manaCostString != null)
+			{
+				var lc_manaCostString = manaCostString.toLowerCase();
+				for (var c = 0; c < lc_manaCostString.length; ++c)
+				{
+					//Is this character a number?
+					if (lc_manaCostString.charCodeAt(c) >= "0".charCodeAt(0) &&
+						lc_manaCostString.charCodeAt(c) <= "9".charCodeAt(0))
+					{
+						//Add this digit to the running generic mana cost
+						this.generic = this.generic * 10 + lc_manaCostString.charCodeAt(c) - "0".charCodeAt(0);
+					} else if (lc_manaCostString[c] == 'w') {
+						this.w++;
+						this.colorBitVector |= 0x01;
+					} else if (lc_manaCostString[c] == 'u') {
+						this.u++;
+						this.colorBitVector |= 0x02;
+					} else if (lc_manaCostString[c] == 'b') {
+						this.b++;
+						this.colorBitVector |= 0x04;
+					} else if (lc_manaCostString[c] == 'r') {
+						this.r++;
+						this.colorBitVector |= 0x08;
+					} else if (lc_manaCostString[c] == 'g') {
+						this.g++;
+						this.colorBitVector |= 0x10;
+					} else if (lc_manaCostString[c] == 'c') {
+						this.c++;
+						this.colorBitVector |= 0x20;
+					} else if (lc_manaCostString[c] == '{' && (c+5) <= lc_manaCostString.length) {
+						var substring = lc_manaCostString.substring(c,c+5);
+						if ( substring       == "{w/u}") {
+							this.wu++;
+							this.colorBitVector |= 0x03;
+						} else if (substring == "{u/b}") {
+							this.ub++;
+							this.colorBitVector |= 0x06;
+						} else if (substring == "{b/r}") {
+							this.br++;
+							this.colorBitVector |= 0x0C;
+						} else if (substring == "{r/g}") {
+							this.rg++;
+							this.colorBitVector |= 0x18;
+						} else if (substring == "{g/w}") {
+							this.gw++;
+							this.colorBitVector |= 0x11;
+						} else if (substring == "{w/b}") {
+							this.wb++;
+							this.colorBitVector |= 0x05;
+						} else if (substring == "{u/r}") {
+							this.ur++;
+							this.colorBitVector |= 0x0A;
+						} else if (substring == "{b/g}") {
+							this.bg++;
+							this.colorBitVector |= 0x14;
+						} else if (substring == "{r/w}") {
+							this.rw++;
+							this.colorBitVector |= 0x09;
+						} else if (substring == "{g/u}") {
+							this.gu++;
+							this.colorBitVector |= 0x12;
+						} else if (substring == "{2/w}") {
+							this.h2w++;
+							this.colorBitVector |= 0x01;
+						} else if (substring == "{2/u}") {
+							this.h2u++;
+							this.colorBitVector |= 0x02;
+						} else if (substring == "{2/b}") {
+							this.h2b++;
+							this.colorBitVector |= 0x04;
+						} else if (substring == "{2/r}") {
+							this.h2r++;
+							this.colorBitVector |= 0x08;
+						} else if (substring == "{2/g}") {
+							this.h2g++;
+							this.colorBitVector |= 0x10;
+						}
+						c += 4;
+					}
+				}
+				this.total = this.generic + this.w + this.u + this.b + this.r + this.g + this.c + this.wu + this.ub + this.br + this.rg + this.gw + this.wb + this.ur + this.bg + this.rw + this.gu + this.h2w + this.h2u + this.h2b + this.h2r + this.h2g;
+			}
+		}
+
+		function getTotalCost(cardElement)
+		{
+			if (cardElement.getAttribute('land') == 'true')
+			{
+				return -1;
+			} else {
+				var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+				return cost.total;
+			}
+		}
+
+		colorOrderLookupTable = [ 1,  2,  3,  7,  4, 12,  8, 17, 5, 16, 15, 22,  9, 24, 18, 31, 6, 11, 14, 21, 13, 26, 23, 30, 10, 20, 25, 29, 19, 28, 27, 32, 33, 34, 35, 39, 36, 44, 40, 49, 37, 48, 47, 54, 41, 56, 50, 63, 38, 43, 46, 53, 45, 58, 55, 62, 42, 52, 57, 61, 51, 60, 59, 64];
+		
+
+		function getColorOrder(cardElement)
+		{
+			if (cardElement.getAttribute('land') == 'true')
+			{
+				var manaProductionBitVector = parseInt(cardElement.getAttribute('mana_production_bitvector'));
+				//Ignore colorless production
+				if (manaProductionBitVector >= 32)
+				{
+					manaProductionBitVector = manaProductionBitVector - 32;
+				}
+				//Lands come after nonlands
+				return (colorOrderLookupTable[manaProductionBitVector] + 100);
+			} else {
+				var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+				return colorOrderLookupTable[cost.colorBitVector];
+			}
+		}
+
+		function costSort()
+		{
+			//Deselect any selected cards
+			deselectAll();
+
+			//Get all the elements on the playmat
+			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+			//Figure out which of the elements are cards
+			var cardsToSort = [];
+			var i = 0;
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				if (hasClass(elementsOnMat[i], "card"))
+				{
+					cardsToSort.push(elementsOnMat[i]);
+				}
+			}
+
+			//Sort the cards by cost
+			cardsToSort.sort(
+				function(a,b){
+					var ret = getTotalCost(a) - getTotalCost(b);
+					if (ret == 0)
+					{
+						ret = getColorOrder(a) - getColorOrder(b);
+						if (ret == 0)
+						{
+							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+						}
+					}
+					return ret;
+				}
+			);
+
+			//Arrange the cards on the mat
+			var stackNum = 0;
+			var previousCardValue = -9000;
+			var stackHeight = 0;
+
+			var xOffset = 50;
+			var yOffset = 100;
+
+			var nameHeight = 22;
+			var stackSpacing = 166;
+
+			for (i = 0; i < cardsToSort.length; ++i)
+			{
+				//Is this card of a different class?
+				if (getTotalCost(cardsToSort[i]) != previousCardValue)
+				{
+					//Create a new stack
+					stackNum++;
+					stackHeight = 0;
+					previousCardValue = getTotalCost(cardsToSort[i]);
+				}
+				//Add this card to the stack
+				//Reveal the card
+				cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+				//Put it into the deck
+				cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+				cardsToSort[i].style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+				//Untap
+				cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				//Bring it in front of the other elements
+				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+				stackHeight++;
+			}
+
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+		}
+
+		function colorSort()
+		{
+			//Deselect any selected cards
+			deselectAll();
+
+			//Get all the elements on the playmat
+			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+			//Figure out which of the elements are cards
+			var cardsToSort = [];
+			var i = 0;
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				if (hasClass(elementsOnMat[i], "card"))
+				{
+					cardsToSort.push(elementsOnMat[i]);
+				}
+			}
+
+			//Sort the cards by color, then cost, then name
+			cardsToSort.sort(
+				function(a,b)
+				{
+					var ret = getColorOrder(a) - getColorOrder(b);
+					if (ret == 0)
+					{
+						ret = getTotalCost(a) - getTotalCost(b);
+						if (ret == 0)
+						{
+							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+						}
+					}
+					return ret;
+				}
+			);
+
+			//Figure out the necessary columns
+			var columns = [];
+			for (i = 0; i < 64; ++i)
+			{
+				columns.push(-1);
+			}
+
+			function getColumnId(colorOrder)
+			{
+				colorOrder = colorOrder - 1;
+				if (colorOrder >= 100) {
+					return colorOrder - 100;
+				} else {
+					return colorOrder;
+				}
+			}
+
+			//Figure out which columns will have cards
+			for (i = 0; i < cardsToSort.length; ++i)
+			{
+				columns[getColumnId(getColorOrder(cardsToSort[i]))] = 1;
+			}
+
+			//Number off the columns that have cards
+			var columnNum = 0;
+			for (i = 0; i < columns.length; ++i)
+			{
+				if (columns[i] == 1){
+					columns[i] = columnNum;
+					columnNum++;
+				}
+			}
+
+			//Arrange the cards on the mat
+			var previousCardValue = -9000;
+			var row1Height = 0;
+			var stackHeight = 0;
+			var xOffset = 50;
+			var yOffset = 100;
+			var nameHeight = 22;
+			var stackSpacing = 166;
+
+			for (i = 0; i < cardsToSort.length; ++i)
+			{
+				//Is this card of a different color?
+				if ( getColorOrder(cardsToSort[i]) != previousCardValue )
+				{
+					stackHeight = 0;
+					previousCardValue = getColorOrder(cardsToSort[i]);
+				}
+				
+				//Add this card to the stack
+				//Reveal the card
+				cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+				//Put it in its column
+				cardsToSort[i].style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i]))] + 'px';
+				//Untap
+				cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				
+				//Check if this is part of row 1
+				if ( getColorOrder(cardsToSort[i]) < 100 )
+				{
+					cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+					stackHeight++;
+					//Save the height of the largest stack in row 1
+					if (stackHeight > row1Height)
+					{
+						row1Height = stackHeight;
+					}
+				} else {
+					cardsToSort[i].style.top = yOffset + cardsToSort[i].clientHeight +  nameHeight * row1Height + nameHeight * stackHeight + 'px';
+					stackHeight++;
+				}
+
+				//Bring it in front of the other elements
+				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+			}
+
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+		}
+
+		function purposeSort()
+		{
+			//Deselect any selected cards
+			deselectAll();
+
+			//Get all the elements on the playmat
+			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+			//Figure out which of the elements are cards
+			var cardsToSort = [];
+			var i = 0;
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				if (hasClass(elementsOnMat[i], "card"))
+				{
+					cardsToSort.push(elementsOnMat[i]);
+				}
+			}
+
+			//Sort the cards by purpose, then cost, then color, then name
+			cardsToSort.sort(
+				function(a,b){
+					var ret = a.getAttribute("purpose").localeCompare(b.getAttribute("purpose"));
+					if (ret == 0)
+					{
+						ret = getTotalCost(a) - getTotalCost(b);
+						if (ret == 0)
+						{
+							ret = getColorOrder(a) - getColorOrder(b);
+							if (ret == 0)
+							{
+								ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+							}
+						}
+					}
+					return ret;
+				}
+			);
+
+			//Arrange the cards on the mat
+			var stackNum = 0;
+			var previousCardValue = "plumbus";
+			var stackHeight = 0;
+
+			var xOffset = 50;
+			var yOffset = 100;
+
+			var nameHeight = 22;
+			var stackSpacing = 166;
+
+			for (i = 0; i < cardsToSort.length; ++i)
+			{
+				//Is this card of a different class?
+				if (cardsToSort[i].getAttribute("purpose") != previousCardValue)
+				{
+					//Create a new stack
+					stackNum++;
+					stackHeight = 0;
+					previousCardValue = cardsToSort[i].getAttribute("purpose");
+				}
+				//Add this card to the stack
+				//Reveal the card
+				cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+				//Put it into the deck
+				cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+				cardsToSort[i].style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+				//Untap
+				cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				//Bring it in front of the other elements
+				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+				stackHeight++;
+			}
+
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+		}
+
+
+		//Main
+		window.onload = function() {
+			//Create some cards for testing
+			document.onmousemove=dragElement;
+			document.onmouseup=stopDrag;
+			document.getElementById("card info popup").addEventListener("mouseleave", hideCardInfoMenu);
+			document.getElementById("magnified card view").addEventListener("mousedown", hideCardInfoMenu);
+			document.getElementById("playmat").addEventListener("mousedown", startSelection);
+			document.getElementById("land checkbox").onclick = showLandOrNonland;
+
+			//var ggWentworth = CardElement("http://magiccards.info/scans/en/nph/37.jpg");
+
+			//Go through all the elements on the playmat and set up their javascript functions
+			var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
+			var i, element;
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				element = elementsOnMat[i];
+				//Set up cards
+				if (hasClass(element,'card')){
+					element.addEventListener("mousedown", mouseDownCard);
+					element.addEventListener("mouseup", mouseUpCard);
+					element.addEventListener("mouseenter", mouseEnterCard);
+					element.addEventListener("mouseleave", mouseLeaveCard);
+				}
+			}
+
+			deselectAll();
+
+			//var bsColossus = CardElement("http://magiccards.info/scans/en/mbs/99.jpg");
+		}
+		
+	</script>
+</body>
+</html>
