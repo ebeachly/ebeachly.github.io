@@ -287,11 +287,11 @@
 	
 	<!-- whitespace in the counter will mess it up because whitespace/text is considered a child node -->
 	<div id="counter_container" numcounters="0">
-		<div class="counter" id="counter_template"><div class="value" onmousedown="dragCounter()">1</div><button class="increment btn" onclick="incrementCounter()">+</button><button class="decrement btn" onclick="decrementCounter()">-</button></div>
+		<div class="counter draggable" id="counter_template"><div class="value" onmousedown="dragCounter()">1</div><button class="increment btn" onclick="incrementCounter()">+</button><button class="decrement btn" onclick="decrementCounter()">-</button></div>
 	</div>
 	
 	<script>
-	
+		var clickedElement;
 		function toggleVisibility(element, displayType){
 			var style = window.getComputedStyle(element);
 			if(style.display == "none"){
@@ -323,16 +323,8 @@
 		function dragCounter(e){
 			var sender = (e && e.target) || (window.event && window.event.srcElement);
 			var counter = sender.parentNode;
-			counter.style.zIndex = 1;
-			counter.onmousemove = function(e){
-				counter.style.left = e.pageX-37 +"px";
-				counter.style.top = e.pageY-37 +"px";
-				
-			};
-			counter.onmouseup = function(e){
-				counter.onmousemove = function(){};
-				counter.style.zIndex = 0;
-			};
+			clickedElement = counter;
+			startDrag(e);
 		}
 		
 		function addCounter(initialValue){
@@ -409,7 +401,7 @@
 		}
 
 		//Handles mouseDown events
-		var clickedElement;
+		
 		var timeOfPreviousCardClick;
 		var timeOfPreviousPreviousCardClick;
 		var clickCounter = 0;
@@ -538,6 +530,7 @@
 		var elementToDrag;
 		function startDrag(e) {
 
+			console.log("startDrag");
 			//Did they click on a selected element?
 			if (hasClass(clickedElement, 'selected'))
 			{
@@ -551,8 +544,8 @@
 			}
 
 			// calculate event X, Y coordinates
-			offsetX = e.clientX;
-			offsetY = e.clientY;
+			offsetX = window.event.x;
+			offsetY = window.event.y;
 
 			// assign default values for top and left properties
 			if(!elementToDrag.style.left) { elementToDrag.style.left='0px'};
