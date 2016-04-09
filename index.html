@@ -1014,7 +1014,7 @@
 			}
 		}
 
-		function permanentyTypeSelected()
+		function permanentTypeSelected()
 		{
 			document.getElementById('sorcery checkbox').checked = false;
 			document.getElementById('instant checkbox').checked = false;
@@ -1810,6 +1810,30 @@
 			document.body.style.height = document.body.scrollHeight + 'px';
 		}
 
+		function deleteAll()
+		{
+			//Deselect any selected cards
+			deselectAll();
+
+			document.getElementById('magnified card view').src = "";
+			hideCardInfoMenu();
+			
+
+			//Get all the elements on the playmat
+			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+			//Delete all the elements
+			var elementsToDelete = [];
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				elementsToDelete.push(elementsOnMat[i]);
+			}
+
+			for (i = 0; i < elementsToDelete.length; ++i)
+			{
+				elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
+			}
+		}
 
 		//Main
 		window.onload = function() {
@@ -1819,11 +1843,11 @@
 			document.getElementById("card info popup").addEventListener("mouseleave", hideCardInfoMenu);
 			document.getElementById("magnified card view").addEventListener("mousedown", hideCardInfoMenu);
 			document.getElementById("playmat").addEventListener("mousedown", startSelection);
-			document.getElementById("land checkbox").onclick = permanentyTypeSelected;
-			document.getElementById("creature checkbox").onclick = permanentyTypeSelected;
-			document.getElementById("planeswalker checkbox").onclick = permanentyTypeSelected;
-			document.getElementById("artifact checkbox").onclick = permanentyTypeSelected;
-			document.getElementById("enchantment checkbox").onclick = permanentyTypeSelected;
+			document.getElementById("land checkbox").onclick = permanentTypeSelected;
+			document.getElementById("creature checkbox").onclick = permanentTypeSelected;
+			document.getElementById("planeswalker checkbox").onclick = permanentTypeSelected;
+			document.getElementById("artifact checkbox").onclick = permanentTypeSelected;
+			document.getElementById("enchantment checkbox").onclick = permanentTypeSelected;
 			document.getElementById("sorcery checkbox").onclick = sorceryTypeSelected;
 			document.getElementById("instant checkbox").onclick = instantTypeSelected;
 
