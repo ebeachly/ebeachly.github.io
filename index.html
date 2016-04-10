@@ -173,11 +173,11 @@
 			top:0;
 		}
 		
-		#counter_container #counter_template {
+		#counter_template {
 			display: none;
 		}
 		
-		#counter_container .counter {
+		.counter {
 			position: absolute;
 			width: 75px;
 			height: 75px;
@@ -185,7 +185,7 @@
 			box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 		}
 		
-		#counter_container .counter .value {
+		.counter .value {
 			border: none;
 			background: none;
 			text-align: center;
@@ -195,16 +195,16 @@
 			padding:28px;
 		}
 		
-		#counter_container .counter .btn {
+		.counter .btn {
 			position: absolute;
 			right: 0;
 		}
 		
-		#counter_container .counter .increment {
+		.counter .increment {
 			top: 0;
 		}
 		
-		#counter_container .counter .decrement {
+		.counter .decrement {
 			bottom: 0;
 		}
 	</style>
@@ -338,6 +338,7 @@
 		}
 		
 		function addCounter(initialValue){
+			var playmat = document.getElementById("playmat");
 			var counterCont = document.getElementById("counter_container");
 			var counterNumber = parseInt(counterCont.getAttribute("numcounters"));
 			var counter = document.getElementById("counter_template").cloneNode(true);
@@ -345,7 +346,7 @@
 			counter.style.left = 100 + 100*counterNumber + "px";
 			counter.style.top = 100 + "px";
 			counter.style.backgroundColor = "rgb("+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+")";
-			counterCont.appendChild(counter);
+			playmat.appendChild(counter);
 			counterCont.setAttribute("numcounters", counterNumber+1);
 			if(initialValue && initialValue != 1){
 				var input = counter.childNodes[0];
@@ -444,7 +445,7 @@
 			enableDelayedHover = 0;
 		}
 
-		var numClicks = 1;
+		var numClicks = 0;
 		function evaluateNumClicks(triggeringClickCounter){
 			//console.log('resolving click:' + triggeringClickCounter);
 			//Are they trying to drag it?
@@ -540,7 +541,6 @@
 		var elementToDrag;
 		function startDrag(e) {
 
-			console.log("startDrag");
 			//Did they click on a selected element?
 			if (hasClass(clickedElement, 'selected'))
 			{
@@ -683,11 +683,16 @@
 		{
 			var i = 0;
 			var playmat = document.getElementById('playmat');
+			var selector = document.getElementById('selector');
 			var selectedElements = [];
-			var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+			var elementsInSelector = selector.getElementsByTagName('*');
 			for (i = 0; i < elementsInSelector.length; ++i)
 			{
-				selectedElements.push(elementsInSelector[i]);
+				//Check that this is a top-level element
+				if (elementsInSelector[i].parentNode == selector)
+				{
+					selectedElements.push(elementsInSelector[i]);
+				}
 			}
 			for (i = 0; i < selectedElements.length; ++i)
 			{
@@ -723,7 +728,9 @@
 			{
 				var selector = document.getElementById("selector");
 				//Go through all cards and check if they are being selected
-				var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
+				var playmat = document.getElementById("playmat");
+				var elementsOnMat = playmat.getElementsByTagName('*');
+
 				var i, element;
 				var topBoundary = parseInt(selector.style.top);
 				var leftBoundary = parseInt(selector.style.left);
@@ -743,19 +750,23 @@
 					//Blue selector only selects elements that are entirely within the selection box	
 					for (i = 0; i < elementsOnMat.length; ++i)
 					{
-						elementStyle = window.getComputedStyle(elementsOnMat[i]);
-						elementTop = parseInt(elementsOnMat[i].style.top);
-						elementLeft = parseInt(elementsOnMat[i].style.left);
-						elementRight = elementLeft + parseInt(elementStyle.width);
-						elementBottom = elementTop + parseInt(elementStyle.height);
-
-						//Check its coordinates
-						if (elementTop >= topBoundary &&
-							elementLeft >= leftBoundary &&
-							elementBottom <= bottomBoundary &&
-							elementRight <= rightBoundary)
+						//Check that this is a top-level element
+						if (elementsOnMat[i].parentNode == playmat)
 						{
-							selectedElements.push(elementsOnMat[i]);
+							elementStyle = window.getComputedStyle(elementsOnMat[i]);
+							elementTop = parseInt(elementsOnMat[i].style.top);
+							elementLeft = parseInt(elementsOnMat[i].style.left);
+							elementRight = elementLeft + parseInt(elementStyle.width);
+							elementBottom = elementTop + parseInt(elementStyle.height);
+
+							//Check its coordinates
+							if (elementTop >= topBoundary &&
+								elementLeft >= leftBoundary &&
+								elementBottom <= bottomBoundary &&
+								elementRight <= rightBoundary)
+							{
+								selectedElements.push(elementsOnMat[i]);
+							}
 						}
 					}
 				} else if (selector.className == "green_selector"){
@@ -763,18 +774,22 @@
 					//Green selector slects any elements that overlap the selection box
 					for (i = 0; i < elementsOnMat.length; ++i)
 					{
-						elementStyle = window.getComputedStyle(elementsOnMat[i]);
-						elementTop = parseInt(elementsOnMat[i].style.top);
-						elementLeft = parseInt(elementsOnMat[i].style.left);
-						elementRight = elementLeft + parseInt(elementStyle.width);
-						elementBottom = elementTop + parseInt(elementStyle.height);
-						//Check its coordinates
-						if (elementLeft <= rightBoundary &&
-							elementRight >= leftBoundary &&
-							elementTop <= bottomBoundary &&
-							elementBottom >= topBoundary )
+						//Check that this is a top-level element
+						if (elementsOnMat[i].parentNode == playmat)
 						{
-							selectedElements.push(elementsOnMat[i]);
+							elementStyle = window.getComputedStyle(elementsOnMat[i]);
+							elementTop = parseInt(elementsOnMat[i].style.top);
+							elementLeft = parseInt(elementsOnMat[i].style.left);
+							elementRight = elementLeft + parseInt(elementStyle.width);
+							elementBottom = elementTop + parseInt(elementStyle.height);
+							//Check its coordinates
+							if (elementLeft <= rightBoundary &&
+								elementRight >= leftBoundary &&
+								elementTop <= bottomBoundary &&
+								elementBottom >= topBoundary )
+							{
+								selectedElements.push(elementsOnMat[i]);
+							}
 						}
 					}
 				}
@@ -1100,7 +1115,10 @@
 					var i;
 					for (i = 0; i < elementsInSelector.length; ++i)
 					{
-						elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+						if (hasClass(elementsInSelector[i],"card"))
+						{
+							elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+						}
 					}
 				}
 				else
@@ -1117,9 +1135,12 @@
 					var i;
 					for (i = 0; i < elementsInSelector.length; ++i)
 					{
-						if (!hasClass(elementsInSelector[i], 'rotated'))
+						if (hasClass(elementsInSelector[i],"card"))
 						{
-							elementsInSelector[i].className += ' rotated';
+							if (!hasClass(elementsInSelector[i], 'rotated'))
+							{
+								elementsInSelector[i].className += ' rotated';
+							}
 						}
 					}
 				}
@@ -1147,10 +1168,13 @@
 						//Transform all transformable cards
 						for (i = 0; i < elementsInSelector.length; ++i)
 						{
-							//Is this a transformable card?
-							if (elementsInSelector[i].getAttribute("back") != "")
+							if (hasClass(elementsInSelector[i],"card"))
 							{
-								elementsInSelector[i].src = elementsInSelector[i].getAttribute("back");
+								//Is this a transformable card?
+								if (elementsInSelector[i].getAttribute("back") != "")
+								{
+									elementsInSelector[i].src = elementsInSelector[i].getAttribute("back");
+								}
 							}
 						}
 					}
@@ -1159,7 +1183,10 @@
 						//Conceal all cards
 						for (i = 0; i < elementsInSelector.length; ++i)
 						{
-							elementsInSelector[i].src = document.getElementById("card sleeve").src;
+							if (hasClass(elementsInSelector[i],"card"))
+							{
+								elementsInSelector[i].src = document.getElementById("card sleeve").src;
+							}
 						}
 					}
 				}
@@ -1168,7 +1195,10 @@
 					//flip all cards to front side
 					for (i = 0; i < elementsInSelector.length; ++i)
 					{
-						elementsInSelector[i].src = elementsInSelector[i].getAttribute("front");
+						if (hasClass(elementsInSelector[i],"card"))
+						{
+							elementsInSelector[i].src = elementsInSelector[i].getAttribute("front");
+						}
 					}
 				}
 			}
