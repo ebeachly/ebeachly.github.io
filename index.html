@@ -430,6 +430,15 @@
 			enableDelayedHover = 0;
 		}
 
+		var mouseOverSideboard = false;
+		function mouseEnterSideboard(e){
+			mouseOverSideboard = true;
+		}
+
+		function mouseLeaveSideboard(e){
+			mouseOverSideboard = false;
+		}
+
 		//
 		function delayedHoverOverCard(triggeringHoverEventId){
 			if (!drag && enableDelayedHover && triggeringHoverEventId == hoverEventId) {
@@ -760,6 +769,15 @@
 			{
 				drag=false;
 				var playmat = document.getElementById("playmat");
+				var sideboard = document.getElementById("sideboard");
+
+				//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
+				if (hasClass(elementToDrag, 'card') && sideboard.style.visibility == 'visible' && mouseOverSideboard)
+				{
+					sideboard.appendChild(elementToDrag);
+					sortSideboard();
+				}
+
 				//Set document size to extent of interior elements
 				document.body.style.width = '100%';
 				document.body.style.height = '100%';
@@ -1545,6 +1563,44 @@
 			}
 		}
 
+		function sortSideboard()
+		{
+			//Get all the elements in the sideboard
+			var cardsToSort = document.getElementById('sideboard').getElementsByTagName('*');
+
+			//Sort the cards by cost
+			cardsToSort.sort(
+				function(a,b){
+					var ret = getTotalCost(a) - getTotalCost(b);
+					if (ret == 0)
+					{
+						ret = getColorOrder(a) - getColorOrder(b);
+						if (ret == 0)
+						{
+							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+						}
+					}
+					return ret;
+				}
+			);
+
+			var xOffset = 5;
+			var yOffset = 5;
+
+			for (i = 0; i < cardsToSort.length; ++i)
+			{
+				//Reveal the card
+				cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+				//Put it into the deck
+				cardsToSort[i].style.top = yOffset + nameHeight * i + 'px';
+				cardsToSort[i].style.left = xOffset + 'px';
+				//Untap
+				cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				//Bring it in front of the other elements
+				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+			}
+		}
+
 		function costSort()
 		{
 			//Deselect any selected cards
@@ -1946,6 +2002,10 @@
 			document.getElementById("instant checkbox").onclick = instantTypeSelected;
 
 			//var ggWentworth = CardElement("http://magiccards.info/scans/en/nph/37.jpg");
+
+			var sideboard = document.getElementById("sideboard");
+			sideboard.addEventListener("mouseenter", mouseEnterSideboard);
+			sideboard.addEventListener("mouseleave", mouseLeaveSideboard);
 
 			//Go through all the elements on the playmat and set up their javascript functions
 			var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
