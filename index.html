@@ -274,25 +274,15 @@
 				&nbsp<label><input type="checkbox" id="produces red checkbox" />R</label>
 				<label><input type="checkbox" id="produces green checkbox" />G</label>
 				<label><input type="checkbox" id="produces colorless checkbox" />C</label><br>
-				&nbspProduction Multiplier:<br>
-				&nbsp<input type="number" id="production multiplier" /><br>
-				&nbsp<label><input type="checkbox" id="etb tapped checkbox" />ETB Tapped</label><br>
 			</div>
 			<div id="nonland menu">
 				&nbspCasting Cost:<br>
 				&nbsp<input type="text" id="casting cost input" value=""/><br>
-				&nbsp<label><input type="checkbox" id="purely reactive checkbox" />Purely Reactive</label><br>
 			</div>
 			<div id="nonland permanent menu">
-				&nbspActivation Cost:<br>
-				&nbsp<input type="text" id="activation cost input" value=""/><br>
-				&nbsp<label><input type="checkbox" id="flash checkbox" />Flash</label><br>
 			</div>
 			<div id="creature menu">
 				&nbsp<label><input type="checkbox" id="commander checkbox" />Commander</label><br>
-				&nbsp<label><input type="checkbox" id="haste checkbox" />Haste</label><br>
-				&nbspPower:<br>
-				&nbsp<input type="number" id="power input" value=""/><br>
 			</div>
 			<div id="common details menu">
 				&nbspFlip Image URL:<br>
@@ -870,10 +860,7 @@
 			document.getElementById('sorcery checkbox').checked = selectedCard.getAttribute('sorcery') == 'true';
 			document.getElementById('instant checkbox').checked = selectedCard.getAttribute('instant') == 'true';
 			document.getElementById('casting cost input').value = selectedCard.getAttribute('casting_cost');
-			document.getElementById('flash checkbox').checked = selectedCard.getAttribute('flash') == 'true';
-			document.getElementById('activation cost input').value = selectedCard.getAttribute('activation_cost');
 			document.getElementById('commander checkbox').checked = selectedCard.getAttribute('commander') == 'true';
-			document.getElementById('purely reactive checkbox').checked = selectedCard.getAttribute('purely_reactive') == 'true';
 			var manaProductionBitVector = parseInt(selectedCard.getAttribute('mana_production_bitvector'));
 			document.getElementById('produces white checkbox').checked = manaProductionBitVector & 0x01;
 			document.getElementById('produces blue checkbox').checked = manaProductionBitVector & 0x02;
@@ -881,10 +868,6 @@
 			document.getElementById('produces red checkbox').checked = manaProductionBitVector & 0x08;
 			document.getElementById('produces green checkbox').checked = manaProductionBitVector & 0x10;
 			document.getElementById('produces colorless checkbox').checked = manaProductionBitVector & 0x20;
-			document.getElementById('production multiplier').value = selectedCard.getAttribute('mana_production_multiplier');
-			document.getElementById('power input').value = selectedCard.getAttribute('power');
-			document.getElementById('etb tapped checkbox').checked = selectedCard.getAttribute('fast') != 'true';
-			document.getElementById('haste checkbox').checked = selectedCard.getAttribute('fast') == 'true';
 			document.getElementById('card back input').value = selectedCard.getAttribute('back');
 		}
 
@@ -900,10 +883,7 @@
 			selectedCard.setAttribute('sorcery', document.getElementById('sorcery checkbox').checked );
 			selectedCard.setAttribute('instant', document.getElementById('instant checkbox').checked );
 			selectedCard.setAttribute('casting_cost', document.getElementById('casting cost input').value);
-			selectedCard.setAttribute('flash', document.getElementById('flash checkbox').checked );
-			selectedCard.setAttribute('activation_cost', document.getElementById('activation cost input').value);
 			selectedCard.setAttribute('commander', document.getElementById('commander checkbox').checked );
-			selectedCard.setAttribute('purely_reactive', document.getElementById('purely reactive checkbox').checked );
 			var manaProductionBitVector = 0;
 			if (document.getElementById('produces white checkbox').checked) { manaProductionBitVector |= 0x01;}
 			if (document.getElementById('produces blue checkbox').checked) { manaProductionBitVector |= 0x02;}
@@ -912,16 +892,6 @@
 			if (document.getElementById('produces green checkbox').checked) { manaProductionBitVector |= 0x10;}
 			if (document.getElementById('produces colorless checkbox').checked) { manaProductionBitVector |= 0x20;}
 			selectedCard.setAttribute('mana_production_bitvector', manaProductionBitVector );
-			selectedCard.setAttribute('mana_production_multiplier', document.getElementById('production multiplier').value );
-			
-			selectedCard.setAttribute('power', document.getElementById('power input').value);
-			if (document.getElementById('creature checkbox').checked){
-				selectedCard.setAttribute('fast', document.getElementById('haste checkbox').checked );
-			} else if (document.getElementById('land checkbox').checked) {
-				selectedCard.setAttribute('fast', document.getElementById('etb tapped checkbox').checked == false );
-			} else {
-				selectedCard.setAttribute('fast', true );
-			}
 			selectedCard.setAttribute('back', document.getElementById('card back input').value );
 		}
 
@@ -1098,12 +1068,8 @@
 			this.element.setAttribute("front", imagesource);
 			this.element.setAttribute("back", "");
 			this.element.setAttribute("land", false);
-			this.element.setAttribute("purely_reactive", false);
-			this.element.setAttribute("instant_speed", false);
 			this.element.setAttribute("manacost", "0");
 			this.element.setAttribute('mana_production_bitvector', "0");
-			this.element.setAttribute('mana_production_multiplier', "1" );
-			this.element.setAttribute("etbtapped", false);
 			this.element.setAttribute("purpose", "");
 			this.element.style.top = '0px';
 			this.element.style.left = '0px';
