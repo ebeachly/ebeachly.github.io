@@ -52,9 +52,6 @@
 		}
 
 		.sideboarded {
-			position: relative;
-			cursor: move;
-			top: 20px;
 		}
 
 		.green_selector {
@@ -617,16 +614,32 @@
 				if (!e) { var e= window.event};
 				// var targ=e.target?e.target:e.srcElement;
 				// move div element
-				if (coordX+e.clientX-offsetX < 0){
-					elementToDrag.style.left='0px';
+				if (hasClass(e,'sideboarded'))
+				{
+					var sideboard = document.getElementById('sideboard');
+					if (coordX+e.clientX-offsetX < -sideboard.style.left){
+						elementToDrag.style.left= -sideboard.style.left + 'px';
+					} else {
+						elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+					}
+					if (coordY+e.clientY-offsetY < -sideboard.style.top){
+						elementToDrag.style.top= -sideboard.style.top + 'px';
+					} else {
+						elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
+					}
 				} else {
-					elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+					if (coordX+e.clientX-offsetX < 0){
+						elementToDrag.style.left='0px';
+					} else {
+						elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+					}
+					if (coordY+e.clientY-offsetY < 0){
+						elementToDrag.style.top='0px';
+					} else {
+						elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
+					}
 				}
-				if (coordY+e.clientY-offsetY < 0){
-					elementToDrag.style.top='0px';
-				} else {
-					elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
-				}
+				
 				if ((e.clientX-offsetX) != 0 || (e.clientY-offsetY) != 0)
 				{
 					moved = true;
@@ -764,7 +777,18 @@
 				//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
 				if (hasClass(elementToDrag, 'card') && sideboard.style.visibility == 'visible' && mouseOverSideboard)
 				{
+					if (hasClass(elementToDrag, 'sideboarded'))
+					{
+						elementToDrag.className += ' sideboarded';
+					}
 					sideboard.appendChild(elementToDrag);
+					sortSideboard();
+				} else if (hasClass(elementToDrag, 'sideboarded') && !mouseOverSideboard) {
+					//Remove sideboarded class
+					elementToDrag.className = elementToDrag.className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
+					//Put it on the playmat
+					playmat.appendChild(elementToDrag);
+					//Sort the sideboard
 					sortSideboard();
 				}
 
@@ -1105,49 +1129,53 @@
 		}
 
 		function tapOrUntapCard(element) {
-			//Is the card already tapped?
-			if (hasClass(element, 'rotated')){
-				//Is the card part of a selection?
-				if (hasClass(element, 'selected'))
-				{
-					//Untap all cards in the selection
-					var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
-					var i;
-					for (i = 0; i < elementsInSelector.length; ++i)
+			//Is the card sideboarded?
+			if (!hasClass(element, 'sideboarded'))
+			{
+				//Is the card already tapped?
+				if (hasClass(element, 'rotated')){
+					//Is the card part of a selection?
+					if (hasClass(element, 'selected'))
 					{
-						if (hasClass(elementsInSelector[i],"card"))
+						//Untap all cards in the selection
+						var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+						var i;
+						for (i = 0; i < elementsInSelector.length; ++i)
 						{
-							elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-						}
-					}
-				}
-				else
-				{
-					//Untap just this card
-					element.className = element.className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-				}
-			} else {
-				//Is the card part of a selection?
-				if (hasClass(element, 'selected'))
-				{
-					//Tap all cards in the selection
-					var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
-					var i;
-					for (i = 0; i < elementsInSelector.length; ++i)
-					{
-						if (hasClass(elementsInSelector[i],"card"))
-						{
-							if (!hasClass(elementsInSelector[i], 'rotated'))
+							if (hasClass(elementsInSelector[i],"card"))
 							{
-								elementsInSelector[i].className += ' rotated';
+								elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
 							}
 						}
 					}
-				}
-				else
-				{
-					//Tap just this card
-					element.className += ' rotated';
+					else
+					{
+						//Untap just this card
+						element.className = element.className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+					}
+				} else {
+					//Is the card part of a selection?
+					if (hasClass(element, 'selected'))
+					{
+						//Tap all cards in the selection
+						var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+						var i;
+						for (i = 0; i < elementsInSelector.length; ++i)
+						{
+							if (hasClass(elementsInSelector[i],"card"))
+							{
+								if (!hasClass(elementsInSelector[i], 'rotated'))
+								{
+									elementsInSelector[i].className += ' rotated';
+								}
+							}
+						}
+					}
+					else
+					{
+						//Tap just this card
+						element.className += ' rotated';
+					}
 				}
 			}
 		}
