@@ -1566,7 +1566,8 @@
 		function sortSideboard()
 		{
 			//Get all the elements in the sideboard
-			var cardsToSort = document.getElementById('sideboard').getElementsByTagName('*');
+			var cardsToSort = [];
+			cardsToSort = document.getElementById('sideboard').getElementsByTagName('*');
 
 			//Sort the cards by cost
 			cardsToSort.sort(
