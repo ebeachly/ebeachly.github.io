@@ -624,6 +624,11 @@
 				}
 				hideSelector();
 				select = false;
+				//Set document size to extent of interior elements
+				document.body.style.width = '100%';
+				document.body.style.height = '100%';
+				document.body.style.width = document.body.scrollWidth + 'px';
+				document.body.style.height = document.body.scrollHeight + 'px';
 			//Else, if the user is currently trying to select things
 			} else if (select) {
 				var selector = document.getElementById("selector");
@@ -652,6 +657,11 @@
 					//If the user is selecting to the left, use green selection box
 					selector.className = "green_selector";
 				}
+				//Set document size to extent of interior elements
+				document.body.style.width = '100%';
+				document.body.style.height = '100%';
+				document.body.style.width = document.body.scrollWidth + 'px';
+				document.body.style.height = document.body.scrollHeight + 'px';
 			}
 			return false;
 		}
@@ -953,38 +963,25 @@
 				//Show land stuff
 				landMenuElement.style.visibility = 'visible';
 				landMenuElement.parentNode.appendChild(landMenuElement);
-				//Is this a creature, planeswalker, artifact, or enchantment
-				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
+				//Is this a creature?
+				if (document.getElementById('creature checkbox').checked)
 				{
-					//Is this a creature?
-					if (document.getElementById('creature checkbox').checked)
-					{
-						creatureMenuElement.style.visibility = 'visible';
-						//Append this next
-						creatureMenuElement.parentNode.appendChild(creatureMenuElement);
-						commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					} else {
-						creatureMenuElement.style.visibility = 'hidden';
-						//Move hidden elements to bottom so there isn't a blank space
-						commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-						creatureMenuElement.parentNode.appendChild(creatureMenuElement);
-					}
-				}
-				else
-				{
-					nonlandMenuElement.style.visibility = 'hidden';
+					creatureMenuElement.style.visibility = 'visible';	//In case they print a legendary land creature, so that it can be your commander
+					//Append this next
+					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
+					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+				} else {
 					creatureMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 				}
 				//move hidden elements to bottom so there isn't a blank space
+				nonlandMenuElement.style.visibility = 'hidden';
 				nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 			}
 			else
 			{
-				//Hide land stuff
-				landMenuElement.style.visibility = 'hidden';
 				//Is this a creature, planeswalker, artifact, or enchantment
 				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
 				{
@@ -1008,8 +1005,8 @@
 				{
 					nonlandMenuElement.style.visibility = 'visible';
 					creatureMenuElement.style.visibility = 'hidden';
-					//Move hidden elements to bottom so there isn't a blank space
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
+					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 				}
@@ -1022,6 +1019,8 @@
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 				}
+				//Hide land stuff
+				landMenuElement.style.visibility = 'hidden';
 				landMenuElement.parentNode.appendChild(landMenuElement);
 			}
 		}
@@ -1338,7 +1337,6 @@
 				sideboard.style.visibility = 'hidden';
 			}
 		}
-
 
 		function stack()
 		{
