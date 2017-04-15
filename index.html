@@ -39,9 +39,13 @@
 
 		.sideboard {
 			position: fixed;
-			border: 5px solid rgb(0,0,0);
-			width:176;
-			height:100%;
+			border: 1px solid rgb(0,0,0);
+			width: 176px;
+			right: 25px;
+			top: 25px;
+			bottom: 25px;
+			background-color: rgba(255,255,255,0.4);
+			box-shadow: 2px 2px 4px rgba(0,0,0,0.4)
 			-moz-border-radius: 5px;
 			-webkit-border-radius: 5px;
 			visibility: hidden;
@@ -80,7 +84,7 @@
 		.preferences_menu {
 			position: fixed; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
 			left: 25px;
-			right: 25px;
+			right: 226px;
 			top: 25px;
 			bottom: 25px;
 			display: none;
@@ -956,10 +960,9 @@
 					if (document.getElementById('creature checkbox').checked)
 					{
 						creatureMenuElement.style.visibility = 'visible';
-						//Move hidden elements to bottom so there isn't a blank space
+						//Append this next
 						creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 						commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-
 					} else {
 						creatureMenuElement.style.visibility = 'hidden';
 						//Move hidden elements to bottom so there isn't a blank space
@@ -973,12 +976,10 @@
 					creatureMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					
-					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
-					
 				}
-
+				//move hidden elements to bottom so there isn't a blank space
+				nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 			}
 			else
 			{
