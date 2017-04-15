@@ -1902,6 +1902,12 @@
 
 			deselectAll();
 
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+
 			//var bsColossus = CardElement("http://magiccards.info/scans/en/mbs/99.jpg");
 		}
 		
