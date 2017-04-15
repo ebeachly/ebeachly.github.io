@@ -220,6 +220,7 @@
 		<button id="color sort button" onclick="colorSort()">Sort by Color</button>
 		<button id="type sort button" onclick="typeSort()">Sort by Type</button>
 		<button id="purpose sort button" onclick="purposeSort()">Sort by Purpose</button>
+		<button id="new game button" onclick="newGame()">New Game</button>
 		<button id="shuffle button" onclick="shuffle()">Shuffle</button>
 		<button id="sideboard button" onclick="toggleSideboard()">Sideboard</button>
 		<button id="add counter button" onclick="addCounter()">Add Counter</button>
@@ -691,8 +692,10 @@
 					selectedElements[i].style.left= parseInt(selectedElements[i].style.left) - parseInt(selector.style.left) + 'px';
 					selector.appendChild(selectedElements[i]);
 				}
+				document.getElementById("shuffle button").style.visibility = 'visible';
 				document.getElementById("stack button").style.visibility = 'visible';
 				document.getElementById("delete selection button").style.visibility = 'visible';
+				document.getElementById("new game button").style.visibility = 'hidden';
 				document.getElementById("cost sort button").style.visibility = 'hidden';
 				document.getElementById("color sort button").style.visibility = 'hidden';
 				document.getElementById("type sort button").style.visibility = 'hidden';
@@ -726,8 +729,10 @@
 			{
 				selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
 			}
+			document.getElementById("shuffle button").style.visibility = 'hidden';
 			document.getElementById("stack button").style.visibility = 'hidden';
 			document.getElementById("delete selection button").style.visibility = 'hidden';
+			document.getElementById("new game button").style.visibility = 'visible';
 			document.getElementById("cost sort button").style.visibility = 'visible';
 			document.getElementById("color sort button").style.visibility = 'visible';
 			document.getElementById("type sort button").style.visibility = 'visible';
@@ -1226,25 +1231,16 @@
 		{
 			var xOffset = 0;
 			var yOffset = 0;
+
 			//Are any cards selected?
 			var elementsToShuffle = document.getElementById('selector').getElementsByTagName('*');
-			//If there are no selected elements, shuffle everything on the playmat
-			if (elementsToShuffle.length == 0)
-			{
-				elementsToShuffle = document.getElementById('playmat').getElementsByTagName('*');
-				xOffset = 400;
-				yOffset = 700;
-				deleteAllCounters();
-				addCounter(parseInt(document.getElementById("starting life").value));
-				addCounter(parseInt(document.getElementById("starting life").value));
-			}
 
-			//Figure out which of the elements are non-commander cards
+			//Figure out which of the elements are cards
 			var cardsToShuffle = [];
 			var i = 0;
 			for (i = 0; i < elementsToShuffle.length; ++i)
 			{
-				if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true')
+				if (hasClass(elementsToShuffle[i], "card"))
 				{
 					cardsToShuffle.push(elementsToShuffle[i]);
 				}
@@ -1253,7 +1249,6 @@
 			//Shuffle the cards
 			var numCards = cardsToShuffle.length;
 			
-
 			for (i = 0; i < numCards; ++i)
 			{
 				//Select a card at random
@@ -1276,6 +1271,72 @@
 			document.body.style.width = document.body.scrollWidth + 'px';
 			document.body.style.height = document.body.scrollHeight + 'px';
 		}
+
+		function newGame()
+		{
+			//Get all the elements on the playmat
+			var elementsToShuffle = document.getElementById('playmat').getElementsByTagName('*');
+			var xOffset = 400;
+			var yOffset = 700;
+			deleteAllCounters();
+			addCounter(parseInt(document.getElementById("starting life").value));
+			addCounter(parseInt(document.getElementById("starting life").value));
+			
+			//Figure out which of the elements are non-commander cards
+			var cardsToShuffle = [];
+			var i = 0;
+			for (i = 0; i < elementsToShuffle.length; ++i)
+			{
+				if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true')
+				{
+					cardsToShuffle.push(elementsToShuffle[i]);
+				}
+			}
+
+			//Count how many cards we need to shuffle
+			var numCards = cardsToShuffle.length;
+
+			//Draw a hand of 7 cards
+			for (i = 0; i < 7 && i < numCards; ++i)
+			{
+				//Select a card at random
+				var index = Math.floor(Math.random() * cardsToShuffle.length);
+				//Reveal the card
+				cardsToShuffle[index].src = cardsToShuffle[index].getAttribute("front");
+				//Put it below the deck
+				cardsToShuffle[index].style.top = yOffset + cardsToShuffle + 222 + 10 + 'px';
+				cardsToShuffle[index].style.left = xOffset + i * 166 + 'px';
+				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				//Bring it in front of the other elements
+				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
+				//Remove it from the list of cards to be shuffled
+				cardsToShuffle.splice(index,1);
+			}
+
+			//Shuffle the remaining cards
+			for (; i < numCards; ++i)
+			{
+				//Select a card at random
+				var index = Math.floor(Math.random() * cardsToShuffle.length);
+				//Conceal the card
+				cardsToShuffle[index].src = document.getElementById("card sleeve image").value;
+				//Put it into the deck
+				cardsToShuffle[index].style.top = yOffset + i + 'px';
+				cardsToShuffle[index].style.left = xOffset + i + 'px';
+				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+				//Bring it in front of the other elements
+				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
+				//Remove it from the list of cards to be shuffled
+				cardsToShuffle.splice(index,1);
+			}
+
+			//Resize document to fit
+			document.body.style.width = '100%';
+			document.body.style.height = '100%';
+			document.body.style.width = document.body.scrollWidth + 'px';
+			document.body.style.height = document.body.scrollHeight + 'px';
+		}
+
 		function stack()
 		{
 			//Are any cards selected?
