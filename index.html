@@ -947,9 +947,7 @@
 				//Is this a creature, planeswalker, artifact, or enchantment
 				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
 				{
-					nonlandMenuElement.style.visibility = 'visible';
 					nonlandPermanentMenuElement.style.visibility = 'visible';
-					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 					nonlandPermanentMenuElement.parentNode.appendChild(nonlandPermanentMenuElement);
 					//Is this a creature?
 					if (document.getElementById('creature checkbox').checked)
