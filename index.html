@@ -280,8 +280,6 @@
 				&nbspCasting Cost:<br>
 				&nbsp<input type="text" id="casting cost input" value=""/><br>
 			</div>
-			<div id="nonland permanent menu">
-			</div>
 			<div id="creature menu">
 				&nbsp<label><input type="checkbox" id="commander checkbox" />Commander</label><br>
 			</div>
@@ -940,7 +938,6 @@
 		{
 			var landMenuElement = document.getElementById('land menu');
 			var nonlandMenuElement = document.getElementById('nonland menu');
-			var nonlandPermanentMenuElement = document.getElementById('nonland permanent menu');
 			var creatureMenuElement = document.getElementById('creature menu');
 			var commonDetailsMenuElement = document.getElementById('common details menu');
 			//Is this a land?
@@ -952,8 +949,6 @@
 				//Is this a creature, planeswalker, artifact, or enchantment
 				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
 				{
-					nonlandPermanentMenuElement.style.visibility = 'visible';
-					nonlandPermanentMenuElement.parentNode.appendChild(nonlandPermanentMenuElement);
 					//Is this a creature?
 					if (document.getElementById('creature checkbox').checked)
 					{
@@ -972,13 +967,11 @@
 				else
 				{
 					nonlandMenuElement.style.visibility = 'hidden';
-					nonlandPermanentMenuElement.style.visibility = 'hidden';
 					creatureMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 					
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					nonlandPermanentMenuElement.parentNode.appendChild(nonlandPermanentMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 					
 				}
@@ -992,9 +985,7 @@
 				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
 				{
 					nonlandMenuElement.style.visibility = 'visible';
-					nonlandPermanentMenuElement.style.visibility = 'visible';
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					nonlandPermanentMenuElement.parentNode.appendChild(nonlandPermanentMenuElement);
 					//Is this a creature?
 					if (document.getElementById('creature checkbox').checked)
 					{
@@ -1012,23 +1003,19 @@
 				else if (document.getElementById('sorcery checkbox').checked || document.getElementById('instant checkbox').checked)
 				{
 					nonlandMenuElement.style.visibility = 'visible';
-					nonlandPermanentMenuElement.style.visibility = 'hidden';
 					creatureMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					nonlandPermanentMenuElement.parentNode.appendChild(nonlandPermanentMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 				}
 				else
 				{
 					nonlandMenuElement.style.visibility = 'hidden';
-					nonlandPermanentMenuElement.style.visibility = 'hidden';
 					creatureMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					nonlandPermanentMenuElement.parentNode.appendChild(nonlandPermanentMenuElement);
 					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
 				}
 				landMenuElement.parentNode.appendChild(landMenuElement);
@@ -1336,6 +1323,18 @@
 			document.body.style.width = document.body.scrollWidth + 'px';
 			document.body.style.height = document.body.scrollHeight + 'px';
 		}
+
+		function toggleSideboard()
+		{
+			var sideboard = document.getElementById('sideboard');
+			if (sideboard.style.visibility == 'hidden')
+			{
+				sideboard.style.visibility = 'visible';
+			} else {
+				sideboard.style.visibility = 'hidden';
+			}
+		}
+
 
 		function stack()
 		{
