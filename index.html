@@ -1566,8 +1566,18 @@
 		function sortSideboard()
 		{
 			//Get all the elements in the sideboard
+			var elementsOnSideboard = document.getElementById('sideboard').getElementsByTagName('*');
+			
+			//Figure out which of the elements are cards
 			var cardsToSort = [];
-			cardsToSort = document.getElementById('sideboard').getElementsByTagName('*');
+			var i = 0;
+			for (i = 0; i < elementsOnSideboard.length; ++i)
+			{
+				if (hasClass(elementsOnSideboard[i], "card"))
+				{
+					cardsToSort.push(elementsOnSideboard[i]);
+				}
+			}
 
 			//Sort the cards by cost
 			cardsToSort.sort(
