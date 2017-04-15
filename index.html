@@ -633,11 +633,6 @@
 				}
 				hideSelector();
 				select = false;
-				//Set document size to extent of interior elements
-				document.body.style.width = '100%';
-				document.body.style.height = '100%';
-				document.body.style.width = document.body.scrollWidth + 'px';
-				document.body.style.height = document.body.scrollHeight + 'px';
 			//Else, if the user is currently trying to select things
 			} else if (select) {
 				var selector = document.getElementById("selector");
@@ -666,11 +661,6 @@
 					//If the user is selecting to the left, use green selection box
 					selector.className = "green_selector";
 				}
-				//Set document size to extent of interior elements
-				document.body.style.width = '100%';
-				document.body.style.height = '100%';
-				document.body.style.width = document.body.scrollWidth + 'px';
-				document.body.style.height = document.body.scrollHeight + 'px';
 			}
 			return false;
 		}
