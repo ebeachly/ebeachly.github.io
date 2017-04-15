@@ -1304,8 +1304,8 @@
 				//Reveal the card
 				cardsToShuffle[index].src = cardsToShuffle[index].getAttribute("front");
 				//Put it below the deck
-				cardsToShuffle[index].style.top = yOffset + cardsToShuffle + 222 + 10 + 'px';
-				cardsToShuffle[index].style.left = xOffset + i * 166 + 'px';
+				cardsToShuffle[index].style.top = yOffset + numCards + 222 + 10 + 'px';
+				cardsToShuffle[index].style.left = 10 + i * 166 + 'px';
 				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
 				//Bring it in front of the other elements
 				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
