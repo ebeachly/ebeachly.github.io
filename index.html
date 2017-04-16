@@ -219,17 +219,17 @@
 	<div id="main control panel" class="main_control_panel">
 		<input type="text" id="cardimageurl" value="Enter card image URL here" onclick="clearCardImageUrlEntry()"/>
 		<button id="add card button" onclick="addCard()">Add Card(s)</button>
-		<button id="stack button" onclick="stack()">Stack</button>
+		<button id="add counter button" onclick="addCounter()">Add Counter</button>
+		<button id="preferences button" onclick="togglePreferences()">Preferences</button>
+		<button id="sideboard button" onclick="toggleSideboard()">Sideboard</button>
 		<button id="cost sort button" onclick="costSort()">Sort by Cost</button>
 		<button id="color sort button" onclick="colorSort()">Sort by Color</button>
 		<button id="type sort button" onclick="typeSort()">Sort by Type</button>
 		<button id="purpose sort button" onclick="purposeSort()">Sort by Purpose</button>
 		<button id="new game button" onclick="newGame()">New Game</button>
+		<button id="select all button" onclick="selectAll()">Select All</button>
+		<button id="stack button" onclick="stack()">Stack</button>
 		<button id="shuffle button" onclick="shuffle()">Shuffle</button>
-		<button id="sideboard button" onclick="toggleSideboard()">Sideboard</button>
-		<button id="add counter button" onclick="addCounter()">Add Counter</button>
-		<button id="preferences button" onclick="togglePreferences()">Preferences</button>
-		<button id="help button" onclick="toggleHelp()">Help</button>
 		<button id="delete selection button" onclick="deleteSelection()">Delete</button>
 	</div>
 	<div id="playmat" class="playmat">
@@ -247,8 +247,6 @@
 		&nbsp<input type="number" id="starting life" value="20"/><br>
 		&nbspCard Sleeve Image URL:<br>
 		&nbsp<input type="text" id="card sleeve image" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/><br>
-		&nbspPlaymat Image URL:<br>
-		&nbsp<input type="text" id="playmat image" value=""/><br>
 	</div>
 
 	<div id="card info popup" class="card_info_popup">
@@ -305,7 +303,6 @@
 		var cardHeight = 296; //222
 		var nameHeight = 29; //22
 		
-
 		function toggleVisibility(element, displayType){
 			var style = window.getComputedStyle(element);
 			if(style.display == "none"){
@@ -319,10 +316,8 @@
 			var preferencesMenu = document.getElementById("preferences menu");
 			var startingLife = document.getElementById("starting life");
 			var cardSleeve = document.getElementById("card sleeve image");
-			var playmatImage = document.getElementById("playmat image");
 			startingLife.setAttribute("value", startingLife.value);
 			cardSleeve.setAttribute("value", cardSleeve.value);
-			playmatImage.setAttribute("value", playmatImage.value);
 			toggleVisibility(preferencesMenu);
 		}
 		
@@ -699,6 +694,21 @@
 			selector.style.height = '0px';
 		}
 
+		function selectAll() {
+			var playmat = document.getElementById('playmat');
+			var elementsOnMat = playmat.getElementsByTagName('*');
+			var selectedElements = [];
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				//Check that this is a top-level element
+				if (elementsOnMat[i].parentNode == playmat)
+				{
+					selectedElements.push(elementsOnMat[i]);
+				}
+			}
+			groupSelectedElements(selectedElements);
+		}
+
 		//Move all listed elements into the "selected" div, and add the 'selected' class
 		function groupSelectedElements(selectedElements) {
 			if (selectedElements.length > 0)
@@ -740,6 +750,7 @@
 				document.getElementById("color sort button").style.visibility = 'hidden';
 				document.getElementById("type sort button").style.visibility = 'hidden';
 				document.getElementById("purpose sort button").style.visibility = 'hidden';
+				document.getElementById("select all button").style.visibility = 'hidden';
 			}
 		}
 
@@ -777,6 +788,7 @@
 			document.getElementById("color sort button").style.visibility = 'visible';
 			document.getElementById("type sort button").style.visibility = 'visible';
 			document.getElementById("purpose sort button").style.visibility = 'visible';
+			document.getElementById("select all button").style.visibility = 'visible';
 		}
 
 		//Called whenever the mouse button goes up on the document
@@ -2118,6 +2130,8 @@
 			{
 				elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
 			}
+
+			deselectAll();
 		}
 
 
