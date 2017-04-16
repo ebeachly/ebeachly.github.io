@@ -81,12 +81,30 @@
 		}
 
 		.preferences_menu {
-			position: absolute; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
+			position: absolute;
 			left: 360px;
 			top: 25px;
 			padding: 10px;
 			display: none;
-			background-color: rgba(255,255,255,0.4);
+			background-color: rgb(121,121,121);
+			border: 1px solid black;
+			box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+		}
+
+		.confirmation_menu {
+			position: fixed;
+			text-align: center;
+			left: 50%;
+			top: 50%;
+			width: 200px;
+			margin-left: -100px;
+			height:100px;
+			margin-top: -50px;
+			padding: 10px;
+			display: none;
+			background-color: rgb(121,121,121);
 			border: 1px solid black;
 			box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 			-moz-border-radius: 5px;
@@ -97,6 +115,19 @@
 			position: absolute;
 			top:0;
 			right:0;
+		}
+
+		.label {
+			pointer-events: none;
+			position:absolute;
+			text-align: center;
+			text-decoration: none;
+			font-size: 28px;
+			font-family: sans-serif;
+			color: rgb(255,255,255);
+			top:200px;
+			left:100px;
+			width: 212px;
 		}
 
 		.playmat {
@@ -229,11 +260,11 @@
 		<button id="select all button" onclick="selectAll()">Select All</button>
 		<button id="stack button" onclick="stack()">Stack</button>
 		<button id="shuffle button" onclick="shuffle()">Shuffle</button>
-		<button id="delete selection button" onclick="deleteSelection()">Delete</button>
+		<button id="delete selection button" onclick="toggleDeleteConfirmationMenu()">Delete</button>
 	</div>
 	<div id="playmat" class="playmat">
-		
-	<img src="http://magiccards.info/scans/en/gpx/3.jpg" class="draggable card" name="Chrome Mox" purpose="Ramp" front="http://magiccards.info/scans/en/gpx/3.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 100px; left: 50px;"><img src="http://magiccards.info/scans/en/jvc/23.jpg" class="draggable card" name="Daze" purpose="Counter" front="http://magiccards.info/scans/en/jvc/23.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 129px; left: 50px;"><img src="http://magiccards.info/scans/en/ema/49.jpg" class="draggable card" name="Force of Will" purpose="Counter" front="http://magiccards.info/scans/en/ema/49.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 158px; left: 50px;"><img src="http://magiccards.info/scans/en/fnmp/151.jpg" class="draggable card" name="Gitaxian Probe" purpose="Information" front="http://magiccards.info/scans/en/fnmp/151.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 187px; left: 50px;"><img src="http://magiccards.info/scans/en/nph/38.jpg" class="draggable card" name="Mental Misstep" purpose="Counter" front="http://magiccards.info/scans/en/nph/38.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 216px; left: 50px;"><img src="http://magiccards.info/scans/en/fvr/10.jpg" class="draggable card" name="Mox Diamond" purpose="Ramp" front="http://magiccards.info/scans/en/fvr/10.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 245px; left: 50px;"><img src="http://magiccards.info/scans/en/v16/14.jpg" class="draggable card" name="Umezawa's Jitte" purpose="Beats" front="http://magiccards.info/scans/en/v16/14.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="2" commander="false" mana_production_bitvector="0" style="top: 274px; left: 50px;"><img src="http://magiccards.info/scans/en/mpskld/28.jpg" class="draggable card" name="Sword of Feast and Famine" purpose="Protection" front="http://magiccards.info/scans/en/mpskld/28.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="3" commander="false" mana_production_bitvector="0" style="top: 303px; left: 50px;"><img src="http://magiccards.info/scans/en/mpskld/29.jpg" class="draggable card" name="Sword of Fire and Ice" purpose="Protection" front="http://magiccards.info/scans/en/mpskld/29.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="3" commander="false" mana_production_bitvector="0" style="top: 332px; left: 50px;"><img src="http://magiccards.info/scans/en/ema/9.jpg" class="draggable card" name="Enlightened Tutor" purpose="Card Selection" front="http://magiccards.info/scans/en/ema/9.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 100px; left: 272px;"><img src="http://magiccards.info/scans/en/pc/25.jpg" class="draggable card" name="Mana Tithe" purpose="Counter" front="http://magiccards.info/scans/en/pc/25.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 129px; left: 272px;"><img src="http://magiccards.info/scans/en/ddo/20.jpg" class="draggable card" name="Mother of Runes" purpose="Protection" front="http://magiccards.info/scans/en/ddo/20.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 158px; left: 272px;"><img src="http://magiccards.info/scans/en/ddp/7.jpg" class="draggable card" name="Oust" purpose="Removal" front="http://magiccards.info/scans/en/ddp/7.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 187px; left: 272px;"><img src="http://magiccards.info/scans/en/5dn/19.jpg" class="draggable card" name="Steelshaper's Gift" purpose="Protection" front="http://magiccards.info/scans/en/5dn/19.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 216px; left: 272px;"><img src="http://magiccards.info/scans/en/pc/31.jpg" class="draggable card" name="Sunlance" purpose="Removal" front="http://magiccards.info/scans/en/pc/31.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 245px; left: 272px;"><img src="http://magiccards.info/scans/en/ddf/22.jpg" class="draggable card" name="Swords to Plowshares" purpose="Removal" front="http://magiccards.info/scans/en/ddf/22.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 274px; left: 272px;"><img src="http://magiccards.info/scans/en/vi/123.jpg" class="draggable card" name="Tithe" purpose="Card Selection" front="http://magiccards.info/scans/en/vi/123.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 303px; left: 272px;"><img src="http://magiccards.info/scans/en/mm2/11.jpg" class="draggable card" name="Celestial Purge" purpose="Removal" front="http://magiccards.info/scans/en/mm2/11.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 332px; left: 272px;"><img src="http://magiccards.info/scans/en/m14/22.jpg" class="draggable card" name="Imposing Sovereign" purpose="Removal" front="http://magiccards.info/scans/en/m14/22.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 361px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/14.jpg" class="draggable card" name="Journey to Nowhere" purpose="Removal" front="http://magiccards.info/scans/en/zen/14.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 390px; left: 272px;"><img src="http://magiccards.info/scans/en/ori/21.jpg" class="draggable card" name="Knight of the White Orchid" purpose="Ramp" front="http://magiccards.info/scans/en/ori/21.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="WW" commander="false" mana_production_bitvector="0" style="top: 419px; left: 272px;"><img src="http://magiccards.info/scans/en/wwk/20.jpg" class="draggable card" name="Stoneforge Mystic" purpose="Protection" front="http://magiccards.info/scans/en/wwk/20.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 448px; left: 272px;"><img src="http://magiccards.info/scans/en/fnmp/179.jpg" class="draggable card" name="Suspension Field" purpose="Removal" front="http://magiccards.info/scans/en/fnmp/179.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 477px; left: 272px;"><img src="http://magiccards.info/scans/en/ema/33.jpg" class="draggable card" name="Unexpectedly Absent" purpose="Removal" front="http://magiccards.info/scans/en/ema/33.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="WW" commander="false" mana_production_bitvector="0" style="top: 506px; left: 272px;"><img src="http://magiccards.info/scans/en/cns/16.jpg" class="draggable card" name="Council's Judgment" purpose="Removal" front="http://magiccards.info/scans/en/cns/16.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="1WW" commander="false" mana_production_bitvector="0" style="top: 535px; left: 272px;"><img src="http://magiccards.info/scans/en/ddg/34.jpg" class="draggable card" name="Oblivion Ring" purpose="Removal" front="http://magiccards.info/scans/en/ddg/34.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="2W" commander="false" mana_production_bitvector="0" style="top: 564px; left: 272px;"><img src="http://magiccards.info/scans/en/v14/1.jpg" class="draggable card" name="Armageddon" purpose="MLD" front="http://magiccards.info/scans/en/v14/1.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="3W" commander="false" mana_production_bitvector="0" style="top: 593px; left: 272px;"><img src="http://magiccards.info/scans/en/v14/3.jpg" class="draggable card" name="Cataclysm" purpose="MLD" front="http://magiccards.info/scans/en/v14/3.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="2WW" commander="false" mana_production_bitvector="0" style="top: 622px; left: 272px;"><img src="http://magiccards.info/scans/en/ala/9.jpg" class="draggable card" name="Elspeth, Knight-Errant" purpose="Protection" front="http://magiccards.info/scans/en/ala/9.jpg" back="" land="false" creature="false" planeswalker="true" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="2WW" commander="false" mana_production_bitvector="0" style="top: 651px; left: 272px;"><img src="http://magiccards.info/scans/en/ne/17.jpg" class="draggable card" name="Parallax Wave" purpose="Removal" front="http://magiccards.info/scans/en/ne/17.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="2WW" commander="false" mana_production_bitvector="0" style="top: 680px; left: 272px;"><img src="http://magiccards.info/scans/en/ts/48.jpg" class="draggable card" name="Ancestral Vision" purpose="Card Selection" front="http://magiccards.info/scans/en/ts/48.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 100px; left: 494px;"><img src="http://magiccards.info/scans/en/cmd/40.jpg" class="draggable card" name="Brainstorm" purpose="Card Selection" front="http://magiccards.info/scans/en/cmd/40.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 129px; left: 494px;"><img src="http://magiccards.info/scans/en/in/51.jpg" class="draggable card" name="Disrupt" purpose="Counter" front="http://magiccards.info/scans/en/in/51.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 158px; left: 494px;"><img src="http://magiccards.info/scans/en/fnmp/91.jpg" class="draggable card" name="Force Spike" purpose="Counter" front="http://magiccards.info/scans/en/fnmp/91.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 187px; left: 494px;"><img src="http://magiccards.info/scans/en/m10/68.jpg" class="draggable card" name="Ponder" purpose="Card Selection" front="http://magiccards.info/scans/en/m10/68.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 216px; left: 494px;"><img src="http://magiccards.info/scans/en/m11/70.jpg" class="draggable card" name="Preordain" purpose="Card Selection" front="http://magiccards.info/scans/en/m11/70.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 245px; left: 494px;"><img src="http://magiccards.info/scans/en/cn2/120.jpg" class="draggable card" name="Serum Visions" purpose="Card Selection" front="http://magiccards.info/scans/en/cn2/120.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 274px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/67.jpg" class="draggable card" name="Spell Pierce" purpose="Counter" front="http://magiccards.info/scans/en/zen/67.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 303px; left: 494px;"><img src="http://magiccards.info/scans/en/mma/64.jpg" class="draggable card" name="Spell Snare" purpose="Counter" front="http://magiccards.info/scans/en/mma/64.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 332px; left: 494px;"><img src="http://magiccards.info/scans/en/cns/108.jpg" class="draggable card" name="Stifle" purpose="Stifle" front="http://magiccards.info/scans/en/cns/108.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 361px; left: 494px;"><img src="http://magiccards.info/scans/en/jvc/24.jpg" class="draggable card" name="Counterspell" purpose="Counter" front="http://magiccards.info/scans/en/jvc/24.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="UU" commander="false" mana_production_bitvector="0" style="top: 390px; left: 494px;"><img src="http://magiccards.info/scans/en/fut/35.jpg" class="draggable card" name="Delay" purpose="Counter" front="http://magiccards.info/scans/en/fut/35.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 419px; left: 494px;"><img src="http://magiccards.info/scans/en/ori/60a.jpg" class="draggable card" name="Jace, Vryn's Prodigy" purpose="Card Selection" front="http://magiccards.info/scans/en/ori/60a.jpg" back="http://magiccards.info/scans/en/ori/60b.jpg" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 448px; left: 494px;"><img src="http://magiccards.info/scans/en/ts/66.jpg" class="draggable card" name="Looter il-Kor" purpose="Card Selection" front="http://magiccards.info/scans/en/ts/66.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 477px; left: 494px;"><img src="http://magiccards.info/scans/en/m11/62.jpg" class="draggable card" name="Mana Leak" purpose="Counter" front="http://magiccards.info/scans/en/m11/62.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 506px; left: 494px;"><img src="http://magiccards.info/scans/en/ddm/24.jpg" class="draggable card" name="Memory Lapse" purpose="Counter" front="http://magiccards.info/scans/en/ddm/24.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 535px; left: 494px;"><img src="http://magiccards.info/scans/en/ul/36.jpg" class="draggable card" name="Miscalculation" purpose="Counter" front="http://magiccards.info/scans/en/ul/36.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 564px; left: 494px;"><img src="http://magiccards.info/scans/en/soi/81.jpg" class="draggable card" name="Rattlechains" purpose="Beats" front="http://magiccards.info/scans/en/soi/81.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 593px; left: 494px;"><img src="http://magiccards.info/scans/en/rav/63.jpg" class="draggable card" name="Remand" purpose="Counter" front="http://magiccards.info/scans/en/rav/63.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 622px; left: 494px;"><img src="http://magiccards.info/scans/en/isd/78.jpg" class="draggable card" name="Snapcaster Mage" purpose="Card Selection" front="http://magiccards.info/scans/en/isd/78.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 651px; left: 494px;"><img src="http://magiccards.info/scans/en/10e/111.jpg" class="draggable card" name="Spiketail Hatchling" purpose="Counter" front="http://magiccards.info/scans/en/10e/111.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 680px; left: 494px;"><img src="http://magiccards.info/scans/en/ts/88.jpg" class="draggable card" name="Trickbind" purpose="Stifle" front="http://magiccards.info/scans/en/ts/88.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 709px; left: 494px;"><img src="http://magiccards.info/scans/en/mt/55.jpg" class="draggable card" name="Vendilion Clique" purpose="Beats" front="http://magiccards.info/scans/en/mt/55.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1UU" commander="false" mana_production_bitvector="0" style="top: 738px; left: 494px;"><img src="http://magiccards.info/scans/en/ema/57.jpg" class="draggable card" name="Jace, the Mind Sculptor" purpose="Removal" front="http://magiccards.info/scans/en/ema/57.jpg" back="" land="false" creature="false" planeswalker="true" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="2UU" commander="false" mana_production_bitvector="0" style="top: 767px; left: 494px;"><img src="http://magiccards.info/scans/en/jr/26.jpg" class="draggable card" name="Meddling Mage" purpose="Counter" front="http://magiccards.info/scans/en/jr/26.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="WU" commander="false" mana_production_bitvector="0" style="top: 100px; left: 716px;"><img src="http://magiccards.info/scans/en/rtr/155.jpg" class="draggable card" name="Detention Sphere" purpose="Removal" front="http://magiccards.info/scans/en/rtr/155.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="1WU" commander="false" mana_production_bitvector="0" style="top: 129px; left: 716px;"><img src="http://magiccards.info/scans/en/wmcq/2.jpg" class="draggable card" name="Geist of Saint Traft" purpose="Beats" front="http://magiccards.info/scans/en/wmcq/2.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1WU" commander="true" mana_production_bitvector="0" style="top: 158px; left: 716px;"><img src="http://magiccards.info/scans/en/ogw/157.jpg" class="draggable card" name="Reflector Mage" purpose="Removal" front="http://magiccards.info/scans/en/ogw/157.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1WU" commander="false" mana_production_bitvector="0" style="top: 187px; left: 716px;"><img src="http://magiccards.info/scans/en/emn/189.jpg" class="draggable card" name="Spell Queller" purpose="Counter" front="http://magiccards.info/scans/en/emn/189.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1WU" commander="false" mana_production_bitvector="0" style="top: 216px; left: 716px;"><img src="http://magiccards.info/scans/en/avr/226.jpg" class="draggable card" name="Cavern of Souls" purpose="Protection" front="http://magiccards.info/scans/en/avr/226.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="32" style="top: 1092px; left: 50px;"><img src="http://magiccards.info/scans/en/ts/274.jpg" class="draggable card" name="Gemstone Caverns" purpose="Ramp" front="http://magiccards.info/scans/en/ts/274.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="32" style="top: 1121px; left: 50px;"><img src="http://magiccards.info/scans/en/ema/248.jpg" class="draggable card" name="Wasteland" purpose="" front="http://magiccards.info/scans/en/ema/248.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="32" style="top: 1150px; left: 50px;"><img src="http://magiccards.info/scans/en/ts/272.jpg" class="draggable card" name="Flagstones of Trokair" purpose="" front="http://magiccards.info/scans/en/ts/272.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1092px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1121px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1150px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1179px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1208px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1237px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1266px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1295px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1324px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1092px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1121px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1150px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1179px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1208px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1237px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1266px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1295px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1324px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1353px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1382px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1411px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1440px; left: 494px;"><img src="http://magiccards.info/scans/en/ddf/74.jpg" class="draggable card" name="Seat of the Synod" purpose="" front="http://magiccards.info/scans/en/ddf/74.jpg" back="" land="true" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1469px; left: 494px;"><img src="http://magiccards.info/scans/en/10e/347.jpg" class="draggable card" name="Adarkar Wastes" purpose="" front="http://magiccards.info/scans/en/10e/347.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1092px; left: 716px;"><img src="http://magiccards.info/scans/en/zen/211.jpg" class="draggable card" name="Arid Mesa" purpose="" front="http://magiccards.info/scans/en/zen/211.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1121px; left: 716px;"><img src="http://magiccards.info/scans/en/mma/221.jpg" class="draggable card" name="City of Brass" purpose="" front="http://magiccards.info/scans/en/mma/221.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1150px; left: 716px;"><img src="http://magiccards.info/scans/en/cmd/269.jpg" class="draggable card" name="Command Tower" purpose="" front="http://magiccards.info/scans/en/cmd/269.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1179px; left: 716px;"><img src="http://magiccards.info/scans/en/ktk/233.jpg" class="draggable card" name="Flooded Strand" purpose="" front="http://magiccards.info/scans/en/ktk/233.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1208px; left: 716px;"><img src="http://magiccards.info/scans/en/m13/225.jpg" class="draggable card" name="Glacial Fortress" purpose="" front="http://magiccards.info/scans/en/m13/225.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1237px; left: 716px;"><img src="http://magiccards.info/scans/en/di/174.jpg" class="draggable card" name="Hallowed Fountain" purpose="" front="http://magiccards.info/scans/en/di/174.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1266px; left: 716px;"><img src="http://magiccards.info/scans/en/jou/163.jpg" class="draggable card" name="Mana Confluence" purpose="" front="http://magiccards.info/scans/en/jou/163.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1295px; left: 716px;"><img src="http://magiccards.info/scans/en/zen/219.jpg" class="draggable card" name="Marsh Flats" purpose="" front="http://magiccards.info/scans/en/zen/219.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1324px; left: 716px;"><img src="http://magiccards.info/scans/en/ktk/239.jpg" class="draggable card" name="Polluted Delta" purpose="" front="http://magiccards.info/scans/en/ktk/239.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1353px; left: 716px;"><img src="http://magiccards.info/scans/en/zen/223.jpg" class="draggable card" name="Scalding Tarn" purpose="" front="http://magiccards.info/scans/en/zen/223.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1382px; left: 716px;"><img src="http://magiccards.info/scans/en/som/229.jpg" class="draggable card" name="Seachrome Coast" purpose="" front="http://magiccards.info/scans/en/som/229.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1411px; left: 716px;"><img src="http://magiccards.info/scans/en/vma/322.jpg" class="draggable card" name="Tundra" purpose="" front="http://magiccards.info/scans/en/vma/322.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1440px; left: 716px;"><img src="http://magiccards.info/scans/en/ktk/248.jpg" class="draggable card" name="Windswept Heath" purpose="" front="http://magiccards.info/scans/en/ktk/248.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1469px; left: 716px;"></div>
+	<div id="label" class="label"></div>
+	<img src="http://magiccards.info/scans/en/gpx/3.jpg" class="draggable card" name="Chrome Mox" purpose="Ramp" front="http://magiccards.info/scans/en/gpx/3.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 100px; left: 50px;"><img src="http://magiccards.info/scans/en/jvc/23.jpg" class="draggable card" name="Daze" purpose="Counter" front="http://magiccards.info/scans/en/jvc/23.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 129px; left: 50px;"><img src="http://magiccards.info/scans/en/ema/49.jpg" class="draggable card" name="Force of Will" purpose="Counter" front="http://magiccards.info/scans/en/ema/49.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 158px; left: 50px;"><img src="http://magiccards.info/scans/en/fnmp/151.jpg" class="draggable card" name="Gitaxian Probe" purpose="Information" front="http://magiccards.info/scans/en/fnmp/151.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 187px; left: 50px;"><img src="http://magiccards.info/scans/en/nph/38.jpg" class="draggable card" name="Mental Misstep" purpose="Counter" front="http://magiccards.info/scans/en/nph/38.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 216px; left: 50px;"><img src="http://magiccards.info/scans/en/fvr/10.jpg" class="draggable card" name="Mox Diamond" purpose="Ramp" front="http://magiccards.info/scans/en/fvr/10.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="0" commander="false" mana_production_bitvector="0" style="top: 245px; left: 50px;"><img src="http://magiccards.info/scans/en/v16/14.jpg" class="draggable card" name="Umezawa's Jitte" purpose="Beats" front="http://magiccards.info/scans/en/v16/14.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="2" commander="false" mana_production_bitvector="0" style="top: 274px; left: 50px;"><img src="http://magiccards.info/scans/en/mpskld/28.jpg" class="draggable card" name="Sword of Feast and Famine" purpose="Protection" front="http://magiccards.info/scans/en/mpskld/28.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="3" commander="false" mana_production_bitvector="0" style="top: 303px; left: 50px;"><img src="http://magiccards.info/scans/en/mpskld/29.jpg" class="draggable card" name="Sword of Fire and Ice" purpose="Protection" front="http://magiccards.info/scans/en/mpskld/29.jpg" back="" land="false" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="3" commander="false" mana_production_bitvector="0" style="top: 332px; left: 50px;"><img src="http://magiccards.info/scans/en/ema/9.jpg" class="draggable card" name="Enlightened Tutor" purpose="Card Selection" front="http://magiccards.info/scans/en/ema/9.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 100px; left: 272px;"><img src="http://magiccards.info/scans/en/pc/25.jpg" class="draggable card" name="Mana Tithe" purpose="Counter" front="http://magiccards.info/scans/en/pc/25.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 129px; left: 272px;"><img src="http://magiccards.info/scans/en/ddo/20.jpg" class="draggable card" name="Mother of Runes" purpose="Protection" front="http://magiccards.info/scans/en/ddo/20.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 158px; left: 272px;"><img src="http://magiccards.info/scans/en/ddp/7.jpg" class="draggable card" name="Oust" purpose="Removal" front="http://magiccards.info/scans/en/ddp/7.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 187px; left: 272px;"><img src="http://magiccards.info/scans/en/5dn/19.jpg" class="draggable card" name="Steelshaper's Gift" purpose="Protection" front="http://magiccards.info/scans/en/5dn/19.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 216px; left: 272px;"><img src="http://magiccards.info/scans/en/pc/31.jpg" class="draggable card" name="Sunlance" purpose="Removal" front="http://magiccards.info/scans/en/pc/31.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 245px; left: 272px;"><img src="http://magiccards.info/scans/en/ddf/22.jpg" class="draggable card" name="Swords to Plowshares" purpose="Removal" front="http://magiccards.info/scans/en/ddf/22.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 274px; left: 272px;"><img src="http://magiccards.info/scans/en/vi/123.jpg" class="draggable card" name="Tithe" purpose="Card Selection" front="http://magiccards.info/scans/en/vi/123.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="W" commander="false" mana_production_bitvector="0" style="top: 303px; left: 272px;"><img src="http://magiccards.info/scans/en/mm2/11.jpg" class="draggable card" name="Celestial Purge" purpose="Removal" front="http://magiccards.info/scans/en/mm2/11.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 332px; left: 272px;"><img src="http://magiccards.info/scans/en/m14/22.jpg" class="draggable card" name="Imposing Sovereign" purpose="Removal" front="http://magiccards.info/scans/en/m14/22.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 361px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/14.jpg" class="draggable card" name="Journey to Nowhere" purpose="Removal" front="http://magiccards.info/scans/en/zen/14.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 390px; left: 272px;"><img src="http://magiccards.info/scans/en/ori/21.jpg" class="draggable card" name="Knight of the White Orchid" purpose="Ramp" front="http://magiccards.info/scans/en/ori/21.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="WW" commander="false" mana_production_bitvector="0" style="top: 419px; left: 272px;"><img src="http://magiccards.info/scans/en/wwk/20.jpg" class="draggable card" name="Stoneforge Mystic" purpose="Protection" front="http://magiccards.info/scans/en/wwk/20.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 448px; left: 272px;"><img src="http://magiccards.info/scans/en/fnmp/179.jpg" class="draggable card" name="Suspension Field" purpose="Removal" front="http://magiccards.info/scans/en/fnmp/179.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="1W" commander="false" mana_production_bitvector="0" style="top: 477px; left: 272px;"><img src="http://magiccards.info/scans/en/ema/33.jpg" class="draggable card" name="Unexpectedly Absent" purpose="Removal" front="http://magiccards.info/scans/en/ema/33.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="WW" commander="false" mana_production_bitvector="0" style="top: 506px; left: 272px;"><img src="http://magiccards.info/scans/en/cns/16.jpg" class="draggable card" name="Council's Judgment" purpose="Removal" front="http://magiccards.info/scans/en/cns/16.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="1WW" commander="false" mana_production_bitvector="0" style="top: 535px; left: 272px;"><img src="http://magiccards.info/scans/en/ddg/34.jpg" class="draggable card" name="Oblivion Ring" purpose="Removal" front="http://magiccards.info/scans/en/ddg/34.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="2W" commander="false" mana_production_bitvector="0" style="top: 564px; left: 272px;"><img src="http://magiccards.info/scans/en/v14/1.jpg" class="draggable card" name="Armageddon" purpose="MLD" front="http://magiccards.info/scans/en/v14/1.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="3W" commander="false" mana_production_bitvector="0" style="top: 593px; left: 272px;"><img src="http://magiccards.info/scans/en/v14/3.jpg" class="draggable card" name="Cataclysm" purpose="MLD" front="http://magiccards.info/scans/en/v14/3.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="2WW" commander="false" mana_production_bitvector="0" style="top: 622px; left: 272px;"><img src="http://magiccards.info/scans/en/ala/9.jpg" class="draggable card" name="Elspeth, Knight-Errant" purpose="Protection" front="http://magiccards.info/scans/en/ala/9.jpg" back="" land="false" creature="false" planeswalker="true" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="2WW" commander="false" mana_production_bitvector="0" style="top: 651px; left: 272px;"><img src="http://magiccards.info/scans/en/ne/17.jpg" class="draggable card" name="Parallax Wave" purpose="Removal" front="http://magiccards.info/scans/en/ne/17.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="2WW" commander="false" mana_production_bitvector="0" style="top: 680px; left: 272px;"><img src="http://magiccards.info/scans/en/ts/48.jpg" class="draggable card" name="Ancestral Vision" purpose="Card Selection" front="http://magiccards.info/scans/en/ts/48.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 100px; left: 494px;"><img src="http://magiccards.info/scans/en/cmd/40.jpg" class="draggable card" name="Brainstorm" purpose="Card Selection" front="http://magiccards.info/scans/en/cmd/40.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 129px; left: 494px;"><img src="http://magiccards.info/scans/en/in/51.jpg" class="draggable card" name="Disrupt" purpose="Counter" front="http://magiccards.info/scans/en/in/51.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 158px; left: 494px;"><img src="http://magiccards.info/scans/en/fnmp/91.jpg" class="draggable card" name="Force Spike" purpose="Counter" front="http://magiccards.info/scans/en/fnmp/91.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 187px; left: 494px;"><img src="http://magiccards.info/scans/en/m10/68.jpg" class="draggable card" name="Ponder" purpose="Card Selection" front="http://magiccards.info/scans/en/m10/68.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 216px; left: 494px;"><img src="http://magiccards.info/scans/en/m11/70.jpg" class="draggable card" name="Preordain" purpose="Card Selection" front="http://magiccards.info/scans/en/m11/70.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 245px; left: 494px;"><img src="http://magiccards.info/scans/en/cn2/120.jpg" class="draggable card" name="Serum Visions" purpose="Card Selection" front="http://magiccards.info/scans/en/cn2/120.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="true" instant="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 274px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/67.jpg" class="draggable card" name="Spell Pierce" purpose="Counter" front="http://magiccards.info/scans/en/zen/67.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 303px; left: 494px;"><img src="http://magiccards.info/scans/en/mma/64.jpg" class="draggable card" name="Spell Snare" purpose="Counter" front="http://magiccards.info/scans/en/mma/64.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 332px; left: 494px;"><img src="http://magiccards.info/scans/en/cns/108.jpg" class="draggable card" name="Stifle" purpose="Stifle" front="http://magiccards.info/scans/en/cns/108.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 361px; left: 494px;"><img src="http://magiccards.info/scans/en/jvc/24.jpg" class="draggable card" name="Counterspell" purpose="Counter" front="http://magiccards.info/scans/en/jvc/24.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="UU" commander="false" mana_production_bitvector="0" style="top: 390px; left: 494px;"><img src="http://magiccards.info/scans/en/fut/35.jpg" class="draggable card" name="Delay" purpose="Counter" front="http://magiccards.info/scans/en/fut/35.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 419px; left: 494px;"><img src="http://magiccards.info/scans/en/ori/60a.jpg" class="draggable card" name="Jace, Vryn's Prodigy" purpose="Card Selection" front="http://magiccards.info/scans/en/ori/60a.jpg" back="http://magiccards.info/scans/en/ori/60b.jpg" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 448px; left: 494px;"><img src="http://magiccards.info/scans/en/ts/66.jpg" class="draggable card" name="Looter il-Kor" purpose="Card Selection" front="http://magiccards.info/scans/en/ts/66.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 477px; left: 494px;"><img src="http://magiccards.info/scans/en/m11/62.jpg" class="draggable card" name="Mana Leak" purpose="Counter" front="http://magiccards.info/scans/en/m11/62.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 506px; left: 494px;"><img src="http://magiccards.info/scans/en/ddm/24.jpg" class="draggable card" name="Memory Lapse" purpose="Counter" front="http://magiccards.info/scans/en/ddm/24.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 535px; left: 494px;"><img src="http://magiccards.info/scans/en/ul/36.jpg" class="draggable card" name="Miscalculation" purpose="Counter" front="http://magiccards.info/scans/en/ul/36.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 564px; left: 494px;"><img src="http://magiccards.info/scans/en/soi/81.jpg" class="draggable card" name="Rattlechains" purpose="Beats" front="http://magiccards.info/scans/en/soi/81.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 593px; left: 494px;"><img src="http://magiccards.info/scans/en/rav/63.jpg" class="draggable card" name="Remand" purpose="Counter" front="http://magiccards.info/scans/en/rav/63.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 622px; left: 494px;"><img src="http://magiccards.info/scans/en/isd/78.jpg" class="draggable card" name="Snapcaster Mage" purpose="Card Selection" front="http://magiccards.info/scans/en/isd/78.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 651px; left: 494px;"><img src="http://magiccards.info/scans/en/10e/111.jpg" class="draggable card" name="Spiketail Hatchling" purpose="Counter" front="http://magiccards.info/scans/en/10e/111.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 680px; left: 494px;"><img src="http://magiccards.info/scans/en/ts/88.jpg" class="draggable card" name="Trickbind" purpose="Stifle" front="http://magiccards.info/scans/en/ts/88.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" casting_cost="1U" commander="false" mana_production_bitvector="0" style="top: 709px; left: 494px;"><img src="http://magiccards.info/scans/en/mt/55.jpg" class="draggable card" name="Vendilion Clique" purpose="Beats" front="http://magiccards.info/scans/en/mt/55.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1UU" commander="false" mana_production_bitvector="0" style="top: 738px; left: 494px;"><img src="http://magiccards.info/scans/en/ema/57.jpg" class="draggable card" name="Jace, the Mind Sculptor" purpose="Removal" front="http://magiccards.info/scans/en/ema/57.jpg" back="" land="false" creature="false" planeswalker="true" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="2UU" commander="false" mana_production_bitvector="0" style="top: 767px; left: 494px;"><img src="http://magiccards.info/scans/en/jr/26.jpg" class="draggable card" name="Meddling Mage" purpose="Counter" front="http://magiccards.info/scans/en/jr/26.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="WU" commander="false" mana_production_bitvector="0" style="top: 100px; left: 716px;"><img src="http://magiccards.info/scans/en/rtr/155.jpg" class="draggable card" name="Detention Sphere" purpose="Removal" front="http://magiccards.info/scans/en/rtr/155.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="true" sorcery="false" instant="false" casting_cost="1WU" commander="false" mana_production_bitvector="0" style="top: 129px; left: 716px;"><img src="http://magiccards.info/scans/en/wmcq/2.jpg" class="draggable card" name="Geist of Saint Traft" purpose="Beats" front="http://magiccards.info/scans/en/wmcq/2.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1WU" commander="true" mana_production_bitvector="0" style="top: 158px; left: 716px;"><img src="http://magiccards.info/scans/en/ogw/157.jpg" class="draggable card" name="Reflector Mage" purpose="Removal" front="http://magiccards.info/scans/en/ogw/157.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1WU" commander="false" mana_production_bitvector="0" style="top: 187px; left: 716px;"><img src="http://magiccards.info/scans/en/emn/189.jpg" class="draggable card" name="Spell Queller" purpose="Counter" front="http://magiccards.info/scans/en/emn/189.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="1WU" commander="false" mana_production_bitvector="0" style="top: 216px; left: 716px;"><img src="http://magiccards.info/scans/en/avr/226.jpg" class="draggable card" name="Cavern of Souls" purpose="Protection" front="http://magiccards.info/scans/en/avr/226.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="32" style="top: 1092px; left: 50px;"><img src="http://magiccards.info/scans/en/ts/274.jpg" class="draggable card" name="Gemstone Caverns" purpose="Ramp" front="http://magiccards.info/scans/en/ts/274.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="32" style="top: 1121px; left: 50px;"><img src="http://magiccards.info/scans/en/ema/248.jpg" class="draggable card" name="Wasteland" purpose="" front="http://magiccards.info/scans/en/ema/248.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="32" style="top: 1150px; left: 50px;"><img src="http://magiccards.info/scans/en/ts/272.jpg" class="draggable card" name="Flagstones of Trokair" purpose="" front="http://magiccards.info/scans/en/ts/272.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1092px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1121px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1150px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1179px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1208px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1237px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1266px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1295px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/232.jpg" class="draggable card" name="Plains" purpose="" front="http://magiccards.info/scans/en/zen/232.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="1" style="top: 1324px; left: 272px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1092px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1121px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1150px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1179px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1208px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1237px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1266px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1295px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1324px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1353px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1382px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1411px; left: 494px;"><img src="http://magiccards.info/scans/en/zen/236.jpg" class="draggable card" name="Island" purpose="" front="http://magiccards.info/scans/en/zen/236.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1440px; left: 494px;"><img src="http://magiccards.info/scans/en/ddf/74.jpg" class="draggable card" name="Seat of the Synod" purpose="" front="http://magiccards.info/scans/en/ddf/74.jpg" back="" land="true" creature="false" planeswalker="false" artifact="true" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="2" style="top: 1469px; left: 494px;"><img src="http://magiccards.info/scans/en/10e/347.jpg" class="draggable card" name="Adarkar Wastes" purpose="" front="http://magiccards.info/scans/en/10e/347.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1092px; left: 716px;"><img src="http://magiccards.info/scans/en/zen/211.jpg" class="draggable card" name="Arid Mesa" purpose="" front="http://magiccards.info/scans/en/zen/211.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1121px; left: 716px;"><img src="http://magiccards.info/scans/en/mma/221.jpg" class="draggable card" name="City of Brass" purpose="" front="http://magiccards.info/scans/en/mma/221.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1150px; left: 716px;"><img src="http://magiccards.info/scans/en/cmd/269.jpg" class="draggable card" name="Command Tower" purpose="" front="http://magiccards.info/scans/en/cmd/269.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1179px; left: 716px;"><img src="http://magiccards.info/scans/en/ktk/233.jpg" class="draggable card" name="Flooded Strand" purpose="" front="http://magiccards.info/scans/en/ktk/233.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1208px; left: 716px;"><img src="http://magiccards.info/scans/en/m13/225.jpg" class="draggable card" name="Glacial Fortress" purpose="" front="http://magiccards.info/scans/en/m13/225.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1237px; left: 716px;"><img src="http://magiccards.info/scans/en/di/174.jpg" class="draggable card" name="Hallowed Fountain" purpose="" front="http://magiccards.info/scans/en/di/174.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1266px; left: 716px;"><img src="http://magiccards.info/scans/en/jou/163.jpg" class="draggable card" name="Mana Confluence" purpose="" front="http://magiccards.info/scans/en/jou/163.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1295px; left: 716px;"><img src="http://magiccards.info/scans/en/zen/219.jpg" class="draggable card" name="Marsh Flats" purpose="" front="http://magiccards.info/scans/en/zen/219.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1324px; left: 716px;"><img src="http://magiccards.info/scans/en/ktk/239.jpg" class="draggable card" name="Polluted Delta" purpose="" front="http://magiccards.info/scans/en/ktk/239.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1353px; left: 716px;"><img src="http://magiccards.info/scans/en/zen/223.jpg" class="draggable card" name="Scalding Tarn" purpose="" front="http://magiccards.info/scans/en/zen/223.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1382px; left: 716px;"><img src="http://magiccards.info/scans/en/som/229.jpg" class="draggable card" name="Seachrome Coast" purpose="" front="http://magiccards.info/scans/en/som/229.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1411px; left: 716px;"><img src="http://magiccards.info/scans/en/vma/322.jpg" class="draggable card" name="Tundra" purpose="" front="http://magiccards.info/scans/en/vma/322.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1440px; left: 716px;"><img src="http://magiccards.info/scans/en/ktk/248.jpg" class="draggable card" name="Windswept Heath" purpose="" front="http://magiccards.info/scans/en/ktk/248.jpg" back="" land="true" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" casting_cost="" commander="false" mana_production_bitvector="3" style="top: 1469px; left: 716px;"><img src="http://magiccards.info/extras/token/magic-origins/angel.jpg" class="draggable card" name="Angel" purpose="" front="http://magiccards.info/extras/token/magic-origins/angel.jpg" back="" land="false" creature="true" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="false" token="true" casting_cost="" commander="false" mana_production_bitvector="0" style="top: 349px; left: 1354px;"><img src="http://magiccards.info/scans/en/ema/55.jpg" class="draggable card" name="Hydroblast" purpose="Counter" front="http://magiccards.info/scans/en/ema/55.jpg" back="" land="false" creature="false" planeswalker="false" artifact="false" enchantment="false" sorcery="false" instant="true" token="false" casting_cost="U" commander="false" mana_production_bitvector="0" style="top: 478px; left: 494px;"></div>
 
 	<div id="selector" class="invisible_selector">
 	</div>
@@ -247,6 +278,12 @@
 		Card Sleeve Image URL:<br>
 		<input type="text" id="card sleeve image" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/><br>
 		<button id="dump sideboard button" onclick="dumpSideboard()">Dump Sideboard</button>
+	</div>
+
+	<div id="delete confirmation menu" class="confirmation_menu">
+		Are you sure you want to delete the selection?<br><br>
+		<button id="okay delete button" onclick="deleteSelectionAndCloseConfirmationMenu()">Delete</button>
+		<button id="okay delete button" onclick="toggleDeleteConfirmationMenu()">Cancel</button>
 	</div>
 
 	<div id="card info popup" class="card_info_popup">
@@ -269,6 +306,7 @@
 			&nbsp<label><input type="checkbox" id="enchantment checkbox" />Enchantment</label><br>
 			&nbsp<label><input type="checkbox" id="sorcery checkbox" />Sorcery</label><br>
 			&nbsp<label><input type="checkbox" id="instant checkbox" />Instant</label><br>
+			&nbsp<label><input type="checkbox" id="token checkbox" />Token</label><br>
 			<div id="land menu">
 				&nbspMana Production:<br>
 				&nbsp<label><input type="checkbox" id="produces white checkbox" />W</label>
@@ -319,6 +357,16 @@
 			startingLife.setAttribute("value", startingLife.value);
 			cardSleeve.setAttribute("value", cardSleeve.value);
 			toggleVisibility(preferencesMenu);
+		}
+
+		function toggleDeleteConfirmationMenu(){
+			var deleteConfirmationMenu = document.getElementById("delete confirmation menu");
+			toggleVisibility(deleteConfirmationMenu);
+		}
+
+		function deleteSelectionAndCloseConfirmationMenu(){
+			deleteSelection();
+			toggleDeleteConfirmationMenu();
 		}
 		
 		function incrementCounter(e){
@@ -698,7 +746,7 @@
 			for (i = 0; i < elementsOnMat.length; ++i)
 			{
 				//Check that this is a top-level element
-				if (elementsOnMat[i].parentNode == playmat)
+				if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i], 'draggable'))
 				{
 					selectedElements.push(elementsOnMat[i]);
 				}
@@ -871,8 +919,8 @@
 					//Blue selector only selects elements that are entirely within the selection box	
 					for (i = 0; i < elementsOnMat.length; ++i)
 					{
-						//Check that this is a top-level element
-						if (elementsOnMat[i].parentNode == playmat)
+						//Check that this is a draggable top-level element
+						if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i],'draggable'))
 						{
 							elementStyle = window.getComputedStyle(elementsOnMat[i]);
 							elementTop = parseInt(elementsOnMat[i].style.top);
@@ -895,8 +943,8 @@
 					//Green selector slects any elements that overlap the selection box
 					for (i = 0; i < elementsOnMat.length; ++i)
 					{
-						//Check that this is a top-level element
-						if (elementsOnMat[i].parentNode == playmat)
+						//Check that this is a draggable top-level element
+						if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i],'draggable'))
 						{
 							elementStyle = window.getComputedStyle(elementsOnMat[i]);
 							elementTop = parseInt(elementsOnMat[i].style.top);
@@ -963,6 +1011,7 @@
 			document.getElementById('enchantment checkbox').checked = selectedCard.getAttribute('enchantment') == 'true';
 			document.getElementById('sorcery checkbox').checked = selectedCard.getAttribute('sorcery') == 'true';
 			document.getElementById('instant checkbox').checked = selectedCard.getAttribute('instant') == 'true';
+			document.getElementById('token checkbox').checked = selectedCard.getAttribute('token') == 'true';
 			document.getElementById('casting cost input').value = selectedCard.getAttribute('casting_cost');
 			document.getElementById('commander checkbox').checked = selectedCard.getAttribute('commander') == 'true';
 			var manaProductionBitVector = parseInt(selectedCard.getAttribute('mana_production_bitvector'));
@@ -986,6 +1035,7 @@
 			selectedCard.setAttribute('enchantment', document.getElementById('enchantment checkbox').checked );
 			selectedCard.setAttribute('sorcery', document.getElementById('sorcery checkbox').checked );
 			selectedCard.setAttribute('instant', document.getElementById('instant checkbox').checked );
+			selectedCard.setAttribute('token', document.getElementById('token checkbox').checked );
 			selectedCard.setAttribute('casting_cost', document.getElementById('casting cost input').value);
 			selectedCard.setAttribute('commander', document.getElementById('commander checkbox').checked );
 			var manaProductionBitVector = 0;
@@ -1152,6 +1202,7 @@
 			this.element.setAttribute("enchantment", false);
 			this.element.setAttribute("sorcery", false);
 			this.element.setAttribute("instant", false);
+			this.element.setAttribute("token", false);
 			this.element.setAttribute("casting_cost", "");
 			this.element.setAttribute("commander", false);
 			this.element.setAttribute('mana_production_bitvector', "0");
@@ -1163,6 +1214,35 @@
 			this.element.addEventListener("mouseleave", mouseLeaveCard);
 			document.getElementById("playmat").appendChild(this.element);
 			return this.element;
+		}
+
+		var Label = function(text) {
+			this.element = document.createElement("div");
+			this.element.className = "label";
+			this.element.innerHTML = text;
+			document.getElementById("playmat").appendChild(this.element);
+			return this.element;
+		}
+
+		function deleteAllLabels() {
+			//Get all the elements in the selection
+			var elementsOnPlaymat = document.getElementById('playmat').getElementsByTagName('DIV');
+
+			//Delete all the label elements
+			var elementsToDelete = [];
+			var i = 0;
+			for (i = 0; i < elementsOnPlaymat.length; ++i)
+			{
+				if (hasClass(elementsOnPlaymat[i], 'label'))
+				{
+					elementsToDelete.push(elementsOnPlaymat[i]);
+				}
+			}
+
+			for (i = 0; i < elementsToDelete.length; ++i)
+			{
+				elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
+			}
 		}
 
 		function padToFour(number) {
@@ -1393,6 +1473,7 @@
 			var xOffset = 400;
 			var yOffset = 700;
 			deleteAllCounters();
+			deleteAllLabels();
 			addCounter(parseInt(document.getElementById("starting life").value));
 			addCounter(parseInt(document.getElementById("starting life").value));
 			
@@ -1401,7 +1482,7 @@
 			var i = 0;
 			for (i = 0; i < elementsToShuffle.length; ++i)
 			{
-				if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true')
+				if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true' && elementsToShuffle[i].getAttribute('token') != 'true' )
 				{
 					cardsToShuffle.push(elementsToShuffle[i]);
 				}
@@ -1618,12 +1699,27 @@
 
 		function getTotalCost(cardElement)
 		{
-			if (cardElement.getAttribute('land') == 'true')
+			if (cardElement.getAttribute('token') == 'true')
 			{
+				return 1000000000000;
+			} else if (cardElement.getAttribute('land') == 'true') {
 				return -1;
 			} else {
 				var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
 				return cost.total;
+			}
+		}
+
+		function getTotalCostLabel(cardElement)
+		{
+			if (cardElement.getAttribute('token') == 'true')
+			{
+				return "Token";
+			} else if (cardElement.getAttribute('land') == 'true') {
+				return "Land";
+			} else {
+				var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+				return String(cost.total) + " Mana";
 			}
 		}
 
@@ -1632,7 +1728,11 @@
 
 		function getColorOrder(cardElement)
 		{
-			if (cardElement.getAttribute('land') == 'true')
+			if (cardElement.getAttribute('token') == 'true')
+			{
+				return 65;
+			}
+			else if (cardElement.getAttribute('land') == 'true')
 			{
 				var manaProductionBitVector = parseInt(cardElement.getAttribute('mana_production_bitvector'));
 				//Ignore colorless production
@@ -1648,9 +1748,44 @@
 			}
 		}
 
+		function getColorLabel(cardElement)
+		{
+			if (cardElement.getAttribute('token') == 'true')
+			{
+				return 'Token';
+			}
+			else if (cardElement.getAttribute('land') == 'true')
+			{
+				var manaProductionBitVector = parseInt(cardElement.getAttribute('mana_production_bitvector'));
+				var colorLabelString = "";
+				if (manaProductionBitVector & 0x01){colorLabelString += 'W';}
+				if (manaProductionBitVector & 0x02){colorLabelString += 'U';}
+				if (manaProductionBitVector & 0x04){colorLabelString += 'B';}
+				if (manaProductionBitVector & 0x08){colorLabelString += 'R';}
+				if (manaProductionBitVector & 0x10){colorLabelString += 'G';}
+				if (colorLabelString == ""){colorLabelString += 'C';}
+
+				colorLabelString += ' Land';
+				return colorLabelString;
+			} else {
+				var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+				var colorLabelString = "";
+				if (cost.colorBitVector & 0x01){colorLabelString += 'W';}
+				if (cost.colorBitVector & 0x02){colorLabelString += 'U';}
+				if (cost.colorBitVector & 0x04){colorLabelString += 'B';}
+				if (cost.colorBitVector & 0x08){colorLabelString += 'R';}
+				if (cost.colorBitVector & 0x10){colorLabelString += 'G';}
+				if (cost.colorBitVector & 0x20){colorLabelString += 'C';}
+				if (colorLabelString == ""){colorLabelString = "Generic";}
+				return colorLabelString;
+			}
+		}
+
 		function getTypeOrder(cardElement)
 		{
-			if (cardElement.getAttribute('land') == 'true') {
+			if (cardElement.getAttribute('token') == 'true') {
+				return 7;
+			} else if (cardElement.getAttribute('land') == 'true') {
 				return -1;
 			} else if (cardElement.getAttribute('creature') == 'true') {
 				return 1;
@@ -1665,8 +1800,41 @@
 			} else if (cardElement.getAttribute('instant') == 'true') {
 				return 6;
 			} else {
-				return 7;
+				return 8;
 			}
+		}
+
+		function getTypeLabel(cardElement)
+		{
+			if (cardElement.getAttribute('token') == 'true') {
+				return 'Token';
+			} else if (cardElement.getAttribute('land') == 'true') {
+				return 'Land';
+			} else if (cardElement.getAttribute('creature') == 'true') {
+				return 'Creature';
+			} else if (cardElement.getAttribute('planeswalker') == 'true') {
+				return 'Planeswalker';
+			} else if (cardElement.getAttribute('artifact') == 'true') {
+				return 'Artifact';
+			} else if (cardElement.getAttribute('enchantment') == 'true') {
+				return 'Enchantment';
+			} else if (cardElement.getAttribute('sorcery') == 'true') {
+				return 'Sorcery';
+			} else if (cardElement.getAttribute('instant') == 'true') {
+				return 'Instant';
+			} else {
+				return'Unknown';
+			}
+		}
+
+		function getPurposeLabel(cardElement)
+		{
+			var purpose = cardElement.getAttribute('purpose');
+			if (purpose == null || purpose == "")
+			{
+				purpose = getTypeLabel(cardElement);
+			}
+			return purpose;
 		}
 
 		function dumpSideboard()
@@ -1750,21 +1918,32 @@
 		{
 			//Deselect any selected cards
 			deselectAll();
-			deleteAllCounters()
+			deleteAllCounters();
+			deleteAllLabels();;
 
 			//Get all the elements on the playmat
 			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
 
 			//Figure out which of the elements are cards
+			var totalNontokenCards = 0;
 			var cardsToSort = [];
 			var i = 0;
 			for (i = 0; i < elementsOnMat.length; ++i)
 			{
 				if (hasClass(elementsOnMat[i], "card"))
 				{
+					if (elementsOnMat[i].getAttribute("token") != 'true')
+					{
+						++totalNontokenCards;
+					}
 					cardsToSort.push(elementsOnMat[i]);
 				}
 			}
+
+			//Label the size of the previous stack
+			var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+			totalSizelabel.style.left = 0 + 'px';
+			totalSizelabel.style.top = 30 + 'px';
 
 			//Sort the cards by cost
 			cardsToSort.sort(
@@ -1795,7 +1974,7 @@
 			var stackHeight = 0;
 
 			var xOffset = 50;
-			var yOffset = 100;
+			var yOffset = 130;
 
 			var stackSpacing = cardWidth + 10;
 
@@ -1804,9 +1983,21 @@
 				//Is this card of a different class?
 				if (getTotalCost(cardsToSort[i]) != previousCardValue)
 				{
+					//Is this the end of a stack?
+					if (stackHeight > 0)
+					{
+						//Label the size of the previous stack
+						var sizelabel = Label(String(stackHeight));
+						sizelabel.style.top = yOffset - 60 + 'px';
+						sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+					}
+
 					//Create a new stack
 					stackNum++;
 					stackHeight = 0;
+					var label = Label(getTotalCostLabel(cardsToSort[i]));
+					label.style.top = yOffset - 30 + 'px';
+					label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
 					previousCardValue = getTotalCost(cardsToSort[i]);
 				}
 				//Add this card to the stack
@@ -1822,6 +2013,15 @@
 				stackHeight++;
 			}
 
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			}
+
 			//Resize document to fit
 			document.body.style.width = '100%';
 			document.body.style.height = '100%';
@@ -1833,21 +2033,32 @@
 		{
 			//Deselect any selected cards
 			deselectAll();
-			deleteAllCounters()
+			deleteAllCounters();
+			deleteAllLabels();
 
 			//Get all the elements on the playmat
 			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
 
 			//Figure out which of the elements are cards
+			var totalNontokenCards = 0;
 			var cardsToSort = [];
 			var i = 0;
 			for (i = 0; i < elementsOnMat.length; ++i)
 			{
 				if (hasClass(elementsOnMat[i], "card"))
 				{
+					if (elementsOnMat[i].getAttribute("token") != 'true')
+					{
+						++totalNontokenCards;
+					}
 					cardsToSort.push(elementsOnMat[i]);
 				}
 			}
+
+			//Label the size of the previous stack
+			var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+			totalSizelabel.style.left = 0 + 'px';
+			totalSizelabel.style.top = 30 + 'px';
 
 			//Sort the cards by type, then cost, then color, then name
 			cardsToSort.sort(
@@ -1882,7 +2093,7 @@
 			var stackHeight = 0;
 
 			var xOffset = 50;
-			var yOffset = 100;
+			var yOffset = 130;
 
 			var stackSpacing = cardWidth + 10;
 
@@ -1891,9 +2102,20 @@
 				//Is this card of a different class?
 				if (getTypeOrder(cardsToSort[i]) != previousCardValue)
 				{
+					//Is this the end of a stack?
+					if (stackHeight > 0)
+					{
+						//Label the size of the previous stack
+						var sizelabel = Label(String(stackHeight));
+						sizelabel.style.top = yOffset - 60 + 'px';
+						sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+					}
 					//Create a new stack
 					stackNum++;
 					stackHeight = 0;
+					var label = Label(getTypeLabel(cardsToSort[i]));
+					label.style.top = yOffset - 30 + 'px';
+					label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
 					previousCardValue = getTypeOrder(cardsToSort[i]);
 				}
 				//Add this card to the stack
@@ -1908,6 +2130,14 @@
 				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
 				stackHeight++;
 			}
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			}
 
 			//Resize document to fit
 			document.body.style.width = '100%';
@@ -1920,21 +2150,32 @@
 		{
 			//Deselect any selected cards
 			deselectAll();
-			deleteAllCounters()
+			deleteAllCounters();
+			deleteAllLabels();
 
 			//Get all the elements on the playmat
 			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
 
 			//Figure out which of the elements are cards
+			var totalNontokenCards = 0;
 			var cardsToSort = [];
 			var i = 0;
 			for (i = 0; i < elementsOnMat.length; ++i)
 			{
 				if (hasClass(elementsOnMat[i], "card"))
 				{
+					if (elementsOnMat[i].getAttribute("token") != 'true')
+					{
+						++totalNontokenCards;
+					}
 					cardsToSort.push(elementsOnMat[i]);
 				}
 			}
+
+			//Label the size of the previous stack
+			var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+			totalSizelabel.style.left = 0 + 'px';
+			totalSizelabel.style.top = 30 + 'px';
 
 			//Sort the cards by color, then cost, then name
 			cardsToSort.sort(
@@ -1962,7 +2203,7 @@
 
 			//Figure out the necessary columns
 			var columns = [];
-			for (i = 0; i < 64; ++i)
+			for (i = 0; i < 65; ++i)
 			{
 				columns.push(-1);
 			}
@@ -1998,7 +2239,7 @@
 			var row1Height = 0;
 			var stackHeight = 0;
 			var xOffset = 50;
-			var yOffset = 100;
+			var yOffset = 130;
 			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
@@ -2006,7 +2247,30 @@
 				//Is this card of a different color?
 				if ( getColorOrder(cardsToSort[i]) != previousCardValue )
 				{
+					//Is this the end of a stack?
+					if (stackHeight > 0)
+					{
+						//Label the size of the previous stack
+						var sizelabel = Label(String(stackHeight));
+						sizelabel.style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i - 1]))] + 'px';
+						if (getColorOrder(cardsToSort[i-1]) < 100)
+						{
+							sizelabel.style.top = yOffset - 60 + 'px';
+						} else {
+							sizelabel.style.top = yOffset + cardsToSort[i-1].clientHeight + nameHeight * row1Height + 60 - 60 + 'px';
+						}
+					}
+					//Create a new stack
 					stackHeight = 0;
+					//Label it
+					var label = Label(getColorLabel(cardsToSort[i]));
+					label.style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i]))] + 'px';
+					if (getColorOrder(cardsToSort[i]) < 100)
+					{
+						label.style.top = yOffset + nameHeight * stackHeight - 30 + 'px';
+					} else {
+						label.style.top = yOffset + cardsToSort[i].clientHeight + nameHeight * row1Height + 60 - 30 + 'px';
+					}
 					previousCardValue = getColorOrder(cardsToSort[i]);
 				}
 				
@@ -2029,12 +2293,25 @@
 						row1Height = stackHeight;
 					}
 				} else {
-					cardsToSort[i].style.top = yOffset + cardsToSort[i].clientHeight +  nameHeight * row1Height + nameHeight * stackHeight + 'px';
+					cardsToSort[i].style.top = yOffset + cardsToSort[i].clientHeight +  nameHeight * row1Height + nameHeight * stackHeight + 60 + 'px';
 					stackHeight++;
 				}
 
 				//Bring it in front of the other elements
 				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+			}
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i - 1]))] + 'px';
+				if (getColorOrder(cardsToSort[i-1]) < 100)
+				{
+					sizelabel.style.top = yOffset - 60 + 'px';
+				} else {
+					sizelabel.style.top = yOffset + cardsToSort[i-1].clientHeight + nameHeight * row1Height + 60 - 60 + 'px';
+				}
 			}
 
 			//Resize document to fit
@@ -2048,32 +2325,50 @@
 		{
 			//Deselect any selected cards
 			deselectAll();
-			deleteAllCounters()
+			deleteAllCounters();
+			deleteAllLabels();
 
 			//Get all the elements on the playmat
 			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
 
 			//Figure out which of the elements are cards
+			var totalNontokenCards = 0;
 			var cardsToSort = [];
 			var i = 0;
 			for (i = 0; i < elementsOnMat.length; ++i)
 			{
 				if (hasClass(elementsOnMat[i], "card"))
 				{
+					if (elementsOnMat[i].getAttribute("token") != 'true')
+					{
+						++totalNontokenCards;
+					}
 					cardsToSort.push(elementsOnMat[i]);
 				}
 			}
 
+			//Label the size of the previous stack
+			var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+			totalSizelabel.style.left = 0 + 'px';
+			totalSizelabel.style.top = 30 + 'px';
+
 			//Sort the cards by purpose, then cost, then color, then name
 			cardsToSort.sort(
 				function(a,b){
-					var aPurpose = a.getAttribute("purpose");
-					var bPurpose = b.getAttribute("purpose");
-					if (aPurpose != null && bPurpose != null)
+					var aPurpose = getPurposeLabel(a);
+					var bPurpose = getPurposeLabel(b);
+
+					if (aPurpose == "Land" && bPurpose != "Land")
 					{
-						ret = aPurpose.localeCompare(bPurpose);
+						ret = -1;
+					} else if (bPurpose == "Land" && aPurpose != "Land") {
+						ret = 1;
+					} else if (aPurpose == "Token" && bPurpose != "Token") {
+						ret = 1;
+					} else if (bPurpose == "Token" && aPurpose != "Token") {
+						ret = -1;
 					} else {
-						ret = 0;
+						ret = aPurpose.localeCompare(bPurpose);
 					}
 					if (ret == 0)
 					{
@@ -2104,7 +2399,7 @@
 			var stackHeight = 0;
 
 			var xOffset = 50;
-			var yOffset = 100;
+			var yOffset = 130;
 
 			var stackSpacing = cardWidth + 10;
 
@@ -2113,9 +2408,20 @@
 				//Is this card of a different class?
 				if (cardsToSort[i].getAttribute("purpose") != previousCardValue)
 				{
+					//Is this the end of a stack?
+					if (stackHeight > 0)
+					{
+						//Label the size of the previous stack
+						var sizelabel = Label(String(stackHeight));
+						sizelabel.style.top = yOffset - 60 + 'px';
+						sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+					}
 					//Create a new stack
 					stackNum++;
 					stackHeight = 0;
+					var label = Label(getPurposeLabel(cardsToSort[i]));
+					label.style.top = yOffset - 30 + 'px';
+					label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
 					previousCardValue = cardsToSort[i].getAttribute("purpose");
 				}
 				//Add this card to the stack
@@ -2129,6 +2435,14 @@
 				//Bring it in front of the other elements
 				cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
 				stackHeight++;
+			}
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
 			}
 
 			//Resize document to fit
