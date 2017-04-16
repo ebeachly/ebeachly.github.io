@@ -1160,10 +1160,17 @@
 			var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 			var numCardsAdded = 0;
 			var padding = 5;
+			var playmat = document.getElementById("playmat");
+			var sideboard = document.getElementById("sideboard");
+			var numColumns = Math.floor((playmat.offsetWidth - sideboard.offsetWidth - 50 - padding - 25) / (cardWidth + padding));
+			if (numColumns < 3)
+			{
+				numColumns = 3;
+			}
 		    cardImageUrlString.replace(urlRegex, function(url) {
 		    	var newCard = CardElement(url);
-		    	newCard.style.top = Math.floor(numCardsAdded / 10) * (cardHeight + padding) + 25 + 'px';
-		    	newCard.style.left = (numCardsAdded % 10) * (cardWidth + padding) + 25 + 'px';
+		    	newCard.style.top = Math.floor(numCardsAdded / numColumns) * (cardHeight + padding) + 25 + 'px';
+		    	newCard.style.left = (numCardsAdded % numColumns) * (cardWidth + padding) + 25 + 'px';
 		    	newCard.setAttribute("name", padToFour(numCardsAdded));
 		    	numCardsAdded = numCardsAdded + 1;
 		        return url;
