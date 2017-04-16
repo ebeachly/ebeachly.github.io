@@ -167,8 +167,6 @@
 		.draggable{
 			position:absolute;
 			cursor: move;
-			top:0px;
-			left:0px;
 		}
 		
 		#counter_container {
@@ -467,13 +465,27 @@
 			//Increment the click counter on this element
 			++clickCounter;
 
-			if (hasClass(clickedElement, 'draggable')){
-				startDrag(e);
-			}
 			if (hasClass(clickedElement, 'card')){
 				//console.log('click:' + clickCounter);
 				//Set a delayed function to check for double and triple clicks
 				setTimeout(evaluateNumClicks, 200, clickCounter);
+				if (hasClass(clickedElement, 'sideboarded'))
+				{
+					//Move this to the playmat
+					var playmat = document.getElementById('playmat');
+					var sideboard = document.getElementById('sideboard');
+					//Remove sideboarded class
+					clickedElement.className = clickedElement.className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
+					//Put it on the playmat
+					var rect = sideboard.getBoundingClientRect();
+					console.log(rect.left);
+					clickedElement.style.top = parseInt(clickedElement.style.top) + parseInt(rect.top) + 'px';
+					clickedElement.style.left= parseInt(clickedElement.style.left) + parseInt(rect.left) + 'px';
+					playmat.appendChild(clickedElement);
+				}
+			}
+			if (hasClass(clickedElement, 'draggable')){
+				startDrag(e);
 			}
 			enableDelayedHover = 0;
 		}
@@ -495,12 +507,12 @@
 				//Resolve the proper action
 				if (numClicks == 1)
 				{
-					//Double click = Tap/Untap
+					//Single click = Tap/Untap
 					tapOrUntapCard(clickedElement);
 				}
 				else if (numClicks == 2)
 				{
-					//Triple click = Flip
+					//Double click = Flip
 					flipCard(clickedElement);
 				}
 				//Reset click counter
@@ -614,19 +626,10 @@
 				if (!e) { var e= window.event};
 				// var targ=e.target?e.target:e.srcElement;
 				// move div element
-				if (hasClass(e,'sideboarded'))
+				if (hasClass(elementToDrag,'sideboarded'))
 				{
-					var sideboard = document.getElementById('sideboard');
-					if (coordX+e.clientX-offsetX < -sideboard.style.left){
-						elementToDrag.style.left= -sideboard.style.left + 'px';
-					} else {
-						elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
-					}
-					if (coordY+e.clientY-offsetY < -sideboard.style.top){
-						elementToDrag.style.top= -sideboard.style.top + 'px';
-					} else {
-						elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
-					}
+					elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+					elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
 				} else {
 					if (coordX+e.clientX-offsetX < 0){
 						elementToDrag.style.left='0px';
@@ -777,18 +780,11 @@
 				//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
 				if (hasClass(elementToDrag, 'card') && sideboard.style.visibility == 'visible' && mouseOverSideboard)
 				{
-					if (hasClass(elementToDrag, 'sideboarded'))
+					if (!hasClass(elementToDrag, 'sideboarded'))
 					{
 						elementToDrag.className += ' sideboarded';
 					}
 					sideboard.appendChild(elementToDrag);
-					sortSideboard();
-				} else if (hasClass(elementToDrag, 'sideboarded') && !mouseOverSideboard) {
-					//Remove sideboarded class
-					elementToDrag.className = elementToDrag.className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
-					//Put it on the playmat
-					playmat.appendChild(elementToDrag);
-					//Sort the sideboard
 					sortSideboard();
 				}
 
@@ -956,7 +952,6 @@
 				saveEditCardSettings();
 				document.getElementById('land menu').style.visibility = 'hidden';
 				document.getElementById('nonland menu').style.visibility = 'hidden';
-				document.getElementById('nonland permanent menu').style.visibility = 'hidden';
 				document.getElementById('creature menu').style.visibility = 'hidden';
 				document.getElementById("edit card control panel").style.visibility = 'hidden';
 			}
@@ -1366,11 +1361,11 @@
 		function toggleSideboard()
 		{
 			var sideboard = document.getElementById('sideboard');
-			if (sideboard.style.visibility == 'hidden')
+			if (sideboard.style.visibility == 'visible')
 			{
-				sideboard.style.visibility = 'visible';
-			} else {
 				sideboard.style.visibility = 'hidden';
+			} else {
+				sideboard.style.visibility = 'visible';
 			}
 		}
 
@@ -1599,11 +1594,12 @@
 
 			//Sort the cards by cost
 			cardsToSort.sort(
-				function(a,b){
-					var ret = getTotalCost(a) - getTotalCost(b);
+				function(a,b)
+				{
+					var ret = getColorOrder(a) - getColorOrder(b);
 					if (ret == 0)
 					{
-						ret = getColorOrder(a) - getColorOrder(b);
+						ret = getTotalCost(a) - getTotalCost(b);
 						if (ret == 0)
 						{
 							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
@@ -2034,8 +2030,8 @@
 			//var ggWentworth = CardElement("http://magiccards.info/scans/en/nph/37.jpg");
 
 			var sideboard = document.getElementById("sideboard");
-			sideboard.addEventListener("mouseenter", mouseEnterSideboard);
-			sideboard.addEventListener("mouseleave", mouseLeaveSideboard);
+			sideboard.addEventListener("mouseover", mouseEnterSideboard);
+			sideboard.addEventListener("mouseout", mouseLeaveSideboard);
 
 			//Go through all the elements on the playmat and set up their javascript functions
 			var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
