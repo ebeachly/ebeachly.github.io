@@ -40,7 +40,7 @@
 		.sideboard {
 			position: fixed;
 			border: 1px solid rgb(0,0,0);
-			width: 194px;
+			width: 250px;
 			right: 25px;
 			top: 25px;
 			bottom: 25px;
@@ -83,7 +83,7 @@
 		.preferences_menu {
 			position: fixed; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
 			left: 25px;
-			right: 244px;
+			right: 300px;
 			top: 25px;
 			bottom: 25px;
 			display: none;
@@ -162,8 +162,8 @@
 		}
 
 		.card{
-			width: 156px;
-			height: 222px;
+			width: 212px;
+			height: 296px;
 		}
 
 		.draggable{
@@ -301,8 +301,10 @@
 	
 	<script>
 		var clickedElement;
-		var cardHeight = 222;
-		var cardWidth = 156;
+		var cardWidth = 212; //156
+		var cardHeight = 296; //222
+		var nameHeight = 29; //22
+		
 
 		function toggleVisibility(element, displayType){
 			var style = window.getComputedStyle(element);
@@ -433,10 +435,12 @@
 		var mouseOverSideboard = false;
 		function mouseEnterSideboard(e){
 			mouseOverSideboard = true;
+			console.log("in");
 		}
 
 		function mouseLeaveSideboard(e){
 			mouseOverSideboard = false;
+			console.log("out");
 		}
 
 		//
@@ -594,7 +598,7 @@
 			//Did they click on a selected element?
 			if (hasClass(clickedElement, 'selected'))
 			{
-				//Drag to the whole selection
+				//Drag the whole selection
 				elementToDrag = document.getElementById('selector');
 			} else {
 				//Drag just the element that was clicked
@@ -782,16 +786,47 @@
 				var playmat = document.getElementById("playmat");
 				var sideboard = document.getElementById("sideboard");
 
-				//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
-				if (hasClass(elementToDrag, 'card') && sideboard.style.visibility == 'visible' && mouseOverSideboard)
+				//the sideboard is visible and it was dropped in the sideboard
+				if (mouseOverSideboard && sideboard.style.visibility == 'visible')
 				{
-					if (!hasClass(elementToDrag, 'sideboarded'))
+					//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
+					if (hasClass(elementToDrag, 'card'))
 					{
-						elementToDrag.className += ' sideboarded';
+						if (!hasClass(elementToDrag, 'sideboarded'))
+						{
+							elementToDrag.className += ' sideboarded';
+						}
+						sideboard.appendChild(elementToDrag);
+						sortSideboard();
+					} else if (elementToDrag.id == 'selector' ) {
+						//If the selection is being dragged
+						var selectedElements = [];
+						var elementsInSelector = elementToDrag.getElementsByTagName('*');
+						for (i = 0; i < elementsInSelector.length; ++i)
+						{
+							//Check that this is a top-level element
+							if (elementsInSelector[i].parentNode == elementToDrag)
+							{
+								selectedElements.push(elementsInSelector[i]);
+							}
+						}
+						for (i = 0; i < selectedElements.length; ++i)
+						{
+							selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
+							if (!hasClass(selectedElements[i], 'sideboarded'))
+							{
+								selectedElements[i].className += ' sideboarded';
+							}
+						}
+						for (i = 0; i < selectedElements.length; ++i)
+						{
+							sideboard.appendChild(selectedElements[i]);
+						}
+						sortSideboard();
+						deselectAll();
 					}
-					sideboard.appendChild(elementToDrag);
-					sortSideboard();
 				}
+
 
 				//Set document size to extent of interior elements
 				document.body.style.width = '100%';
@@ -1418,7 +1453,7 @@
 			//Stack the cards
 			var xOffset = 0;
 			var yOffset = 0;
-			var nameHeight = 22;
+			
 			
 			for (i = 0; i < cardsToStack.length; ++i)
 			{
@@ -1648,7 +1683,6 @@
 
 			var xOffset = 10;
 			var yOffset = 10;
-			var nameHeight = 22;
 
 			for (i = 0; i < cardsToSort.length; ++i)
 			{
@@ -1715,7 +1749,6 @@
 			var xOffset = 50;
 			var yOffset = 100;
 
-			var nameHeight = 22;
 			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
@@ -1803,7 +1836,6 @@
 			var xOffset = 50;
 			var yOffset = 100;
 
-			var nameHeight = 22;
 			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
@@ -1919,7 +1951,6 @@
 			var stackHeight = 0;
 			var xOffset = 50;
 			var yOffset = 100;
-			var nameHeight = 22;
 			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
@@ -2027,7 +2058,6 @@
 			var xOffset = 50;
 			var yOffset = 100;
 
-			var nameHeight = 22;
 			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
