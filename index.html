@@ -40,7 +40,7 @@
 		.sideboard {
 			position: fixed;
 			border: 1px solid rgb(0,0,0);
-			width: 176px;
+			width: 194px;
 			right: 25px;
 			top: 25px;
 			bottom: 25px;
@@ -49,6 +49,8 @@
 			-moz-border-radius: 5px;
 			-webkit-border-radius: 5px;
 			visibility: hidden;
+			overflow-y: scroll;
+			overflow-x: hidden;
 		}
 
 		.sideboarded {
@@ -81,7 +83,7 @@
 		.preferences_menu {
 			position: fixed; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
 			left: 25px;
-			right: 226px;
+			right: 244px;
 			top: 25px;
 			bottom: 25px;
 			display: none;
@@ -299,6 +301,9 @@
 	
 	<script>
 		var clickedElement;
+		var cardHeight = 222;
+		var cardWidth = 156;
+
 		function toggleVisibility(element, displayType){
 			var style = window.getComputedStyle(element);
 			if(style.display == "none"){
@@ -1085,12 +1090,20 @@
 			this.element = document.createElement("img");
 			this.element.src = imagesource;
 			this.element.className = "draggable card";
+			this.element.setAttribute("name", "");
+			this.element.setAttribute("purpose", "");
 			this.element.setAttribute("front", imagesource);
 			this.element.setAttribute("back", "");
 			this.element.setAttribute("land", false);
-			this.element.setAttribute("manacost", "0");
+			this.element.setAttribute("creature", false);
+			this.element.setAttribute("planeswalker", false);
+			this.element.setAttribute("artifact", false);
+			this.element.setAttribute("enchantment", false);
+			this.element.setAttribute("sorcery", false);
+			this.element.setAttribute("instant", false);
+			this.element.setAttribute("casting_cost", "");
+			this.element.setAttribute("commander", false);
 			this.element.setAttribute('mana_production_bitvector', "0");
-			this.element.setAttribute("purpose", "");
 			this.element.style.top = '0px';
 			this.element.style.left = '0px';
 			this.element.addEventListener("mousedown", mouseDownCard);
@@ -1101,6 +1114,11 @@
 			return this.element;
 		}
 
+		function padToFour(number) {
+		  if (number<=9999) { number = ("000"+number).slice(-4); }
+		  return number;
+		}
+
 		function addCard() {
 			var cardImageUrlString = String(document.getElementById("cardimageurl").value);
 			var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
@@ -1108,8 +1126,9 @@
 			var padding = 5;
 		    cardImageUrlString.replace(urlRegex, function(url) {
 		    	var newCard = CardElement(url);
-		    	newCard.style.top = Math.floor(numCardsAdded / 10) * (222 + padding) + 25 + 'px';
-		    	newCard.style.left = (numCardsAdded % 10) * (156 + padding) + 25 + 'px';
+		    	newCard.style.top = Math.floor(numCardsAdded / 10) * (cardHeight + padding) + 25 + 'px';
+		    	newCard.style.left = (numCardsAdded % 10) * (cardWidth + padding) + 25 + 'px';
+		    	newCard.setAttribute("name", padToFour(numCardsAdded));
 		    	numCardsAdded = numCardsAdded + 1;
 		        return url;
 		    });
@@ -1336,8 +1355,8 @@
 				//Reveal the card
 				cardsToShuffle[index].src = cardsToShuffle[index].getAttribute("front");
 				//Put it below the deck
-				cardsToShuffle[index].style.top = yOffset + numCards + 222 + 10 + 'px';
-				cardsToShuffle[index].style.left = 10 + i * 166 + 'px';
+				cardsToShuffle[index].style.top = yOffset + numCards + cardHeight + 10 + 'px';
+				cardsToShuffle[index].style.left = 10 + i * (cardWidth + 10) + 'px';
 				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
 				//Bring it in front of the other elements
 				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
@@ -1613,7 +1632,14 @@
 						ret = getTotalCost(a) - getTotalCost(b);
 						if (ret == 0)
 						{
-							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+							var aName = a.getAttribute("name");
+							var bName = b.getAttribute("name");
+							if (aName != null && bName != null)
+							{
+								ret = aName.localeCompare(bName);
+							} else {
+								ret = 0;
+							}
 						}
 					}
 					return ret;
@@ -1667,7 +1693,14 @@
 						ret = getColorOrder(a) - getColorOrder(b);
 						if (ret == 0)
 						{
-							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+							var aName = a.getAttribute("name");
+							var bName = b.getAttribute("name");
+							if (aName != null && bName != null)
+							{
+								ret = aName.localeCompare(bName);
+							} else {
+								ret = 0;
+							}
 						}
 					}
 					return ret;
@@ -1683,7 +1716,7 @@
 			var yOffset = 100;
 
 			var nameHeight = 22;
-			var stackSpacing = 166;
+			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
 			{
@@ -1747,7 +1780,14 @@
 							ret = getColorOrder(a) - getColorOrder(b);
 							if (ret == 0)
 							{
-								ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+								var aName = a.getAttribute("name");
+								var bName = b.getAttribute("name");
+								if (aName != null && bName != null)
+								{
+									ret = aName.localeCompare(bName);
+								} else {
+									ret = 0;
+								}
 							}
 						}
 					}
@@ -1764,7 +1804,7 @@
 			var yOffset = 100;
 
 			var nameHeight = 22;
-			var stackSpacing = 166;
+			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
 			{
@@ -1826,7 +1866,14 @@
 						ret = getTotalCost(a) - getTotalCost(b);
 						if (ret == 0)
 						{
-							ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+							var aName = a.getAttribute("name");
+							var bName = b.getAttribute("name");
+							if (aName != null && bName != null)
+							{
+								ret = aName.localeCompare(bName);
+							} else {
+								ret = 0;
+							}
 						}
 					}
 					return ret;
@@ -1873,7 +1920,7 @@
 			var xOffset = 50;
 			var yOffset = 100;
 			var nameHeight = 22;
-			var stackSpacing = 166;
+			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
 			{
@@ -1941,7 +1988,14 @@
 			//Sort the cards by purpose, then cost, then color, then name
 			cardsToSort.sort(
 				function(a,b){
-					var ret = a.getAttribute("purpose").localeCompare(b.getAttribute("purpose"));
+					var aPurpose = a.getAttribute("purpose");
+					var bPurpose = b.getAttribute("purpose");
+					if (aPurpose != null && bPurpose != null)
+					{
+						ret = aPurpose.localeCompare(bPurpose);
+					} else {
+						ret = 0;
+					}
 					if (ret == 0)
 					{
 						ret = getTotalCost(a) - getTotalCost(b);
@@ -1950,7 +2004,14 @@
 							ret = getColorOrder(a) - getColorOrder(b);
 							if (ret == 0)
 							{
-								ret = a.getAttribute("name").localeCompare(b.getAttribute("name"));
+								var aName = a.getAttribute("name");
+								var bName = b.getAttribute("name");
+								if (aName != null && bName != null)
+								{
+									ret = aName.localeCompare(bName);
+								} else {
+									ret = 0;
+								}
 							}
 						}
 					}
@@ -1967,7 +2028,7 @@
 			var yOffset = 100;
 
 			var nameHeight = 22;
-			var stackSpacing = 166;
+			var stackSpacing = cardWidth + 10;
 
 			for (i = 0; i < cardsToSort.length; ++i)
 			{
