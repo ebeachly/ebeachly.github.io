@@ -488,7 +488,8 @@
 					//Put it on the playmat
 					var rect = sideboard.getBoundingClientRect();
 					console.log(rect.left);
-					clickedElement.style.top = parseInt(clickedElement.style.top) + parseInt(rect.top) + 'px';
+					var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+					clickedElement.style.top = parseInt(clickedElement.style.top) + parseInt(rect.top) - sideboard.scrollTop + documentScrollTop + 'px';
 					clickedElement.style.left= parseInt(clickedElement.style.left) + parseInt(rect.left) + 'px';
 					playmat.appendChild(clickedElement);
 				}
