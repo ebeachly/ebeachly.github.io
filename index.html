@@ -81,15 +81,16 @@
 		}
 
 		.preferences_menu {
-			position: fixed; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
-			left: 25px;
-			right: 300px;
+			position: absolute; /* keep menu always in middle of screen even when scrolled, change to absolute if you dont want that */
+			left: 360px;
 			top: 25px;
-			bottom: 25px;
+			padding: 10px;
 			display: none;
 			background-color: rgba(255,255,255,0.4);
 			border: 1px solid black;
-			box-shadow: 2px 2px 4px rgba(0,0,0,0.4)
+			box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
 		}
 		
 		.preferences_menu .close_btn {
@@ -125,8 +126,6 @@
 			background-color: black;
 			height: 495px;
 			width: 312px;
-			top: 0px;
-			left: 0px;
 			border: 5px solid rgb(0,0,0);
 			-moz-border-radius: 5px;
 			-webkit-border-radius: 5px;
@@ -242,11 +241,11 @@
 	</div>
 
 	<div id="preferences menu" class="preferences_menu">
-		<button class="close_btn" onclick="togglePreferences()">X</button>
-		&nbspStarting Life Total:<br>
-		&nbsp<input type="number" id="starting life" value="20"/><br>
-		&nbspCard Sleeve Image URL:<br>
-		&nbsp<input type="text" id="card sleeve image" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/><br>
+		Starting Life Total:<br>
+		<input type="number" id="starting life" value="20"/><br>
+		Card Sleeve Image URL:<br>
+		<input type="text" id="card sleeve image" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/><br>
+		<button id="dump sideboard button" onclick="dumpSideboard()">Dump Sideboard</button>
 	</div>
 
 	<div id="card info popup" class="card_info_popup">
@@ -430,12 +429,10 @@
 		var mouseOverSideboard = false;
 		function mouseEnterSideboard(e){
 			mouseOverSideboard = true;
-			console.log("in");
 		}
 
 		function mouseLeaveSideboard(e){
 			mouseOverSideboard = false;
-			console.log("out");
 		}
 
 		//
@@ -482,7 +479,6 @@
 					clickedElement.className = clickedElement.className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
 					//Put it on the playmat
 					var rect = sideboard.getBoundingClientRect();
-					console.log(rect.left);
 					var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
 					clickedElement.style.top = parseInt(clickedElement.style.top) + parseInt(rect.top) - sideboard.scrollTop + documentScrollTop + 'px';
 					clickedElement.style.left= parseInt(clickedElement.style.left) + parseInt(rect.left) + 'px';
@@ -933,6 +929,12 @@
 					var selector = document.getElementById('selector');
 					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + parseInt(selector.style.top)  + 'px';
 					document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + parseInt(selector.style.left) + 'px';
+				} else if (hasClass(element, 'sideboarded')) {
+					var sideboard = document.getElementById('sideboard'); //TODO
+					var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 - sideboard.scrollTop + documentScrollTop + 'px';
+					document.getElementById('card info popup').style.right = 180 + 'px';
+					document.getElementById('card info popup').style.left = "";
 				} else {
 					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + 'px';
 					document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + 'px';
@@ -1658,6 +1660,26 @@
 				return 6;
 			} else {
 				return 7;
+			}
+		}
+
+		function dumpSideboard()
+		{
+			//Get all the elements in the sideboard
+			var sideboard = document.getElementById('sideboard');
+			var playmat = document.getElementById('playmat');
+			var elementsInSideboard = sideboard.getElementsByTagName('*');
+			var rect = sideboard.getBoundingClientRect();
+			var i = 0;
+			while (elementsInSideboard.length > 0)
+			{
+				//Remove sideboarded class
+				elementsInSideboard[0].className = elementsInSideboard[0].className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
+				//Put it on the playmat
+				elementsInSideboard[0].style.top = 25 + i * nameHeight + 'px';
+				elementsInSideboard[0].style.left= 10 + rect.left + 'px'; //TODO
+				playmat.appendChild(elementsInSideboard[0]);
+				++i;
 			}
 		}
 
