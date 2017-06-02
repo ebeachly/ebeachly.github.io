@@ -2525,6 +2525,10 @@
 			document.body.style.height = document.body.scrollHeight + 'px';
 
 		}
+
+		window.onbeforeunload = function() {
+			return true;
+		};
 		
 	</script>
 </body>
