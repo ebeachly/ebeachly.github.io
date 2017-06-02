@@ -319,7 +319,7 @@
 				&nbspCasting Cost:<br>
 				&nbsp<input type="text" id="casting cost input" value=""/><br>
 			</div>
-			<div id="creature menu">
+			<div id="permanent menu">
 				&nbsp<label><input type="checkbox" id="commander checkbox" />Commander</label><br>
 			</div>
 			<div id="common details menu">
@@ -1057,7 +1057,7 @@
 				saveEditCardSettings();
 				document.getElementById('land menu').style.visibility = 'hidden';
 				document.getElementById('nonland menu').style.visibility = 'hidden';
-				document.getElementById('creature menu').style.visibility = 'hidden';
+				document.getElementById('permanent menu').style.visibility = 'hidden';
 				document.getElementById("edit card control panel").style.visibility = 'hidden';
 			}
 		}
@@ -1087,7 +1087,7 @@
 		{
 			var landMenuElement = document.getElementById('land menu');
 			var nonlandMenuElement = document.getElementById('nonland menu');
-			var creatureMenuElement = document.getElementById('creature menu');
+			var permanentMenuElement = document.getElementById('permanent menu');
 			var commonDetailsMenuElement = document.getElementById('common details menu');
 			//Is this a land?
 			if (document.getElementById('land checkbox').checked)
@@ -1096,17 +1096,17 @@
 				landMenuElement.style.visibility = 'visible';
 				landMenuElement.parentNode.appendChild(landMenuElement);
 				//Is this a creature?
-				if (document.getElementById('creature checkbox').checked)
+				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
 				{
-					creatureMenuElement.style.visibility = 'visible';	//In case they print a legendary land creature, so that it can be your commander
+					permanentMenuElement.style.visibility = 'visible';	//In case they print a legendary land creature, so that it can be your commander
 					//Append this next
-					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
+					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 				} else {
-					creatureMenuElement.style.visibility = 'hidden';
+					permanentMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
+					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
 				}
 				//move hidden elements to bottom so there isn't a blank space
 				nonlandMenuElement.style.visibility = 'hidden';
@@ -1119,37 +1119,28 @@
 				{
 					nonlandMenuElement.style.visibility = 'visible';
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					//Is this a creature?
-					if (document.getElementById('creature checkbox').checked)
-					{
-						creatureMenuElement.style.visibility = 'visible';
-						//Move hidden elements to bottom so there isn't a blank space
-						creatureMenuElement.parentNode.appendChild(creatureMenuElement);
-						commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					} else {
-						creatureMenuElement.style.visibility = 'hidden';
-						//Move hidden elements to bottom so there isn't a blank space
-						commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-						creatureMenuElement.parentNode.appendChild(creatureMenuElement);
-					}
+					permanentMenuElement.style.visibility = 'visible';
+					//Move hidden elements to bottom so there isn't a blank space
+					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
+					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 				}
 				else if (document.getElementById('sorcery checkbox').checked || document.getElementById('instant checkbox').checked)
 				{
 					nonlandMenuElement.style.visibility = 'visible';
-					creatureMenuElement.style.visibility = 'hidden';
+					permanentMenuElement.style.visibility = 'hidden';
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
+					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
 				}
 				else
 				{
 					nonlandMenuElement.style.visibility = 'hidden';
-					creatureMenuElement.style.visibility = 'hidden';
+					permanentMenuElement.style.visibility = 'hidden';
 					//Move hidden elements to bottom so there isn't a blank space
 					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
 					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					creatureMenuElement.parentNode.appendChild(creatureMenuElement);
+					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
 				}
 				//Hide land stuff
 				landMenuElement.style.visibility = 'hidden';
@@ -2394,7 +2385,7 @@
 
 			//Arrange the cards on the mat
 			var stackNum = 0;
-			var previousCardValue = "plumbus";
+			var previousCardValue = "plumbus"; //Who knows what its purpose is...
 			var stackHeight = 0;
 
 			var xOffset = 50;
@@ -2492,8 +2483,6 @@
 			document.getElementById("sorcery checkbox").onclick = sorceryTypeSelected;
 			document.getElementById("instant checkbox").onclick = instantTypeSelected;
 
-			//var ggWentworth = CardElement("http://magiccards.info/scans/en/nph/37.jpg");
-
 			var sideboard = document.getElementById("sideboard");
 			sideboard.addEventListener("mouseover", mouseEnterSideboard);
 			sideboard.addEventListener("mouseout", mouseLeaveSideboard);
@@ -2513,6 +2502,20 @@
 				}
 			}
 
+			//Go through all the elements in the sideboard and set up their javascript functions
+			var elementsInSideboard = document.getElementById("sideboard").getElementsByTagName('*');
+			for (i = 0; i < elementsInSideboard.length; ++i)
+			{
+				element = elementsInSideboard[i];
+				//Set up cards
+				if (hasClass(element,'card')){
+					element.addEventListener("mousedown", mouseDownCard);
+					element.addEventListener("mouseup", mouseUpCard);
+					element.addEventListener("mouseenter", mouseEnterCard);
+					element.addEventListener("mouseleave", mouseLeaveCard);
+				}
+			}
+
 			deselectAll();
 
 			//Resize document to fit
@@ -2521,7 +2524,6 @@
 			document.body.style.width = document.body.scrollWidth + 'px';
 			document.body.style.height = document.body.scrollHeight + 'px';
 
-			//var bsColossus = CardElement("http://magiccards.info/scans/en/mbs/99.jpg");
 		}
 		
 	</script>
