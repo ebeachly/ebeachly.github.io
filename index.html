@@ -2608,7 +2608,7 @@
 			for (i = 0; i < cardsToSort.length; ++i)
 			{
 				//Is this card of a different class?
-				if (cardsToSort[i].getAttribute("purpose") != previousCardValue)
+				if (getPurposeLabel(cardsToSort[i]) != previousCardValue)
 				{
 					//Is this the end of a stack?
 					if (stackHeight > 0)
@@ -2624,7 +2624,7 @@
 					var label = Label(getPurposeLabel(cardsToSort[i]));
 					label.style.top = yOffset - 30 + 'px';
 					label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
-					previousCardValue = cardsToSort[i].getAttribute("purpose");
+					previousCardValue = getPurposeLabel(cardsToSort[i]);
 				}
 				//Add this card to the stack
 				//Reveal the card
