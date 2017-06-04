@@ -177,6 +177,21 @@
 			top: 445px;
 			position:absolute;
 		}
+		.analyze_card_button {
+			width: 180px;
+			height: 50px;
+			top: 445px;
+			position:absolute;
+		}
+
+		.horizontal_bar {
+			width: 180px;
+			height: 5px;
+			top: 440px;
+			position:absolute;
+			background-color: rgb(0,0,0);
+		}
+
 		.edit_card_control_panel {
 			width:180px;
 			height: 495px;
@@ -189,6 +204,134 @@
 			position: absolute;
 			background-color:rgb(127,127,127);
 			visibility: hidden;
+		}
+
+		.analyze_card_results {
+			position: absolute;
+			height: 264px;
+			width: 497px;
+			top: 495px;
+			left: -5px;
+			border: 5px solid rgb(0,0,0);
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			background-color:rgb(127,127,127);
+			visibility: hidden;
+		}
+
+		.graph_title {
+			position: absolute;
+			height: 24px;
+			width: 475px;
+			top: 0px;
+			left: 22px;
+			font-size: 20px;
+			text-align: center;
+		}
+
+		.vertical_axis_label {
+			position: absolute;
+			-webkit-transform: rotate(270deg);
+			-moz-transform: rotate(270deg);
+			-o-transform: rotate(270deg);
+			-ms-transform: rotate(270deg);
+			transform: rotate(270deg);
+			height: 22px;
+			width: 264px;
+			top: 121px;
+			left: -121px;
+			font-size: 18px;
+			text-align: center;
+		}
+
+		.horizontal_axis_label {
+			position: absolute;
+			height: 18px;
+			width: 475px;
+			bottom: 0px;
+			left: 22px;
+			font-size: 18px;
+			text-align: center;
+		}
+
+		.vertical_axis {
+			position: absolute;
+			height: 222px;
+			width: 3px;
+			top: 24px;
+			left: 22px;
+			background-color:rgb(0,0,0);
+		}
+
+		.horizontal_axis {
+			position: absolute;
+			height: 3px;
+			width: 470px;
+			bottom: 36px;
+			left: 25px;
+			background-color:rgb(0,0,0);
+		}
+
+		.axis_marker {
+			position: absolute;
+			font-size: 18px;
+			text-align: center;
+			height: 18px;
+			width: 25px;
+			bottom: 18px;
+			left: 26px;
+		}
+
+		.graph_bar {
+			position: absolute;
+			height: 200px;
+			width: 25px;
+			bottom: 39px;
+			left: 26px;
+			background-color:red;
+		}
+
+		.highlighted_graph_bar {
+			position: absolute;
+			height: 200px;
+			width: 25px;
+			bottom: 39px;
+			left: 26px;
+			background-color:red;
+			box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			border: 2px solid rgb(0,0,0);
+		}
+
+		.graph_bar_label_outside {
+			position: absolute;
+			-webkit-transform: rotate(270deg);
+			-moz-transform: rotate(270deg);
+			-o-transform: rotate(270deg);
+			-ms-transform: rotate(270deg);
+			transform: rotate(270deg);
+			height: 20px;
+			width: 100px;
+			top: -60px;
+			left: -38px;
+			text-align: left;
+			font-size: 18px;
+		}
+
+		.graph_bar_label_inside {
+			position: absolute;
+			-webkit-transform: rotate(270deg);
+			-moz-transform: rotate(270deg);
+			-o-transform: rotate(270deg);
+			-ms-transform: rotate(270deg);
+			transform: rotate(270deg);
+			height: 20px;
+			width: 100px;
+			top: 40px;
+			left: -38px;
+			text-align: right;
+			font-size: 18px;
 		}
 
 		.card{
@@ -318,6 +461,8 @@
 			<div id="nonland menu">
 				&nbspCasting Cost:<br>
 				&nbsp<input type="text" id="casting cost input" value=""/><br>
+				<div id="horizontal bar" class="horizontal_bar"></div>
+				<button class="bottom analyze_card_button" onclick="analyzeCard()">Analyze</button>
 			</div>
 			<div id="permanent menu">
 				&nbsp<label><input type="checkbox" id="commander checkbox" />Commander</label><br>
@@ -326,6 +471,49 @@
 				&nbspFlip Image URL:<br>
 				&nbsp<input type="text" id="card back input" value=""/><br>
 			</div>
+		</div>
+		<div id="analyze card results" class="analyze_card_results">
+			<div id="graph title" class="graph_title">Probability you can cast this card</div>
+			<div id="vertical axis label" class="vertical_axis_label">% Chance of having the right lands</div>
+			<div id="horizontal axis label" class="horizontal_axis_label">Number of cards drawn from deck</div>
+			<div id="vertical axis" class="vertical_axis"></div>
+			<div id="horizontal axis" class="horizontal_axis"></div>
+			<div id="axis 0 marker" class="axis_marker" style="left:26px">0</div>
+			<div id="axis 1 marker" class="axis_marker" style="left:52px">1</div>
+			<div id="axis 2 marker" class="axis_marker" style="left:78px">2</div>
+			<div id="axis 3 marker" class="axis_marker" style="left:104px">3</div>
+			<div id="axis 4 marker" class="axis_marker" style="left:130px">4</div>
+			<div id="axis 5 marker" class="axis_marker" style="left:156px">5</div>
+			<div id="axis 6 marker" class="axis_marker" style="left:182px">6</div>
+			<div id="axis 7 marker" class="axis_marker" style="left:208px">7</div>
+			<div id="axis 8 marker" class="axis_marker" style="left:234px">8</div>
+			<div id="axis 9 marker" class="axis_marker" style="left:260px">9</div>
+			<div id="axis 10 marker" class="axis_marker" style="left:286px">10</div>
+			<div id="axis 11 marker" class="axis_marker" style="left:312px">11</div>
+			<div id="axis 12 marker" class="axis_marker" style="left:338px">12</div>
+			<div id="axis 13 marker" class="axis_marker" style="left:364px">13</div>
+			<div id="axis 14 marker" class="axis_marker" style="left:390px">14</div>
+			<div id="axis 15 marker" class="axis_marker" style="left:416px">15</div>
+			<div id="axis 16 marker" class="axis_marker" style="left:442px">16</div>
+			<div id="axis 17 marker" class="axis_marker" style="left:468px">17</div>
+			<div id="graph 0 bar" class="graph_bar" style="left:26px"><div id="graph 0 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 1 bar" class="graph_bar" style="left:52px"><div id="graph 1 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 2 bar" class="graph_bar" style="left:78px"><div id="graph 2 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 3 bar" class="graph_bar" style="left:104px"><div id="graph 3 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 4 bar" class="graph_bar" style="left:130px"><div id="graph 4 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 5 bar" class="graph_bar" style="left:156px"><div id="graph 5 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 6 bar" class="graph_bar" style="left:182px"><div id="graph 6 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 7 bar" class="graph_bar" style="left:208px"><div id="graph 7 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 8 bar" class="graph_bar" style="left:234px"><div id="graph 8 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 9 bar" class="graph_bar" style="left:260px"><div id="graph 9 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 10 bar" class="graph_bar" style="left:286px"><div id="graph 10 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 11 bar" class="graph_bar" style="left:312px"><div id="graph 11 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 12 bar" class="graph_bar" style="left:338px"><div id="graph 12 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 13 bar" class="graph_bar" style="left:364px"><div id="graph 13 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 14 bar" class="graph_bar" style="left:390px"><div id="graph 14 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 15 bar" class="graph_bar" style="left:416px"><div id="graph 15 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 16 bar" class="graph_bar" style="left:442px"><div id="graph 16 bar label" class="graph_bar_label_outside"></div></div>
+			<div id="graph 17 bar" class="graph_bar" style="left:468px"><div id="graph 17 bar label" class="graph_bar_label_outside"></div></div>
 		</div>
 	</div>
 	
@@ -1060,6 +1248,7 @@
 				document.getElementById('permanent menu').style.visibility = 'hidden';
 				document.getElementById("edit card control panel").style.visibility = 'hidden';
 			}
+			document.getElementById('analyze card results').style.visibility = 'hidden';
 		}
 
 		function viewEditCard()
@@ -1602,6 +1791,7 @@
 			this.h2g = 0;
 			this.total = 0;
 			this.colorBitVector = 0;
+			this.coloredSymbolBitVectors = [];
 
 			if(manaCostString != null)
 			{
@@ -1617,68 +1807,89 @@
 					} else if (lc_manaCostString[c] == 'w') {
 						this.w++;
 						this.colorBitVector |= 0x01;
+						this.coloredSymbolBitVectors.push(0x01);
 					} else if (lc_manaCostString[c] == 'u') {
 						this.u++;
 						this.colorBitVector |= 0x02;
+						this.coloredSymbolBitVectors.push(0x02);
 					} else if (lc_manaCostString[c] == 'b') {
 						this.b++;
 						this.colorBitVector |= 0x04;
+						this.coloredSymbolBitVectors.push(0x04);
 					} else if (lc_manaCostString[c] == 'r') {
 						this.r++;
 						this.colorBitVector |= 0x08;
+						this.coloredSymbolBitVectors.push(0x08);
 					} else if (lc_manaCostString[c] == 'g') {
 						this.g++;
 						this.colorBitVector |= 0x10;
+						this.coloredSymbolBitVectors.push(0x10);
 					} else if (lc_manaCostString[c] == 'c') {
 						this.c++;
 						this.colorBitVector |= 0x20;
+						this.coloredSymbolBitVectors.push(0x20);
 					} else if (lc_manaCostString[c] == '{' && (c+5) <= lc_manaCostString.length) {
 						var substring = lc_manaCostString.substring(c,c+5);
 						if ( substring       == "{w/u}") {
 							this.wu++;
 							this.colorBitVector |= 0x03;
+							this.coloredSymbolBitVectors.push(0x03);
 						} else if (substring == "{u/b}") {
 							this.ub++;
 							this.colorBitVector |= 0x06;
+							this.coloredSymbolBitVectors.push(0x06);
 						} else if (substring == "{b/r}") {
 							this.br++;
 							this.colorBitVector |= 0x0C;
+							this.coloredSymbolBitVectors.push(0x0C);
 						} else if (substring == "{r/g}") {
 							this.rg++;
 							this.colorBitVector |= 0x18;
+							this.coloredSymbolBitVectors.push(0x18);
 						} else if (substring == "{g/w}") {
 							this.gw++;
 							this.colorBitVector |= 0x11;
+							this.coloredSymbolBitVectors.push(0x11);
 						} else if (substring == "{w/b}") {
 							this.wb++;
 							this.colorBitVector |= 0x05;
+							this.coloredSymbolBitVectors.push(0x05);
 						} else if (substring == "{u/r}") {
 							this.ur++;
 							this.colorBitVector |= 0x0A;
+							this.coloredSymbolBitVectors.push(0x0A);
 						} else if (substring == "{b/g}") {
 							this.bg++;
 							this.colorBitVector |= 0x14;
+							this.coloredSymbolBitVectors.push(0x14);
 						} else if (substring == "{r/w}") {
 							this.rw++;
 							this.colorBitVector |= 0x09;
+							this.coloredSymbolBitVectors.push(0x09);
 						} else if (substring == "{g/u}") {
 							this.gu++;
 							this.colorBitVector |= 0x12;
+							this.coloredSymbolBitVectors.push(0x12);
 						} else if (substring == "{2/w}") {
 							this.h2w++;
 							this.colorBitVector |= 0x01;
+							this.coloredSymbolBitVectors.push(0x01);
 						} else if (substring == "{2/u}") {
 							this.h2u++;
 							this.colorBitVector |= 0x02;
+							this.coloredSymbolBitVectors.push(0x02);
 						} else if (substring == "{2/b}") {
 							this.h2b++;
 							this.colorBitVector |= 0x04;
+							this.coloredSymbolBitVectors.push(0x04);
 						} else if (substring == "{2/r}") {
 							this.h2r++;
 							this.colorBitVector |= 0x08;
+							this.coloredSymbolBitVectors.push(0x08);
 						} else if (substring == "{2/g}") {
 							this.h2g++;
 							this.colorBitVector |= 0x10;
+							this.coloredSymbolBitVectors.push(0x10);
 						}
 						c += 4;
 					}
@@ -2466,6 +2677,475 @@
 			deselectAll();
 		}
 
+		//Precompute binomial coefficients for dat speed
+		var pascalsTriangle = [[1]];
+		function computePascalsTriangleUpTo( nn )
+		{
+			//For each row
+			var n = pascalsTriangle.length;
+			for (n = pascalsTriangle.length; n <= nn; ++n)
+			{
+				var row = [];
+				row.push(1);
+				var k = 1;
+				for (k = 1; k < n; ++k)
+				{
+					row.push(pascalsTriangle[n-1][k-1] + pascalsTriangle[n-1][k]);
+				}
+				row.push(1);
+				pascalsTriangle.push(row);
+			}
+		}
+
+		function nChooseK(n,k)
+		{
+			if (k > n)
+			{
+				return 0;
+			} else if (k < 0) {
+				return 0;
+			} else if (n < 0) {
+				return 0;
+			} else {
+				return pascalsTriangle[n][k];
+			}
+		}
+
+		//Given a deck of nn cards, m of which are cards you want. What is the probability that if you draw n cards, x are the kind you want?
+		function hypergeometricDistribution(successesInSample, successesInPopulation, sampleSize, populationSize) {
+			computePascalsTriangleUpTo(populationSize);
+			return nChooseK(successesInPopulation, successesInSample) * nChooseK(populationSize - successesInPopulation, sampleSize - successesInSample) / nChooseK(populationSize, sampleSize);
+		}
+
+		//A class to represent a set of lands that can all produce the same mana. (How many UW duals do I have?)
+		var LandCount = function(manaProductionBitVector)
+		{
+			this.manaProductionBitVector = manaProductionBitVector;
+			this.count = 1;
+		}
+
+		//A class to represent how many times a kind of land appears in a combination that can pay a cost.
+		var LandCountCount = function(landCount, count)
+		{
+			this.landCount = landCount;
+			this.count = count;
+		}
+
+		var maxNumLands = 18;
+		function computeCastingProbabilitiesOfCard(cardElement)
+		{
+			//console.log("Name: " +cardElement.getAttribute('name'));
+			//Get the cost of the currently selected card
+			var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+			//console.log("Total Cost: " + cost.total);
+			//Get whether this card is a commander
+			var isCommander = cardElement.getAttribute('commander') == 'true';
+			//console.log("Is Commander: " + cardElement.getAttribute('commander'));
+			//Count how many non-commander non-token cards are on the playmat.
+			var numCardsInDeck = 0;
+			var numUsefulLandsInDeck = 0;
+			//Also count the mana production available
+			var manaProduction = [];
+
+			//Get all the elements on the playmat
+			var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+			//Figure out which of the elements are cards
+			var i = 0;
+			var j = 0;
+			var k = 0;
+			for (i = 0; i < elementsOnMat.length; ++i)
+			{
+				//Check that the element is a card
+				if (hasClass(elementsOnMat[i], "card"))
+				{
+					//Check that it's not a token
+					if (elementsOnMat[i].getAttribute("token") != 'true')
+					{
+						//Check that it's not a commander
+						if (elementsOnMat[i].getAttribute("commander") != 'true')
+						{
+							numCardsInDeck = numCardsInDeck + 1;
+						}
+						//Check if it's a land
+						if (elementsOnMat[i].getAttribute("land") == 'true')
+						{
+							//Get the mana production bitvector from it
+							var manaProductionBitVector = parseInt(elementsOnMat[i].getAttribute('mana_production_bitvector'));
+							if (manaProductionBitVector != 0)
+							{
+								//Filter the manaProductionBitVector by the colors mentioned in the cost.
+								var filteredManaProductionBitVector = manaProductionBitVector & cost.colorBitVector;
+								//If generic mana is part of the cost, each land can be used to produce generic mana
+								if (cost.generic > 0)
+								{
+									filteredManaProductionBitVector = filteredManaProductionBitVector | 0x40;
+								}
+								//Check if this land helps us pay the cost
+								if (filteredManaProductionBitVector != 0)
+								{
+									++numUsefulLandsInDeck;
+									//Check to see if we've recorded this cost
+									var found = false;
+									for ( j = 0; j < manaProduction.length; ++j)
+									{
+										//If this previously added production matches,
+										if (manaProduction[j].manaProductionBitVector == filteredManaProductionBitVector)
+										{
+											//Increment the count of lands that have this kind of production
+											++manaProduction[j].count;
+											found = true;
+											break;
+										}
+									}
+									//If we haven't found it, add it
+									if (!found)
+									{
+										manaProduction.push(new LandCount(filteredManaProductionBitVector));
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			//Assume we've already drawn the card from the deck
+			if (!isCommander)
+			{
+				numCardsInDeck = numCardsInDeck - 1;
+			}
+
+			//Precompute binomial coefficients
+			computePascalsTriangleUpTo(numCardsInDeck);
+
+			//console.log("Cards in Deck: " + numCardsInDeck);
+			//var manaProductionToString = "Lands: "
+			//for (j = 0; j < manaProduction.length; ++j)
+			//{
+			//	manaProductionToString = manaProductionToString + manaProduction[j].count +  ":" + manaProduction[j].manaProductionBitVector + " ";
+			//}
+			//console.log(manaProductionToString);
+
+			//Generate all combinations of up to maxNumLands lands that can't cast it
+			var combinationsThatCantCast = [];
+			var missingColorRequirement = false;
+			if (cost.total > 0 && cost.total < maxNumLands)
+			{
+				//Consider combinations that just don't have enough lands
+				var numSubCombinations = Math.pow(cost.total, manaProduction.length);
+				for ( i = 0; i < numSubCombinations; ++i)
+				{
+					var combo = [];
+					var quotient = i;
+					var sumAmountOfManaProduction = 0;
+					//Generate the number of lands of each kind that this combination represents
+					for (j = 0; j < manaProduction.length; ++j )
+					{
+						var amountOfThisManaProduction = quotient % cost.total;
+						quotient = (quotient - amountOfThisManaProduction) / cost.total;
+						sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
+						combo.push(amountOfThisManaProduction);
+					}
+					
+					//If this isn't enough lands
+					if (sumAmountOfManaProduction < cost.total) {
+						//Save this combination as one that can't pay the cost
+						combinationsThatCantCast.push(combo);
+					}
+				}
+
+				function generateLandCombinations(numColorSymbols, colorBitVector)
+				{
+					//Consider combinations that don't satisfy color requirements
+					//First, check if there's any of this symbol. Also check if doing this isn't pointless
+					if (numColorSymbols > 0 && !missingColorRequirement) {
+						//console.log("Processing Color: " + colorBitVector);
+						//console.log("Num Symbols: " + numColorSymbols);
+						//Split the lands into ones that can pay these symbols, and ones that cannot
+						var colorProducers = [];
+						var others = [];
+						for (i = 0; i < manaProduction.length; ++i)
+						{
+							if (manaProduction[i].manaProductionBitVector & colorBitVector)	//Check if this land type produces a satisfactory color
+							{
+								colorProducers.push(i);
+							} else {
+								others.push(i);
+							}
+						}
+						//for (i = 0; i < colorProducers.length; ++i)
+						//{
+						//	console.log("Color Producing Land: " + manaProduction[colorProducers[i]].manaProductionBitVector);
+						//}
+						//for (i = 0; i < others.length; ++i)
+						//{
+						//	console.log("Other Land: " + manaProduction[others[i]].manaProductionBitVector);
+						//}
+						if (colorProducers.length == 0)
+						{
+							missingColorRequirement = true;
+							return;
+						}
+						//If there are fewer than cost.w white producing lands, you can't cast it.
+						//Generate all combinations of cost.w - 1 white-producing lands
+						var numSubCombinations = Math.pow(numColorSymbols, colorProducers.length);
+						for (i = 0; i < numSubCombinations; ++i)
+						{
+							var subCombo = [];
+							var quotient = i;
+							var sumAmountOfManaProduction = 0;
+							for (j = 0; j < colorProducers.length; ++j)
+							{
+								var amountOfThisManaProduction = quotient % numColorSymbols;
+								quotient = (quotient - amountOfThisManaProduction) / numColorSymbols;
+								sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
+								subCombo.push(amountOfThisManaProduction);
+							}
+
+							//var comboToString = "Insufficient color producer combo: "
+							//for (j = 0; j < subCombo.length; ++j)
+							//{
+							//	comboToString = comboToString + subCombo[j] +  ":" + manaProduction[colorProducers[j]].manaProductionBitVector + " ";
+							//}
+							//console.log(comboToString);
+
+							//If this isn't enough lands of the color we need
+							if (sumAmountOfManaProduction < numColorSymbols)
+							{
+								//Generate all combinations of the other land types
+								var numSubCombinations2 = Math.pow(maxNumLands, others.length);
+								for (j = 0; j < numSubCombinations2; ++j)
+								{
+									var subCombo2 = [];
+									quotient = j;
+									var sumAmountOfManaProduction2 = sumAmountOfManaProduction;
+									for (k = 0; k < others.length; ++k)
+									{
+										var amountOfThisManaProduction = quotient % maxNumLands;
+										quotient = (quotient - amountOfThisManaProduction) / maxNumLands;
+										sumAmountOfManaProduction2 = sumAmountOfManaProduction2 + amountOfThisManaProduction;
+										subCombo2.push(amountOfThisManaProduction);
+									}
+									//Check that we didn't already cover this combo with the generic case
+									if ( sumAmountOfManaProduction2 >= cost.total)
+									{
+										//Generate the complete combo
+										var combo = [];
+										for (k = 0; k < colorProducers.length; ++k)
+										{
+											combo[colorProducers[k]] = subCombo[k];
+										}
+										for (k = 0; k < others.length; ++k)
+										{
+											combo[others[k]] = subCombo2[k];
+										}
+										//Add the combo
+										combinationsThatCantCast.push(combo);
+									}
+								}
+							}
+						}
+					}
+				} //End function
+
+				//Generate the combinations of that can't cast each mana requirement
+				generateLandCombinations(cost.w, 0x01);
+				generateLandCombinations(cost.u, 0x02);
+				generateLandCombinations(cost.b, 0x04);
+				generateLandCombinations(cost.r, 0x08);
+				generateLandCombinations(cost.g, 0x10);
+				generateLandCombinations(cost.c, 0x20);
+				//Generate the combinations of lands that can't cast each hybrid mana requirement
+				//WARNING: This assumes that you have no other costs of the hybrid mana's colors.
+				generateLandCombinations(cost.wu, 0x01 | 0x02);
+				generateLandCombinations(cost.ub, 0x02 | 0x04);
+				generateLandCombinations(cost.br, 0x04 | 0x08);
+				generateLandCombinations(cost.rg, 0x08 | 0x10);
+				generateLandCombinations(cost.gw, 0x10 | 0x01);
+				generateLandCombinations(cost.wb, 0x01 | 0x04);
+				generateLandCombinations(cost.ur, 0x02 | 0x08);
+				generateLandCombinations(cost.bg, 0x04 | 0x10);
+				generateLandCombinations(cost.rw, 0x08 | 0x01);
+				generateLandCombinations(cost.gu, 0x10 | 0x02);
+			}
+
+			//Sort the combos by the number of lands
+			combinationsThatCantCast.sort(
+				function(a,b){
+					//Compute the number of lands in each combo
+					var aSum = 0;
+					var bSum = 0;
+					var i = 0;
+					var equal = true;
+					var aHigher = false;
+					for (i = 0; i < a.length; ++i)
+					{
+						if (equal && a[i] != b[i])
+						{
+							equal = false;
+							if (a[i] > b[i])
+							{
+								aHigher = true;
+							}
+						}
+						aSum = aSum + a[i];
+						bSum = bSum + b[i];
+					}
+
+					if (aSum == bSum)
+					{
+						//Tiebreaker. Ensures duplicate combinations are adjacent for easier detection
+						if (aHigher)
+						{
+							return -1;
+						} else {
+							return 1;
+						}
+					} else {
+						return aSum - bSum;
+					}
+				}
+			);
+
+			//console.log("Num Combinations: " + combinationsThatCantCast.length);
+
+			/*for (i = 0; i < combinationsThatCantCast.length; ++i)
+			{
+				var comboToString = ""
+				for (j = 0; j < combinationsThatCantCast[i].length; ++j)
+				{
+					comboToString = comboToString + combinationsThatCantCast[i][j] +  ":" + manaProduction[j].manaProductionBitVector + " ";
+				}
+				console.log(comboToString);
+			}*/
+
+			//Plot the probabilities
+			var castingProbabilities = [];
+			var cardsDrawnFromDeck = 0;
+			//For each sample size
+			for (cardsDrawnFromDeck = 0; cardsDrawnFromDeck < maxNumLands; ++cardsDrawnFromDeck)
+			{
+				if (isCommander)
+				{
+					sampleSize = cardsDrawnFromDeck;
+				} else {
+					sampleSize = cardsDrawnFromDeck - 1;
+				}
+				//Is the samplesize even big enough for the mana cost? Also check if we aren't missing a mana color
+				if (sampleSize < cost.total || missingColorRequirement)
+				{
+					castingProbabilities.push(0);
+				} else {
+					//For each combination
+					var c = 0;
+					var sum = 0;
+					for (c = 0; c < combinationsThatCantCast.length; ++c) {
+						var duplicate = true;
+						var numLandsInCombination = 0;
+						if (c != 0)
+						{
+							//Compare this combination to the previous to check for duplicates
+							for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+							{
+								if (combinationsThatCantCast[c - 1][i] != combinationsThatCantCast[c][i])
+								{
+									duplicate = false;
+								}
+								numLandsInCombination = numLandsInCombination + combinationsThatCantCast[c][i];
+							}
+						} else {
+							duplicate = false;
+							for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+							{
+								numLandsInCombination = numLandsInCombination + combinationsThatCantCast[c][i];
+							}
+						}
+						//If the lands in the combination outnumber the sample size
+						if (numLandsInCombination > sampleSize)
+						{
+							//Don't need to consider any more combinations
+							break;
+						}
+						//Check that this combination isn't a duplicate of the previous
+						if (!duplicate)
+						{
+							//Compute the term this combination contributes to the sum
+							//First compute the term that represents the dead cards
+							var product = nChooseK(numCardsInDeck - numUsefulLandsInDeck, sampleSize - numLandsInCombination);
+							for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+							{
+								product = product * nChooseK(manaProduction[i].count, combinationsThatCantCast[c][i]);
+							}
+							sum = sum + product;
+						}
+					}
+					//Divide by the denominator
+					var probabilityCantCast = sum / nChooseK(numCardsInDeck, sampleSize);
+					castingProbabilities.push(1 - probabilityCantCast);
+				}
+			}
+
+			//for (i = 0; i < castingProbabilities.length; ++i)
+			//{
+			//	console.log("After drawing " + i + " cards: " + castingProbabilities[i] * 100 + "%");
+			//}
+
+			return castingProbabilities;
+		}
+
+		function analyzeCard(){
+			//Save the changes
+			saveEditCardSettings();
+			var castingProbabilities = computeCastingProbabilitiesOfCard(selectedCard);
+			//Get the mana cost again
+			var cost = new ManaCost(selectedCard.getAttribute('casting_cost'));
+			//Figure out the first turn you can cast this on
+			var cardsDrawnByTheTurnYouCanCastIt = 6 + cost.total;
+			if (cardsDrawnByTheTurnYouCanCastIt < 7)
+			{
+				cardsDrawnByTheTurnYouCanCastIt = 7;
+			}
+
+			//For each number of cards drawn from deck
+			var i = 0;
+			for (i = 0; i < castingProbabilities.length; ++i)
+			{
+				//Set this bar's height
+				var barElement = document.getElementById('graph ' + i + ' bar');
+				var barLabelElement = document.getElementById('graph ' + i + ' bar label');
+				barElement.style.height = (200 * castingProbabilities[i]) + 'px';
+				barLabelElement.innerHTML = '&nbsp' + (Math.round(10000*castingProbabilities[i])/100) + '&nbsp';
+				if (castingProbabilities[i] <= 0.5) {
+					barElement.style.background = 'red';
+					barLabelElement.className = 'graph_bar_label_outside';
+				} else if (castingProbabilities[i] <= 0.6) {
+					barElement.style.background = 'orange';
+					barLabelElement.className = 'graph_bar_label_inside';
+				} else if (castingProbabilities[i] <= 0.7) {
+					barElement.style.background = 'yellow';
+					barLabelElement.className = 'graph_bar_label_inside';
+				} else if (castingProbabilities[i] <= 0.8) {
+					barElement.style.background = 'green';
+					barLabelElement.className = 'graph_bar_label_inside';
+				} else if (castingProbabilities[i] <= 0.9) {
+					barElement.style.background = 'rgb(0, 46, 255)';
+					barLabelElement.className = 'graph_bar_label_inside';
+				} else {
+					barElement.style.background = 'purple';
+					barLabelElement.className = 'graph_bar_label_inside';
+				}
+				if (i == cardsDrawnByTheTurnYouCanCastIt)
+				{
+					barElement.className = 'highlighted_graph_bar';
+				} else {
+					barElement.className = 'graph_bar';
+				}
+			}
+
+			//Make the graph visible
+			document.getElementById('analyze card results').style.visibility = 'visible';
+		}
 
 		//Main
 		window.onload = function() {
