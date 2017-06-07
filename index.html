@@ -432,9 +432,9 @@
 	<div id="card info popup" class="card_info_popup">
 		<img id="magnified card view" class="magnfied_card_view" src=""/>
 		<div id="card info control panel" class="card_popup_control_panel">
-			<button class="bottom left card_popup_control_panel_button" onclick="copyCard()">Copy</button>
-			<button class="bottom secondleft card_popup_control_panel_button" onclick="toggleEditCard()">Edit</button>
-			<button class="bottom right card_popup_control_panel_button" onclick="deleteCard()">Delete</button>
+			<button class="bottom left card_popup_control_panel_button" onclick="deleteCard()">Delete</button>
+			<button class="bottom secondleft card_popup_control_panel_button" onclick="copyCard()">Copy</button>
+			<button class="bottom right card_popup_control_panel_button" onclick="toggleEditCard()">Edit</button>
 		</div>
 		<div id="edit card control panel" class="edit_card_control_panel">
 			&nbspCard Name:<br>
@@ -1187,6 +1187,7 @@
 
 		function hideCardInfoMenu() {
 			hideEditCard();
+			numCopies = 0;
 			document.getElementById('card info popup').style.visibility = 'hidden';
 		}
 
@@ -1460,12 +1461,15 @@
 		    }
 		}
 
+		var numCopies = 0;
 		function copyCard() {
 			var clone = selectedCard.cloneNode(true);
 			clone.addEventListener("mousedown", mouseDownCard);
 			clone.addEventListener("mouseup", mouseUpCard);
 			clone.addEventListener("mouseenter", mouseEnterCard);
 			clone.addEventListener("mouseleave", mouseLeaveCard);
+			++numCopies;
+			clone.style.top = parseInt(clone.style.top) + nameHeight*numCopies + "px";
 			selectedCard.parentNode.appendChild(clone);
 		}
 
@@ -3054,6 +3058,7 @@
 					maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
 					numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
 				}
+				//TODO: This considers 6+ times as many combinations as it actually needs to. Can this be optimized?
 				for ( i = 0; i < numSubCombinations; ++i)
 				{
 					var combo = [];
