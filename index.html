@@ -2939,13 +2939,6 @@
 			this.count = 1;
 		}
 
-		//A class to represent how many times a kind of land appears in a combination that can pay a cost.
-		var LandCountCount = function(landCount, count)
-		{
-			this.landCount = landCount;
-			this.count = count;
-		}
-
 		var maxNumLands = 18;
 		function computeCastingProbabilitiesOfCard(cardElement)
 		{
@@ -3048,7 +3041,19 @@
 			if (cost.total > 0 && cost.total < maxNumLands)
 			{
 				//Consider combinations that just don't have enough lands
-				var numSubCombinations = Math.pow(cost.total, manaProduction.length);
+				var numSubCombinations = 1;
+				//Only need to consider combinations that don't exceed the number of each kind of land in our deck
+				var maxOfEachProductionToConsider = [];
+				for (i = 0; i < manaProduction.length; ++i)
+				{
+					var maxOfThisProductionToConsider = manaProduction[i].count + 1;	//Need to add one because the modulo operation won't reach a combination with .count otherwise
+					if (maxOfThisProductionToConsider > cost.total)
+					{
+						maxOfThisProductionToConsider = cost.total;
+					}
+					maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+					numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+				}
 				for ( i = 0; i < numSubCombinations; ++i)
 				{
 					var combo = [];
@@ -3057,8 +3062,8 @@
 					//Generate the number of lands of each kind that this combination represents
 					for (j = 0; j < manaProduction.length; ++j )
 					{
-						var amountOfThisManaProduction = quotient % cost.total;
-						quotient = (quotient - amountOfThisManaProduction) / cost.total;
+						var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+						quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
 						sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
 						combo.push(amountOfThisManaProduction);
 					}
@@ -3104,7 +3109,18 @@
 						}
 						//If there are fewer than cost.w white producing lands, you can't cast it.
 						//Generate all combinations of cost.w - 1 white-producing lands
-						var numSubCombinations = Math.pow(numColorSymbols, colorProducers.length);
+						var numSubCombinations = 1;
+						var maxOfEachProductionToConsider = [];
+						for (i = 0; i < colorProducers.length; ++i)
+						{
+							var maxOfThisProductionToConsider = manaProduction[colorProducers[i]].count + 1;
+							if (maxOfThisProductionToConsider > numColorSymbols)
+							{
+								maxOfThisProductionToConsider = numColorSymbols;
+							}
+							maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+							numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+						}
 						for (i = 0; i < numSubCombinations; ++i)
 						{
 							var subCombo = [];
@@ -3112,8 +3128,8 @@
 							var sumAmountOfManaProduction = 0;
 							for (j = 0; j < colorProducers.length; ++j)
 							{
-								var amountOfThisManaProduction = quotient % numColorSymbols;
-								quotient = (quotient - amountOfThisManaProduction) / numColorSymbols;
+								var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+								quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
 								sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
 								subCombo.push(amountOfThisManaProduction);
 							}
@@ -3129,7 +3145,18 @@
 							if (sumAmountOfManaProduction < numColorSymbols)
 							{
 								//Generate all combinations of the other land types
-								var numSubCombinations2 = Math.pow(maxNumLands, others.length);
+								var numSubCombinations2 = 1;
+								var maxOfEachProductionToConsider2 = [];
+								for (j = 0; j < others.length; ++j)
+								{
+									var maxOfThisProductionToConsider2 = manaProduction[others[j]].count + 1;
+									if (maxOfThisProductionToConsider2 > maxNumLands)
+									{
+										maxOfThisProductionToConsider2 = maxNumLands;
+									}
+									maxOfEachProductionToConsider2.push(maxOfThisProductionToConsider2);
+									numSubCombinations2 = numSubCombinations2 * maxOfThisProductionToConsider2;
+								}
 								for (j = 0; j < numSubCombinations2; ++j)
 								{
 									var subCombo2 = [];
@@ -3137,8 +3164,8 @@
 									var sumAmountOfManaProduction2 = sumAmountOfManaProduction;
 									for (k = 0; k < others.length; ++k)
 									{
-										var amountOfThisManaProduction = quotient % maxNumLands;
-										quotient = (quotient - amountOfThisManaProduction) / maxNumLands;
+										var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider2[k];
+										quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider2[k];
 										sumAmountOfManaProduction2 = sumAmountOfManaProduction2 + amountOfThisManaProduction;
 										subCombo2.push(amountOfThisManaProduction);
 									}
@@ -3417,7 +3444,19 @@
 			if (cost.total > 0 && cost.total < cardsDrawnFromDeck)
 			{
 				//Consider combinations that just don't have enough lands
-				var numSubCombinations = Math.pow(cost.total, manaProduction.length);
+				var numSubCombinations = 1;
+				//Only need to consider combinations that don't exceed the number of each kind of land in our deck
+				var maxOfEachProductionToConsider = [];
+				for (i = 0; i < manaProduction.length; ++i)
+				{
+					var maxOfThisProductionToConsider = manaProduction[i].count + 1;	//Need to add one because the modulo operation won't reach a combination with .count otherwise
+					if (maxOfThisProductionToConsider > cost.total)
+					{
+						maxOfThisProductionToConsider = cost.total;
+					}
+					maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+					numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+				}
 				for ( i = 0; i < numSubCombinations; ++i)
 				{
 					var combo = [];
@@ -3426,8 +3465,8 @@
 					//Generate the number of lands of each kind that this combination represents
 					for (j = 0; j < manaProduction.length; ++j )
 					{
-						var amountOfThisManaProduction = quotient % cost.total;
-						quotient = (quotient - amountOfThisManaProduction) / cost.total;
+						var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+						quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
 						sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
 						combo.push(amountOfThisManaProduction);
 					}
@@ -3473,7 +3512,18 @@
 						}
 						//If there are fewer than cost.w white producing lands, you can't cast it.
 						//Generate all combinations of cost.w - 1 white-producing lands
-						var numSubCombinations = Math.pow(numColorSymbols, colorProducers.length);
+						var numSubCombinations = 1;
+						var maxOfEachProductionToConsider = [];
+						for (i = 0; i < colorProducers.length; ++i)
+						{
+							var maxOfThisProductionToConsider = manaProduction[colorProducers[i]].count + 1;
+							if (maxOfThisProductionToConsider > numColorSymbols)
+							{
+								maxOfThisProductionToConsider = numColorSymbols;
+							}
+							maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+							numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+						}
 						for (i = 0; i < numSubCombinations; ++i)
 						{
 							var subCombo = [];
@@ -3481,8 +3531,8 @@
 							var sumAmountOfManaProduction = 0;
 							for (j = 0; j < colorProducers.length; ++j)
 							{
-								var amountOfThisManaProduction = quotient % numColorSymbols;
-								quotient = (quotient - amountOfThisManaProduction) / numColorSymbols;
+								var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+								quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
 								sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
 								subCombo.push(amountOfThisManaProduction);
 							}
@@ -3498,7 +3548,18 @@
 							if (sumAmountOfManaProduction < numColorSymbols)
 							{
 								//Generate all combinations of the other land types
-								var numSubCombinations2 = Math.pow(cardsDrawnFromDeck, others.length);
+								var numSubCombinations2 = 1;
+								var maxOfEachProductionToConsider2 = [];
+								for (j = 0; j < others.length; ++j)
+								{
+									var maxOfThisProductionToConsider2 = manaProduction[others[j]].count + 1;
+									if (maxOfThisProductionToConsider2 > cardsDrawnFromDeck)
+									{
+										maxOfThisProductionToConsider2 = cardsDrawnFromDeck;
+									}
+									maxOfEachProductionToConsider2.push(maxOfThisProductionToConsider2);
+									numSubCombinations2 = numSubCombinations2 * maxOfThisProductionToConsider2;
+								}
 								for (j = 0; j < numSubCombinations2; ++j)
 								{
 									var subCombo2 = [];
@@ -3506,8 +3567,8 @@
 									var sumAmountOfManaProduction2 = sumAmountOfManaProduction;
 									for (k = 0; k < others.length; ++k)
 									{
-										var amountOfThisManaProduction = quotient % cardsDrawnFromDeck;
-										quotient = (quotient - amountOfThisManaProduction) / cardsDrawnFromDeck;
+										var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider2[k];
+										quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider2[k];
 										sumAmountOfManaProduction2 = sumAmountOfManaProduction2 + amountOfThisManaProduction;
 										subCombo2.push(amountOfThisManaProduction);
 									}
