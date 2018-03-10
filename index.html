@@ -522,1378 +522,3373 @@
 	<div id="counter_container" numcounters="0">
 		<div class="counter draggable" id="counter_template"><div class="value" onmousedown="dragCounter()">1</div><button class="increment btn" onclick="incrementCounter()">+</button><button class="decrement btn" onclick="decrementCounter()">-</button></div>
 	</div>
-	<script type="text/javascript" src="utilities.js"></script>
-	<script type="text/javascript" src="analysis.js"></script>
-	<script type="text/javascript" src="sorting.js"></script>
+	
 	<script>
-		var clickedElement;
-		var cardWidth = 212; //156
-		var cardHeight = 296; //222
-		var nameHeight = 29; //22
-		
-		function togglePreferences(){
-			var preferencesMenu = document.getElementById("preferences menu");
-			var startingLife = document.getElementById("starting life");
-			var cardSleeve = document.getElementById("card sleeve image");
-			startingLife.setAttribute("value", startingLife.value);
-			cardSleeve.setAttribute("value", cardSleeve.value);
-			toggleVisibility(preferencesMenu);
-		}
+var clickedElement;
+var cardWidth = 212; //156
+var cardHeight = 296; //222
+var nameHeight = 29; //22
 
-		function toggleDeleteConfirmationMenu(){
-			var deleteConfirmationMenu = document.getElementById("delete confirmation menu");
-			toggleVisibility(deleteConfirmationMenu);
-		}
+/*
+  _    _ _   _ _ _   _           
+ | |  | | | | (_) | (_)          
+ | |  | | |_| |_| |_ _  ___  ___ 
+ | |  | | __| | | __| |/ _ \/ __|
+ | |__| | |_| | | |_| |  __/\__ \
+  \____/ \__|_|_|\__|_|\___||___/
+                                 
+*/                 
 
-		function deleteSelectionAndCloseConfirmationMenu(){
-			deleteSelection();
-			toggleDeleteConfirmationMenu();
-		}
-		
-		function incrementCounter(e){
-			var sender = (e && e.target) || (window.event && window.event.srcElement);
-			var counter = sender.parentNode;
-			var input = counter.childNodes[0];
-			input.innerHTML = parseInt(input.innerHTML)+1;
-		}
-		
-		function decrementCounter(e){
-			var sender = (e && e.target) || (window.event && window.event.srcElement);
-			var counter = sender.parentNode;
-			var input = counter.childNodes[0];
-			input.innerHTML = parseInt(input.innerHTML)-1;
-		}
-		
-		function dragCounter(e){
-			var sender = (e && e.target) || (window.event && window.event.srcElement);
-			var counter = sender.parentNode;
-			clickedElement = counter;
-			startDrag(e);
-		}
-		
-		function addCounter(initialValue){
-			var playmat = document.getElementById("playmat");
-			var counterCont = document.getElementById("counter_container");
-			var counterNumber = parseInt(counterCont.getAttribute("numcounters"));
-			var counter = document.getElementById("counter_template").cloneNode(true);
-			counter.id = "counter"+counterNumber;
-			counter.style.left = 100 + 100*counterNumber + "px";
-			counter.style.top = 100 + "px";
-			counter.style.backgroundColor = "rgb("+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+")";
-			playmat.appendChild(counter);
-			counterCont.setAttribute("numcounters", counterNumber+1);
-			if(initialValue && initialValue != 1){
-				var input = counter.childNodes[0];
-				input.innerHTML = initialValue;
-			}
-		}
+function getDocumentWidth() {
+	return Math.max(
+		document.body.scrollWidth,
+		document.documentElement.scrollWidth,
+		document.body.offsetWidth,
+		document.documentElement.offsetWidth,
+		document.documentElement.clientWidth
+	);
+}
 
-		function deleteAllCounters()
+function getDocumentHeight() {
+	return Math.max(
+		document.body.scrollHeight,
+		document.documentElement.scrollHeight,
+		document.body.offsetHeight,
+		document.documentElement.offsetHeight,
+		document.documentElement.clientHeight
+	);
+}
+
+function resizeDocument()
+{
+	//Set document size to extent of interior elements
+	document.body.style.width = '100%';
+	document.body.style.height = '100%';
+	document.body.style.width = getDocumentWidth() + 'px';
+	document.body.style.height = getDocumentHeight() + 'px';
+}
+
+function getScrollX()
+{
+	if(window.pageXOffset!= undefined){
+		return pageXOffset;
+	}
+	else{
+		var d= document, r= d.documentElement, b= d.body;
+		return r.scrollLeft || b.scrollLeft || 0;
+	}
+}
+
+function getScrollY()
+{
+	if(window.pageYOffset!= undefined){
+		return pageYOffset;
+	}
+	else{
+		var d= document, r= d.documentElement, b= d.body;
+		return r.scrollTop || b.scrollTop || 0;
+	}
+}
+
+function getXCoordOfMouse()
+{
+	return window.event.x + getScrollX() - 2;
+}
+function getYCoordOfMouse()
+{
+	return window.event.y + getScrollY() - 2;
+}
+
+//Checks if an element has a particular class
+function hasClass(element, cls) {
+    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+}
+
+function toggleVisibility(element, displayType){
+	var style = window.getComputedStyle(element);
+	if(style.display == "none"){
+		element.style.display = displayType||"block"; // welcome to javascript lol
+	} else {
+		element.style.display = "none";
+	}
+}
+
+function padToFour(number) {
+  if (number<=9999) { number = ("000"+number).slice(-4); }
+  return number;
+}
+
+
+/*
+  _    _ _____    _____            _             _ _           
+ | |  | |_   _|  / ____|          | |           | | |          
+ | |  | | | |   | |     ___  _ __ | |_ _ __ ___ | | | ___ _ __ 
+ | |  | | | |   | |    / _ \| '_ \| __| '__/ _ \| | |/ _ \ '__|
+ | |__| |_| |_  | |___| (_) | | | | |_| | | (_) | | |  __/ |   
+  \____/|_____|  \_____\___/|_| |_|\__|_|  \___/|_|_|\___|_|   
+                                                                                                                   
+*/
+
+function togglePreferences(){
+	var preferencesMenu = document.getElementById("preferences menu");
+	var startingLife = document.getElementById("starting life");
+	var cardSleeve = document.getElementById("card sleeve image");
+	startingLife.setAttribute("value", startingLife.value);
+	cardSleeve.setAttribute("value", cardSleeve.value);
+	toggleVisibility(preferencesMenu);
+}
+
+function toggleDeleteConfirmationMenu(){
+	var deleteConfirmationMenu = document.getElementById("delete confirmation menu");
+	toggleVisibility(deleteConfirmationMenu);
+}
+
+function deleteSelectionAndCloseConfirmationMenu(){
+	deleteSelection();
+	toggleDeleteConfirmationMenu();
+}
+
+function incrementCounter(e){
+	var sender = (e && e.target) || (window.event && window.event.srcElement);
+	var counter = sender.parentNode;
+	var input = counter.childNodes[0];
+	input.innerHTML = parseInt(input.innerHTML)+1;
+}
+
+function decrementCounter(e){
+	var sender = (e && e.target) || (window.event && window.event.srcElement);
+	var counter = sender.parentNode;
+	var input = counter.childNodes[0];
+	input.innerHTML = parseInt(input.innerHTML)-1;
+}
+
+function dragCounter(e){
+	var sender = (e && e.target) || (window.event && window.event.srcElement);
+	var counter = sender.parentNode;
+	clickedElement = counter;
+	startDrag(e);
+}
+
+function addCounter(initialValue){
+	var playmat = document.getElementById("playmat");
+	var counterCont = document.getElementById("counter_container");
+	var counterNumber = parseInt(counterCont.getAttribute("numcounters"));
+	var counter = document.getElementById("counter_template").cloneNode(true);
+	counter.id = "counter"+counterNumber;
+	counter.style.left = 100 + 100*counterNumber + "px";
+	counter.style.top = 100 + "px";
+	counter.style.backgroundColor = "rgb("+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+")";
+	playmat.appendChild(counter);
+	counterCont.setAttribute("numcounters", counterNumber+1);
+	if(initialValue && initialValue != 1){
+		var input = counter.childNodes[0];
+		input.innerHTML = initialValue;
+	}
+}
+
+function deleteAllCounters()
+{
+	var playmat = document.getElementById('playmat');
+	var elementsOnMat = playmat.getElementsByTagName('*');
+	var countersOnMat = []
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		if ( hasClass(elementsOnMat[i],'counter') && elementsOnMat[i].parentNode == playmat)
 		{
-			var playmat = document.getElementById('playmat');
-			var elementsOnMat = playmat.getElementsByTagName('*');
-			var countersOnMat = []
-			for (i = 0; i < elementsOnMat.length; ++i)
-			{
-				if ( hasClass(elementsOnMat[i],'counter') && elementsOnMat[i].parentNode == playmat)
-				{
-					countersOnMat.push(elementsOnMat[i]);
-				}
-			}
-			for (i = 0; i < countersOnMat.length; ++i)
-			{
-				countersOnMat[i].parentNode.removeChild(countersOnMat[i]);
-			}
-			document.getElementById("counter_container").setAttribute("numcounters","0");
+			countersOnMat.push(elementsOnMat[i]);
 		}
-		
-		var enableDelayedHover = 0;
-		var hoverEventId = 0;
-		function startHoverOverCard()
+	}
+	for (i = 0; i < countersOnMat.length; ++i)
+	{
+		countersOnMat[i].parentNode.removeChild(countersOnMat[i]);
+	}
+	document.getElementById("counter_container").setAttribute("numcounters","0");
+}
+
+var enableDelayedHover = 0;
+var hoverEventId = 0;
+function startHoverOverCard()
+{
+	enableDelayedHover = 1;
+	hoverEventId++;
+	if (hoverEventId >= 100) {
+		hoverEventId = 0;
+	}
+	setTimeout(delayedHoverOverCard, 1000, hoverEventId);
+}
+
+var hoveredElement;
+function mouseEnterCard(e){
+	// determine event object
+	if (!e) {
+		var e = window.event;
+	}
+	// IE uses srcElement, others use target
+	hoveredElement = e.target ? e.target : e.srcElement;
+	if (hasClass(hoveredElement, 'card')){
+		startHoverOverCard();
+	}
+}
+
+function mouseLeaveCard(e){
+	// determine event object
+	if (!e) {
+		var e = window.event;
+	}
+	// IE uses srcElement, others use target
+	var targetElement = e.target ? e.target : e.srcElement;
+	enableDelayedHover = 0;
+}
+
+var mouseOverSideboard = false;
+function mouseEnterSideboard(e){
+	mouseOverSideboard = true;
+}
+
+function mouseLeaveSideboard(e){
+	mouseOverSideboard = false;
+}
+
+//
+function delayedHoverOverCard(triggeringHoverEventId){
+	if (!drag && enableDelayedHover && triggeringHoverEventId == hoverEventId) {
+		enableDelayedHover = 0;
+		showCardInfoMenu(hoveredElement);
+	}
+}
+
+//Handles mouseDown events
+
+var timeOfPreviousCardClick;
+var timeOfPreviousPreviousCardClick;
+var clickCounter = 0;
+function mouseDownCard(e){
+	// determine event object
+	if (!e) {
+		var e = window.event;
+	}
+	// IE uses srcElement, others use target
+	var tempClickedElement = e.target ? e.target : e.srcElement;
+	//Prevent default behavior
+	if(tempClickedElement.preventDefault) tempClickedElement.preventDefault();
+	//If this is a different element, reset the click counter
+	if ( tempClickedElement != clickedElement )
+	{
+		clickCounter = 0;
+	}
+	clickedElement = tempClickedElement;
+	//Increment the click counter on this element
+	++clickCounter;
+
+	if (hasClass(clickedElement, 'card')){
+		//console.log('click:' + clickCounter);
+		//Set a delayed function to check for double and triple clicks
+		setTimeout(evaluateNumClicks, 200, clickCounter);
+		if (hasClass(clickedElement, 'sideboarded'))
 		{
-			enableDelayedHover = 1;
-			hoverEventId++;
-			if (hoverEventId >= 100) {
-				hoverEventId = 0;
-			}
-			setTimeout(delayedHoverOverCard, 1000, hoverEventId);
-		}
-
-		var hoveredElement;
-		function mouseEnterCard(e){
-			// determine event object
-			if (!e) {
-				var e = window.event;
-			}
-			// IE uses srcElement, others use target
-			hoveredElement = e.target ? e.target : e.srcElement;
-			if (hasClass(hoveredElement, 'card')){
-				startHoverOverCard();
-			}
-		}
-
-		function mouseLeaveCard(e){
-			// determine event object
-			if (!e) {
-				var e = window.event;
-			}
-			// IE uses srcElement, others use target
-			var targetElement = e.target ? e.target : e.srcElement;
-			enableDelayedHover = 0;
-		}
-
-		var mouseOverSideboard = false;
-		function mouseEnterSideboard(e){
-			mouseOverSideboard = true;
-		}
-
-		function mouseLeaveSideboard(e){
-			mouseOverSideboard = false;
-		}
-
-		//
-		function delayedHoverOverCard(triggeringHoverEventId){
-			if (!drag && enableDelayedHover && triggeringHoverEventId == hoverEventId) {
-				enableDelayedHover = 0;
-				showCardInfoMenu(hoveredElement);
-			}
-		}
-
-		//Handles mouseDown events
-		
-		var timeOfPreviousCardClick;
-		var timeOfPreviousPreviousCardClick;
-		var clickCounter = 0;
-		function mouseDownCard(e){
-			// determine event object
-			if (!e) {
-				var e = window.event;
-			}
-			// IE uses srcElement, others use target
-			var tempClickedElement = e.target ? e.target : e.srcElement;
-			//Prevent default behavior
-			if(tempClickedElement.preventDefault) tempClickedElement.preventDefault();
-			//If this is a different element, reset the click counter
-			if ( tempClickedElement != clickedElement )
-			{
-				clickCounter = 0;
-			}
-			clickedElement = tempClickedElement;
-			//Increment the click counter on this element
-			++clickCounter;
-
-			if (hasClass(clickedElement, 'card')){
-				//console.log('click:' + clickCounter);
-				//Set a delayed function to check for double and triple clicks
-				setTimeout(evaluateNumClicks, 200, clickCounter);
-				if (hasClass(clickedElement, 'sideboarded'))
-				{
-					//Move this to the playmat
-					var playmat = document.getElementById('playmat');
-					var sideboard = document.getElementById('sideboard');
-					//Remove sideboarded class
-					clickedElement.className = clickedElement.className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
-					//Put it on the playmat
-					var rect = sideboard.getBoundingClientRect();
-					var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-					var documentScrollLeft = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
-					clickedElement.style.top = parseInt(clickedElement.style.top) + parseInt(rect.top) - sideboard.scrollTop + documentScrollTop + 'px';
-					clickedElement.style.left= parseInt(clickedElement.style.left) + parseInt(rect.left) + documentScrollLeft + 'px';
-					playmat.appendChild(clickedElement);
-				}
-			}
-			if (hasClass(clickedElement, 'draggable')){
-				startDrag(e);
-			}
-			enableDelayedHover = 0;
-		}
-
-		var numClicks = 0;
-		function evaluateNumClicks(triggeringClickCounter){
-			//console.log('resolving click:' + triggeringClickCounter);
-			//Are they trying to drag it?
-			if (moved)
-			{
-				//Reset click counter
-				numClicks = 0;
-			}
-			//Have they stopped clicking?
-			else if (clickCounter == triggeringClickCounter)
-			{
-				//Count this click
-				++numClicks
-				//Resolve the proper action
-				if (numClicks == 1)
-				{
-					//Single click = Tap/Untap
-					tapOrUntapCard(clickedElement);
-				}
-				else if (numClicks == 2)
-				{
-					//Double click = Flip
-					flipCard(clickedElement);
-				}
-				//Reset click counter
-				numClicks = 0;
-			} else {
-				//They haven't stopped clicking. Increment the click counter without resolving
-				numClicks++;
-			}
-		}
-
-		function mouseUpCard(e){
-			// determine event object
-			if (!e) {
-				var e = window.event;
-			}
-			// IE uses srcElement, others use target
-			hoveredElement = e.target ? e.target : e.srcElement;
-			if (hasClass(hoveredElement, 'card')){
-				startHoverOverCard();
-			}
-		}
-
-		//Prepares to drag the element
-		var startCoordX;
-		var startCoordY;
-		var endCoordX;
-		var endCoordY;
-		var select = false;
-		function startSelection(e) {
-			// determine event object
-			if (!e) {
-				var e = window.event;
-			}
-
-			var playmat = document.getElementById("playmat");
-
-			//Prevent default behavior
-			if(playmat.preventDefault)
-			{
-				playmat.preventDefault();
-			}
-
-			//Check that they weren't clicking on something else
-			var targetElement = e.target ? e.target : e.srcElement;
-			if(playmat == targetElement)
-			{
-				deselectAll();
-
-				// calculate event X, Y coordinates
-				startCoordX = getXCoordOfMouse();
-				startCoordY = getYCoordOfMouse();
-
-				var selector = document.getElementById("selector");
-				selector.style.top = startCoordY + 'px';
-				selector.style.left = startCoordX + 'px';
-				selector.style.width = '0px';
-				selector.style.height = '0px';
-				selector.className = 'blue_selector';
-				
-				// enable moving selector element when the mouse moves
-				select = true;
-			}
-            return false;
-		}
-
-		//Prepares to drag the element
-		var coordX;
-		var coordY;
-		var drag = false;
-		var moved = false;
-		var elementToDrag;
-		function startDrag(e) {
-
-			//Did they click on a selected element?
-			if (hasClass(clickedElement, 'selected'))
-			{
-				//Drag the whole selection
-				elementToDrag = document.getElementById('selector');
-			} else {
-				//Drag just the element that was clicked
-				elementToDrag = clickedElement;
-				//Bring the element to the front
-				elementToDrag.parentNode.appendChild(elementToDrag);
-			}
-
-			// calculate event X, Y coordinates
-			offsetX = window.event.x;
-			offsetY = window.event.y;
-
-			// assign default values for top and left properties
-			if(!elementToDrag.style.left) { elementToDrag.style.left='0px'};
-			if (!elementToDrag.style.top) { elementToDrag.style.top='0px'};
-
-			// calculate integer values for top and left 
-			// properties
-			coordX = parseInt(elementToDrag.style.left);
-			coordY = parseInt(elementToDrag.style.top);
-			
-
-			// enable moving div element
-			drag = true;
-			moved = false;
-            return false;
-		}
-
-		//Called whenever the mouse moves on the document, so make this fast
-		function dragElement(e) {
-			//If the user is currently dragging an element
-			if (drag)
-			{
-				if (!e) { var e= window.event};
-				// var targ=e.target?e.target:e.srcElement;
-				// move div element
-				if (hasClass(elementToDrag,'sideboarded'))
-				{
-					elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
-					elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
-				} else {
-					if (coordX+e.clientX-offsetX < 0){
-						elementToDrag.style.left='0px';
-					} else {
-						elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
-					}
-					if (coordY+e.clientY-offsetY < 0){
-						elementToDrag.style.top='0px';
-					} else {
-						elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
-					}
-				}
-				
-				if ((e.clientX-offsetX) != 0 || (e.clientY-offsetY) != 0)
-				{
-					moved = true;
-				}
-				hideSelector();
-				select = false;
-			//Else, if the user is currently trying to select things
-			} else if (select) {
-				var selector = document.getElementById("selector");
-				//Get the current mouse position
-				endCoordX = getXCoordOfMouse();
-				endCoordY = getYCoordOfMouse();
-				//Update the selection box's Y position and height to span the start and end coords
-				if (startCoordY < endCoordY)
-				{
-					selector.style.top = startCoordY + 'px';
-					selector.style.height = (endCoordY - startCoordY) + 'px'
-				} else {
-					selector.style.top = endCoordY + 'px';
-					selector.style.height = (startCoordY - endCoordY) + 'px'
-				}
-				//Update the selection box's X position and width to span the start and end coords
-				if (startCoordX < endCoordX)
-				{
-					selector.style.left = startCoordX + 'px';
-					selector.style.width = (endCoordX - startCoordX) + 'px'
-					//If the user is selecting to the right, use blue selection box
-					selector.className = "blue_selector";
-				} else {
-					selector.style.left = endCoordX + 'px';
-					selector.style.width = (startCoordX - endCoordX) + 'px'
-					//If the user is selecting to the left, use green selection box
-					selector.className = "green_selector";
-				}
-			}
-			return false;
-		}
-
-		//Make the selection box transparent
-		function hideSelector() {
-			var selector = document.getElementById('selector');
-			selector.className = 'invisible_selector';
-			selector.style.width = '0px';
-			selector.style.height = '0px';
-		}
-
-		function selectAll() {
+			//Move this to the playmat
 			var playmat = document.getElementById('playmat');
-			var elementsOnMat = playmat.getElementsByTagName('*');
-			var selectedElements = [];
-			for (i = 0; i < elementsOnMat.length; ++i)
-			{
-				//Check that this is a top-level element
-				if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i], 'draggable'))
-				{
-					selectedElements.push(elementsOnMat[i]);
-				}
-			}
-			groupSelectedElements(selectedElements);
+			var sideboard = document.getElementById('sideboard');
+			//Remove sideboarded class
+			clickedElement.className = clickedElement.className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
+			//Put it on the playmat
+			var rect = sideboard.getBoundingClientRect();
+			var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+			var documentScrollLeft = (window.pageXOffset !== undefined) ? window.pageXOffset : (document.documentElement || document.body.parentNode || document.body).scrollLeft;
+			clickedElement.style.top = parseInt(clickedElement.style.top) + parseInt(rect.top) - sideboard.scrollTop + documentScrollTop + 'px';
+			clickedElement.style.left= parseInt(clickedElement.style.left) + parseInt(rect.left) + documentScrollLeft + 'px';
+			playmat.appendChild(clickedElement);
 		}
+	}
+	if (hasClass(clickedElement, 'draggable')){
+		startDrag(e);
+	}
+	enableDelayedHover = 0;
+}
 
-		//Move all listed elements into the "selected" div, and add the 'selected' class
-		function groupSelectedElements(selectedElements) {
-			if (selectedElements.length > 0)
+var numClicks = 0;
+function evaluateNumClicks(triggeringClickCounter){
+	//console.log('resolving click:' + triggeringClickCounter);
+	//Are they trying to drag it?
+	if (moved)
+	{
+		//Reset click counter
+		numClicks = 0;
+	}
+	//Have they stopped clicking?
+	else if (clickCounter == triggeringClickCounter)
+	{
+		//Count this click
+		++numClicks
+		//Resolve the proper action
+		if (numClicks == 1)
+		{
+			//Single click = Tap/Untap
+			tapOrUntapCard(clickedElement);
+		}
+		else if (numClicks == 2)
+		{
+			//Double click = Flip
+			flipCard(clickedElement);
+		}
+		//Reset click counter
+		numClicks = 0;
+	} else {
+		//They haven't stopped clicking. Increment the click counter without resolving
+		numClicks++;
+	}
+}
+
+function mouseUpCard(e){
+	// determine event object
+	if (!e) {
+		var e = window.event;
+	}
+	// IE uses srcElement, others use target
+	hoveredElement = e.target ? e.target : e.srcElement;
+	if (hasClass(hoveredElement, 'card')){
+		startHoverOverCard();
+	}
+}
+
+//Prepares to drag the element
+var startCoordX;
+var startCoordY;
+var endCoordX;
+var endCoordY;
+var select = false;
+function startSelection(e) {
+	// determine event object
+	if (!e) {
+		var e = window.event;
+	}
+
+	var playmat = document.getElementById("playmat");
+
+	//Prevent default behavior
+	if(playmat.preventDefault)
+	{
+		playmat.preventDefault();
+	}
+
+	//Check that they weren't clicking on something else
+	var targetElement = e.target ? e.target : e.srcElement;
+	if(playmat == targetElement)
+	{
+		deselectAll();
+
+		// calculate event X, Y coordinates
+		startCoordX = getXCoordOfMouse();
+		startCoordY = getYCoordOfMouse();
+
+		var selector = document.getElementById("selector");
+		selector.style.top = startCoordY + 'px';
+		selector.style.left = startCoordX + 'px';
+		selector.style.width = '0px';
+		selector.style.height = '0px';
+		selector.className = 'blue_selector';
+		
+		// enable moving selector element when the mouse moves
+		select = true;
+	}
+    return false;
+}
+
+//Prepares to drag the element
+var coordX;
+var coordY;
+var drag = false;
+var moved = false;
+var elementToDrag;
+function startDrag(e) {
+
+	//Did they click on a selected element?
+	if (hasClass(clickedElement, 'selected'))
+	{
+		//Drag the whole selection
+		elementToDrag = document.getElementById('selector');
+	} else {
+		//Drag just the element that was clicked
+		elementToDrag = clickedElement;
+		//Bring the element to the front
+		elementToDrag.parentNode.appendChild(elementToDrag);
+	}
+
+	// calculate event X, Y coordinates
+	offsetX = window.event.x;
+	offsetY = window.event.y;
+
+	// assign default values for top and left properties
+	if(!elementToDrag.style.left) { elementToDrag.style.left='0px'};
+	if (!elementToDrag.style.top) { elementToDrag.style.top='0px'};
+
+	// calculate integer values for top and left 
+	// properties
+	coordX = parseInt(elementToDrag.style.left);
+	coordY = parseInt(elementToDrag.style.top);
+	
+
+	// enable moving div element
+	drag = true;
+	moved = false;
+    return false;
+}
+
+//Called whenever the mouse moves on the document, so make this fast
+function dragElement(e) {
+	//If the user is currently dragging an element
+	if (drag)
+	{
+		if (!e) { var e= window.event};
+		// var targ=e.target?e.target:e.srcElement;
+		// move div element
+		if (hasClass(elementToDrag,'sideboarded'))
+		{
+			elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+			elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
+		} else {
+			if (coordX+e.clientX-offsetX < 0){
+				elementToDrag.style.left='0px';
+			} else {
+				elementToDrag.style.left=coordX+e.clientX-offsetX+'px';
+			}
+			if (coordY+e.clientY-offsetY < 0){
+				elementToDrag.style.top='0px';
+			} else {
+				elementToDrag.style.top=coordY+e.clientY-offsetY+'px';
+			}
+		}
+		
+		if ((e.clientX-offsetX) != 0 || (e.clientY-offsetY) != 0)
+		{
+			moved = true;
+		}
+		hideSelector();
+		select = false;
+	//Else, if the user is currently trying to select things
+	} else if (select) {
+		var selector = document.getElementById("selector");
+		//Get the current mouse position
+		endCoordX = getXCoordOfMouse();
+		endCoordY = getYCoordOfMouse();
+		//Update the selection box's Y position and height to span the start and end coords
+		if (startCoordY < endCoordY)
+		{
+			selector.style.top = startCoordY + 'px';
+			selector.style.height = (endCoordY - startCoordY) + 'px'
+		} else {
+			selector.style.top = endCoordY + 'px';
+			selector.style.height = (startCoordY - endCoordY) + 'px'
+		}
+		//Update the selection box's X position and width to span the start and end coords
+		if (startCoordX < endCoordX)
+		{
+			selector.style.left = startCoordX + 'px';
+			selector.style.width = (endCoordX - startCoordX) + 'px'
+			//If the user is selecting to the right, use blue selection box
+			selector.className = "blue_selector";
+		} else {
+			selector.style.left = endCoordX + 'px';
+			selector.style.width = (startCoordX - endCoordX) + 'px'
+			//If the user is selecting to the left, use green selection box
+			selector.className = "green_selector";
+		}
+	}
+	return false;
+}
+
+//Make the selection box transparent
+function hideSelector() {
+	var selector = document.getElementById('selector');
+	selector.className = 'invisible_selector';
+	selector.style.width = '0px';
+	selector.style.height = '0px';
+}
+
+function selectAll() {
+	var playmat = document.getElementById('playmat');
+	var elementsOnMat = playmat.getElementsByTagName('*');
+	var selectedElements = [];
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		//Check that this is a top-level element
+		if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i], 'draggable'))
+		{
+			selectedElements.push(elementsOnMat[i]);
+		}
+	}
+	groupSelectedElements(selectedElements);
+}
+
+//Move all listed elements into the "selected" div, and add the 'selected' class
+function groupSelectedElements(selectedElements) {
+	if (selectedElements.length > 0)
+	{
+		var i;
+		var selector = document.getElementById('selector');
+		//Tighten the top and left of the selector to the selected elements
+		//That way when the selection gets dragged it gets stopped at a reasonable
+		//position when the top or left of the page is hit.
+		var minTop = parseInt(selectedElements[0].style.top);
+		var minLeft = parseInt(selectedElements[0].style.left);
+		for (i = 1; i < selectedElements.length; ++i)
+		{
+			if (parseInt(selectedElements[i].style.top) < minTop )
 			{
-				var i;
-				var selector = document.getElementById('selector');
-				//Tighten the top and left of the selector to the selected elements
-				//That way when the selection gets dragged it gets stopped at a reasonable
-				//position when the top or left of the page is hit.
-				var minTop = parseInt(selectedElements[0].style.top);
-				var minLeft = parseInt(selectedElements[0].style.left);
-				for (i = 1; i < selectedElements.length; ++i)
+				minTop = parseInt(selectedElements[i].style.top);
+			}
+			if (parseInt(selectedElements[i].style.left) < minLeft )
+			{
+				minLeft = parseInt(selectedElements[i].style.left);
+			}
+		}
+		selector.style.top = minTop + 'px';
+		selector.style.left = minLeft + 'px';
+		//Now move the elements into the selector div
+		for (i = 0; i < selectedElements.length; ++i)
+		{
+			//Also add a class so they look like they are selected
+			selectedElements[i].className += ' selected';
+			selectedElements[i].style.top = parseInt(selectedElements[i].style.top) - parseInt(selector.style.top) + 'px';
+			selectedElements[i].style.left= parseInt(selectedElements[i].style.left) - parseInt(selector.style.left) + 'px';
+			selector.appendChild(selectedElements[i]);
+		}
+		document.getElementById("shuffle button").style.visibility = 'visible';
+		document.getElementById("stack button").style.visibility = 'visible';
+		document.getElementById("delete selection button").style.visibility = 'visible';
+		document.getElementById("new game button").style.visibility = 'hidden';
+		document.getElementById("cost sort button").style.visibility = 'hidden';
+		document.getElementById("color sort button").style.visibility = 'hidden';
+		document.getElementById("type sort button").style.visibility = 'hidden';
+		document.getElementById("purpose sort button").style.visibility = 'hidden';
+		document.getElementById("curvability sort button").style.visibility = 'hidden';
+		document.getElementById("select all button").style.visibility = 'hidden';
+	}
+}
+
+//Remove all selected elements from the "selected" div, unset their style, and empty the array of selected elements
+function deselectAll()
+{
+	var i = 0;
+	var playmat = document.getElementById('playmat');
+	var selector = document.getElementById('selector');
+	var selectedElements = [];
+	var elementsInSelector = selector.getElementsByTagName('*');
+	for (i = 0; i < elementsInSelector.length; ++i)
+	{
+		//Check that this is a top-level element
+		if (elementsInSelector[i].parentNode == selector)
+		{
+			selectedElements.push(elementsInSelector[i]);
+		}
+	}
+	for (i = 0; i < selectedElements.length; ++i)
+	{
+		selectedElements[i].style.top = parseInt(selectedElements[i].style.top) + parseInt(selector.style.top) + 'px';
+		selectedElements[i].style.left= parseInt(selectedElements[i].style.left) + parseInt(selector.style.left) + 'px';
+		playmat.appendChild(selectedElements[i]);
+	}
+	for (i = 0; i < selectedElements.length; ++i)
+	{
+		selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
+	}
+	document.getElementById("shuffle button").style.visibility = 'hidden';
+	document.getElementById("stack button").style.visibility = 'hidden';
+	document.getElementById("delete selection button").style.visibility = 'hidden';
+	document.getElementById("new game button").style.visibility = 'visible';
+	document.getElementById("cost sort button").style.visibility = 'visible';
+	document.getElementById("color sort button").style.visibility = 'visible';
+	document.getElementById("type sort button").style.visibility = 'visible';
+	document.getElementById("purpose sort button").style.visibility = 'visible';
+	document.getElementById("curvability sort button").style.visibility = 'visible';
+	document.getElementById("select all button").style.visibility = 'visible';
+}
+
+//Called whenever the mouse button goes up on the document
+function stopDrag() {
+	if (drag)
+	{
+		drag=false;
+		var playmat = document.getElementById("playmat");
+		var sideboard = document.getElementById("sideboard");
+
+		//the sideboard is visible and it was dropped in the sideboard
+		if (mouseOverSideboard && sideboard.style.visibility == 'visible')
+		{
+			//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
+			if (hasClass(elementToDrag, 'card'))
+			{
+				if (!hasClass(elementToDrag, 'sideboarded'))
 				{
-					if (parseInt(selectedElements[i].style.top) < minTop )
+					elementToDrag.className += ' sideboarded';
+				}
+				sideboard.appendChild(elementToDrag);
+				sortSideboard();
+			} else if (elementToDrag.id == 'selector' ) {
+				//If the selection is being dragged
+				var selectedElements = [];
+				var elementsInSelector = elementToDrag.getElementsByTagName('*');
+				for (i = 0; i < elementsInSelector.length; ++i)
+				{
+					//Check that this is a top-level element
+					if (elementsInSelector[i].parentNode == elementToDrag)
 					{
-						minTop = parseInt(selectedElements[i].style.top);
-					}
-					if (parseInt(selectedElements[i].style.left) < minLeft )
-					{
-						minLeft = parseInt(selectedElements[i].style.left);
+						selectedElements.push(elementsInSelector[i]);
 					}
 				}
-				selector.style.top = minTop + 'px';
-				selector.style.left = minLeft + 'px';
-				//Now move the elements into the selector div
 				for (i = 0; i < selectedElements.length; ++i)
 				{
-					//Also add a class so they look like they are selected
-					selectedElements[i].className += ' selected';
-					selectedElements[i].style.top = parseInt(selectedElements[i].style.top) - parseInt(selector.style.top) + 'px';
-					selectedElements[i].style.left= parseInt(selectedElements[i].style.left) - parseInt(selector.style.left) + 'px';
-					selector.appendChild(selectedElements[i]);
-				}
-				document.getElementById("shuffle button").style.visibility = 'visible';
-				document.getElementById("stack button").style.visibility = 'visible';
-				document.getElementById("delete selection button").style.visibility = 'visible';
-				document.getElementById("new game button").style.visibility = 'hidden';
-				document.getElementById("cost sort button").style.visibility = 'hidden';
-				document.getElementById("color sort button").style.visibility = 'hidden';
-				document.getElementById("type sort button").style.visibility = 'hidden';
-				document.getElementById("purpose sort button").style.visibility = 'hidden';
-				document.getElementById("curvability sort button").style.visibility = 'hidden';
-				document.getElementById("select all button").style.visibility = 'hidden';
-			}
-		}
-
-		//Remove all selected elements from the "selected" div, unset their style, and empty the array of selected elements
-		function deselectAll()
-		{
-			var i = 0;
-			var playmat = document.getElementById('playmat');
-			var selector = document.getElementById('selector');
-			var selectedElements = [];
-			var elementsInSelector = selector.getElementsByTagName('*');
-			for (i = 0; i < elementsInSelector.length; ++i)
-			{
-				//Check that this is a top-level element
-				if (elementsInSelector[i].parentNode == selector)
-				{
-					selectedElements.push(elementsInSelector[i]);
-				}
-			}
-			for (i = 0; i < selectedElements.length; ++i)
-			{
-				selectedElements[i].style.top = parseInt(selectedElements[i].style.top) + parseInt(selector.style.top) + 'px';
-				selectedElements[i].style.left= parseInt(selectedElements[i].style.left) + parseInt(selector.style.left) + 'px';
-				playmat.appendChild(selectedElements[i]);
-			}
-			for (i = 0; i < selectedElements.length; ++i)
-			{
-				selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
-			}
-			document.getElementById("shuffle button").style.visibility = 'hidden';
-			document.getElementById("stack button").style.visibility = 'hidden';
-			document.getElementById("delete selection button").style.visibility = 'hidden';
-			document.getElementById("new game button").style.visibility = 'visible';
-			document.getElementById("cost sort button").style.visibility = 'visible';
-			document.getElementById("color sort button").style.visibility = 'visible';
-			document.getElementById("type sort button").style.visibility = 'visible';
-			document.getElementById("purpose sort button").style.visibility = 'visible';
-			document.getElementById("curvability sort button").style.visibility = 'visible';
-			document.getElementById("select all button").style.visibility = 'visible';
-		}
-
-		//Called whenever the mouse button goes up on the document
-		function stopDrag() {
-			if (drag)
-			{
-				drag=false;
-				var playmat = document.getElementById("playmat");
-				var sideboard = document.getElementById("sideboard");
-
-				//the sideboard is visible and it was dropped in the sideboard
-				if (mouseOverSideboard && sideboard.style.visibility == 'visible')
-				{
-					//If the dragged element is a card and the sideboard is visible and it was dropped in the sideboard
-					if (hasClass(elementToDrag, 'card'))
+					selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
+					if (!hasClass(selectedElements[i], 'sideboarded'))
 					{
-						if (!hasClass(elementToDrag, 'sideboarded'))
-						{
-							elementToDrag.className += ' sideboarded';
-						}
-						sideboard.appendChild(elementToDrag);
-						sortSideboard();
-					} else if (elementToDrag.id == 'selector' ) {
-						//If the selection is being dragged
-						var selectedElements = [];
-						var elementsInSelector = elementToDrag.getElementsByTagName('*');
-						for (i = 0; i < elementsInSelector.length; ++i)
-						{
-							//Check that this is a top-level element
-							if (elementsInSelector[i].parentNode == elementToDrag)
-							{
-								selectedElements.push(elementsInSelector[i]);
-							}
-						}
-						for (i = 0; i < selectedElements.length; ++i)
-						{
-							selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
-							if (!hasClass(selectedElements[i], 'sideboarded'))
-							{
-								selectedElements[i].className += ' sideboarded';
-							}
-						}
-						for (i = 0; i < selectedElements.length; ++i)
-						{
-							sideboard.appendChild(selectedElements[i]);
-						}
-						sortSideboard();
-						deselectAll();
+						selectedElements[i].className += ' sideboarded';
 					}
 				}
-
-
-				resizeDocument();
-			}
-			
-			if (select)
-			{
-				var selector = document.getElementById("selector");
-				//Go through all cards and check if they are being selected
-				var playmat = document.getElementById("playmat");
-				var elementsOnMat = playmat.getElementsByTagName('*');
-
-				var i, element;
-				var topBoundary = parseInt(selector.style.top);
-				var leftBoundary = parseInt(selector.style.left);
-				var bottomBoundary = topBoundary + parseInt(selector.style.height);
-				var rightBoundary = leftBoundary + parseInt(selector.style.width);
-				var elementTop = 0;
-				var elementLeft = 0;
-				var elementBottom = 0;
-				var elementRight = 0;
-				var elementStyle;
-				var i = 0;
-
-				var selectedElements = new Array();
-				if (selector.className == "blue_selector")
+				for (i = 0; i < selectedElements.length; ++i)
 				{
-					hideSelector();
-					//Blue selector only selects elements that are entirely within the selection box	
-					for (i = 0; i < elementsOnMat.length; ++i)
-					{
-						//Check that this is a draggable top-level element
-						if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i],'draggable'))
-						{
-							elementStyle = window.getComputedStyle(elementsOnMat[i]);
-							elementTop = parseInt(elementsOnMat[i].style.top);
-							elementLeft = parseInt(elementsOnMat[i].style.left);
-							elementRight = elementLeft + parseInt(elementStyle.width);
-							elementBottom = elementTop + parseInt(elementStyle.height);
-
-							//Check its coordinates
-							if (elementTop >= topBoundary &&
-								elementLeft >= leftBoundary &&
-								elementBottom <= bottomBoundary &&
-								elementRight <= rightBoundary)
-							{
-								selectedElements.push(elementsOnMat[i]);
-							}
-						}
-					}
-				} else if (selector.className == "green_selector"){
-					hideSelector();
-					//Green selector slects any elements that overlap the selection box
-					for (i = 0; i < elementsOnMat.length; ++i)
-					{
-						//Check that this is a draggable top-level element
-						if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i],'draggable'))
-						{
-							elementStyle = window.getComputedStyle(elementsOnMat[i]);
-							elementTop = parseInt(elementsOnMat[i].style.top);
-							elementLeft = parseInt(elementsOnMat[i].style.left);
-							elementRight = elementLeft + parseInt(elementStyle.width);
-							elementBottom = elementTop + parseInt(elementStyle.height);
-							//Check its coordinates
-							if (elementLeft <= rightBoundary &&
-								elementRight >= leftBoundary &&
-								elementTop <= bottomBoundary &&
-								elementBottom >= topBoundary )
-							{
-								selectedElements.push(elementsOnMat[i]);
-							}
-						}
-					}
+					sideboard.appendChild(selectedElements[i]);
 				}
-				//Move the selected elements to the "selected" div for O(1) movement
-				groupSelectedElements(selectedElements);
-				
-				select = false
+				sortSideboard();
+				deselectAll();
 			}
 		}
 
-		var selectedCard;
-		function showCardInfoMenu(element) {
-			if (hasClass(element, 'card')){
-				selectedCard = element;
-				if (hasClass(element, 'selected'))
-				{
-					var selector = document.getElementById('selector');
-					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + parseInt(selector.style.top)  + 'px';
-					document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + parseInt(selector.style.left) + 'px';
-				} else if (hasClass(element, 'sideboarded')) {
-					var sideboard = document.getElementById('sideboard'); //TODO
-					var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 - sideboard.scrollTop + documentScrollTop + 'px';
-					document.getElementById('card info popup').style.right = 180 + 'px';
-					document.getElementById('card info popup').style.left = "";
-				} else {
-					document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + 'px';
-					document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + 'px';
-				}
-				hideEditCard();
-				document.getElementById('magnified card view').src = selectedCard.src;
-				document.getElementById('card info popup').style.visibility = 'visible';
-			}
-		}
 
-		function hideCardInfoMenu() {
-			hideEditCard();
-			numCopies = 0;
-			document.getElementById('card info popup').style.visibility = 'hidden';
-		}
+		//Resize document to fit
+		resizeDocument();
+	}
+	
+	if (select)
+	{
+		var selector = document.getElementById("selector");
+		//Go through all cards and check if they are being selected
+		var playmat = document.getElementById("playmat");
+		var elementsOnMat = playmat.getElementsByTagName('*');
 
-		function loadEditCardSettings()
+		var i, element;
+		var topBoundary = parseInt(selector.style.top);
+		var leftBoundary = parseInt(selector.style.left);
+		var bottomBoundary = topBoundary + parseInt(selector.style.height);
+		var rightBoundary = leftBoundary + parseInt(selector.style.width);
+		var elementTop = 0;
+		var elementLeft = 0;
+		var elementBottom = 0;
+		var elementRight = 0;
+		var elementStyle;
+		var i = 0;
+
+		var selectedElements = new Array();
+		if (selector.className == "blue_selector")
 		{
-			//Load the settings
-			document.getElementById('card name input').value = selectedCard.getAttribute('name');
-			document.getElementById('purpose input').value = selectedCard.getAttribute('purpose');
-			document.getElementById('land checkbox').checked = selectedCard.getAttribute('land') == 'true';
-			document.getElementById('creature checkbox').checked = selectedCard.getAttribute('creature') == 'true';
-			document.getElementById('planeswalker checkbox').checked = selectedCard.getAttribute('planeswalker') == 'true';
-			document.getElementById('artifact checkbox').checked = selectedCard.getAttribute('artifact') == 'true';
-			document.getElementById('enchantment checkbox').checked = selectedCard.getAttribute('enchantment') == 'true';
-			document.getElementById('sorcery checkbox').checked = selectedCard.getAttribute('sorcery') == 'true';
-			document.getElementById('instant checkbox').checked = selectedCard.getAttribute('instant') == 'true';
-			document.getElementById('token checkbox').checked = selectedCard.getAttribute('token') == 'true';
-			document.getElementById('casting cost input').value = selectedCard.getAttribute('casting_cost');
-			document.getElementById('commander checkbox').checked = selectedCard.getAttribute('commander') == 'true';
-			var manaProductionBitVector = parseInt(selectedCard.getAttribute('mana_production_bitvector'));
-			document.getElementById('produces white checkbox').checked = manaProductionBitVector & 0x01;
-			document.getElementById('produces blue checkbox').checked = manaProductionBitVector & 0x02;
-			document.getElementById('produces black checkbox').checked = manaProductionBitVector & 0x04;
-			document.getElementById('produces red checkbox').checked = manaProductionBitVector & 0x08;
-			document.getElementById('produces green checkbox').checked = manaProductionBitVector & 0x10;
-			document.getElementById('produces colorless checkbox').checked = manaProductionBitVector & 0x20;
-			document.getElementById('card back input').value = selectedCard.getAttribute('back');
-		}
-
-		function saveEditCardSettings()
-		{
-			selectedCard.setAttribute('name', document.getElementById('card name input').value );
-			selectedCard.setAttribute('purpose', document.getElementById('purpose input').value );
-			selectedCard.setAttribute('land', document.getElementById('land checkbox').checked );
-			selectedCard.setAttribute('creature', document.getElementById('creature checkbox').checked );
-			selectedCard.setAttribute('planeswalker', document.getElementById('planeswalker checkbox').checked );
-			selectedCard.setAttribute('artifact', document.getElementById('artifact checkbox').checked );
-			selectedCard.setAttribute('enchantment', document.getElementById('enchantment checkbox').checked );
-			selectedCard.setAttribute('sorcery', document.getElementById('sorcery checkbox').checked );
-			selectedCard.setAttribute('instant', document.getElementById('instant checkbox').checked );
-			selectedCard.setAttribute('token', document.getElementById('token checkbox').checked );
-			selectedCard.setAttribute('casting_cost', document.getElementById('casting cost input').value);
-			selectedCard.setAttribute('commander', document.getElementById('commander checkbox').checked );
-			var manaProductionBitVector = 0;
-			if (document.getElementById('produces white checkbox').checked) { manaProductionBitVector |= 0x01;}
-			if (document.getElementById('produces blue checkbox').checked) { manaProductionBitVector |= 0x02;}
-			if (document.getElementById('produces black checkbox').checked) { manaProductionBitVector |= 0x04;}
-			if (document.getElementById('produces red checkbox').checked) { manaProductionBitVector |= 0x08;}
-			if (document.getElementById('produces green checkbox').checked) { manaProductionBitVector |= 0x10;}
-			if (document.getElementById('produces colorless checkbox').checked) { manaProductionBitVector |= 0x20;}
-			selectedCard.setAttribute('mana_production_bitvector', manaProductionBitVector );
-			selectedCard.setAttribute('back', document.getElementById('card back input').value );
-		}
-
-		function hideEditCard()
-		{
-			//Check if the user made changes
-			if (document.getElementById("edit card control panel").style.visibility == 'visible')
-			{
-				//Hide the edit card control panel and save the settings
-				saveEditCardSettings();
-				document.getElementById('land menu').style.visibility = 'hidden';
-				document.getElementById('nonland menu').style.visibility = 'hidden';
-				document.getElementById('permanent menu').style.visibility = 'hidden';
-				document.getElementById("edit card control panel").style.visibility = 'hidden';
-			}
-			document.getElementById('analyze card results').style.visibility = 'hidden';
-		}
-
-		function viewEditCard()
-		{
-			//Load the settings and make the edit card control panel visible
-			loadEditCardSettings();
-			updateEditCardFormByType();
-			document.getElementById("edit card control panel").style.visibility = 'visible';
-		}
-
-		function toggleEditCard()
-		{
-			//If the edit card panel was visible, hide it and save settings
-			if (document.getElementById("edit card control panel").style.visibility == 'visible')
-			{
-				hideEditCard();
-			}
-			else
-			{
-				viewEditCard();
-			}
-		}
-
-		function updateEditCardFormByType()
-		{
-			var landMenuElement = document.getElementById('land menu');
-			var nonlandMenuElement = document.getElementById('nonland menu');
-			var permanentMenuElement = document.getElementById('permanent menu');
-			var commonDetailsMenuElement = document.getElementById('common details menu');
-			//Is this a land?
-			if (document.getElementById('land checkbox').checked)
-			{
-				//Show land stuff
-				landMenuElement.style.visibility = 'visible';
-				landMenuElement.parentNode.appendChild(landMenuElement);
-				//Is this a creature?
-				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
-				{
-					permanentMenuElement.style.visibility = 'visible';	//In case they print a legendary land creature, so that it can be your commander
-					//Append this next
-					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
-					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-				} else {
-					permanentMenuElement.style.visibility = 'hidden';
-					//Move hidden elements to bottom so there isn't a blank space
-					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
-				}
-				//move hidden elements to bottom so there isn't a blank space
-				nonlandMenuElement.style.visibility = 'hidden';
-				nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-			}
-			else
-			{
-				//Is this a creature, planeswalker, artifact, or enchantment
-				if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
-				{
-					nonlandMenuElement.style.visibility = 'visible';
-					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					permanentMenuElement.style.visibility = 'visible';
-					//Move hidden elements to bottom so there isn't a blank space
-					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
-					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-				}
-				else if (document.getElementById('sorcery checkbox').checked || document.getElementById('instant checkbox').checked)
-				{
-					nonlandMenuElement.style.visibility = 'visible';
-					permanentMenuElement.style.visibility = 'hidden';
-					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					//Move hidden elements to bottom so there isn't a blank space
-					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
-				}
-				else
-				{
-					nonlandMenuElement.style.visibility = 'hidden';
-					permanentMenuElement.style.visibility = 'hidden';
-					//Move hidden elements to bottom so there isn't a blank space
-					commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
-					nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
-					permanentMenuElement.parentNode.appendChild(permanentMenuElement);
-				}
-				//Hide land stuff
-				landMenuElement.style.visibility = 'hidden';
-				landMenuElement.parentNode.appendChild(landMenuElement);
-			}
-		}
-
-		function permanentTypeSelected()
-		{
-			document.getElementById('sorcery checkbox').checked = false;
-			document.getElementById('instant checkbox').checked = false;
-			updateEditCardFormByType();
-		}
-
-		function instantTypeSelected()
-		{
-			document.getElementById('land checkbox').checked = false;
-			document.getElementById('creature checkbox').checked = false;
-			document.getElementById('planeswalker checkbox').checked = false;
-			document.getElementById('artifact checkbox').checked = false;
-			document.getElementById('enchantment checkbox').checked = false;
-			document.getElementById('sorcery checkbox').checked = false;
-			updateEditCardFormByType();
-		}
-
-		function sorceryTypeSelected()
-		{
-			document.getElementById('land checkbox').checked = false;
-			document.getElementById('creature checkbox').checked = false;
-			document.getElementById('planeswalker checkbox').checked = false;
-			document.getElementById('artifact checkbox').checked = false;
-			document.getElementById('enchantment checkbox').checked = false;
-			document.getElementById('instant checkbox').checked = false;
-			updateEditCardFormByType();
-		}		
-
-		var CardElement = function(imagesource) {
-			this.element = document.createElement("img");
-			this.element.src = imagesource;
-			this.element.className = "draggable card";
-			this.element.setAttribute("name", "");
-			this.element.setAttribute("purpose", "");
-			this.element.setAttribute("front", imagesource);
-			this.element.setAttribute("back", "");
-			this.element.setAttribute("land", false);
-			this.element.setAttribute("creature", false);
-			this.element.setAttribute("planeswalker", false);
-			this.element.setAttribute("artifact", false);
-			this.element.setAttribute("enchantment", false);
-			this.element.setAttribute("sorcery", false);
-			this.element.setAttribute("instant", false);
-			this.element.setAttribute("token", false);
-			this.element.setAttribute("casting_cost", "");
-			this.element.setAttribute("commander", false);
-			this.element.setAttribute('mana_production_bitvector', "0");
-			this.element.style.top = '0px';
-			this.element.style.left = '0px';
-			this.element.addEventListener("mousedown", mouseDownCard);
-			this.element.addEventListener("mouseup", mouseUpCard);
-			this.element.addEventListener("mouseenter", mouseEnterCard);
-			this.element.addEventListener("mouseleave", mouseLeaveCard);
-			document.getElementById("playmat").appendChild(this.element);
-			return this.element;
-		}
-
-		var Label = function(text) {
-			this.element = document.createElement("div");
-			this.element.className = "label";
-			this.element.innerHTML = text;
-			document.getElementById("playmat").appendChild(this.element);
-			return this.element;
-		}
-
-		function deleteAllLabels() {
-			//Get all the elements in the selection
-			var elementsOnPlaymat = document.getElementById('playmat').getElementsByTagName('DIV');
-
-			//Delete all the label elements
-			var elementsToDelete = [];
-			var i = 0;
-			for (i = 0; i < elementsOnPlaymat.length; ++i)
-			{
-				if (hasClass(elementsOnPlaymat[i], 'label'))
-				{
-					elementsToDelete.push(elementsOnPlaymat[i]);
-				}
-			}
-
-			for (i = 0; i < elementsToDelete.length; ++i)
-			{
-				elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
-			}
-		}
-
-		function padToFour(number) {
-		  if (number<=9999) { number = ("000"+number).slice(-4); }
-		  return number;
-		}
-
-		function addCard() {
-			var cardImageUrlString = String(document.getElementById("cardimageurl").value);
-			var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-			var numCardsAdded = 0;
-			var padding = 5;
-			var playmat = document.getElementById("playmat");
-			var sideboard = document.getElementById("sideboard");
-			var numColumns = Math.floor((playmat.offsetWidth - sideboard.offsetWidth - 50 - padding - 25) / (cardWidth + padding));
-			if (numColumns < 3)
-			{
-				numColumns = 3;
-			}
-			var newCard;
-		    cardImageUrlString.replace(urlRegex, function(url) {
-		    	newCard = CardElement(url);
-		    	newCard.style.top = Math.floor(numCardsAdded / numColumns) * (cardHeight + padding) + 25 + 'px';
-		    	newCard.style.left = (numCardsAdded % numColumns) * (cardWidth + padding) + 25 + 'px';
-		    	newCard.setAttribute("name", padToFour(numCardsAdded));
-		    	numCardsAdded = numCardsAdded + 1;
-		        return url;
-		    });
-		    if (numCardsAdded == 1)
-		    {
-		    	newCard.setAttribute("name", "");
-		    }
-		}
-
-		var numCopies = 0;
-		function copyCard() {
-			var clone = selectedCard.cloneNode(true);
-			clone.addEventListener("mousedown", mouseDownCard);
-			clone.addEventListener("mouseup", mouseUpCard);
-			clone.addEventListener("mouseenter", mouseEnterCard);
-			clone.addEventListener("mouseleave", mouseLeaveCard);
-			++numCopies;
-			clone.style.top = parseInt(clone.style.top) + nameHeight*numCopies + "px";
-			selectedCard.parentNode.appendChild(clone);
-		}
-
-		function deleteCard() {
-			document.getElementById('magnified card view').src = "";
-			hideCardInfoMenu();
-			selectedCard.parentNode.removeChild(selectedCard);
-		}
-
-		function clearCardImageUrlEntry() {
-			document.getElementById("cardimageurl").value = "";
-		}
-
-		function tapOrUntapCard(element) {
-			//Is the card sideboarded?
-			if (!hasClass(element, 'sideboarded'))
-			{
-				//Is the card already tapped?
-				if (hasClass(element, 'rotated')){
-					//Is the card part of a selection?
-					if (hasClass(element, 'selected'))
-					{
-						//Untap all cards in the selection
-						var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
-						var i;
-						for (i = 0; i < elementsInSelector.length; ++i)
-						{
-							if (hasClass(elementsInSelector[i],"card"))
-							{
-								elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-							}
-						}
-					}
-					else
-					{
-						//Untap just this card
-						element.className = element.className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-					}
-				} else {
-					//Is the card part of a selection?
-					if (hasClass(element, 'selected'))
-					{
-						//Tap all cards in the selection
-						var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
-						var i;
-						for (i = 0; i < elementsInSelector.length; ++i)
-						{
-							if (hasClass(elementsInSelector[i],"card"))
-							{
-								if (!hasClass(elementsInSelector[i], 'rotated'))
-								{
-									elementsInSelector[i].className += ' rotated';
-								}
-							}
-						}
-					}
-					else
-					{
-						//Tap just this card
-						element.className += ' rotated';
-					}
-				}
-			}
-		}
-
-		function flipCard(element)
-		{
-			//Is this card part of a selection?
-			if (hasClass(element, 'selected'))
-			{
-				var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
-				var i;
-				//Is the card face up?
-				if (element.src == element.getAttribute("front"))
-				{
-					//Is this a double-faced card?
-					if (element.getAttribute("back") != "")
-					{
-						//Transform all transformable cards
-						for (i = 0; i < elementsInSelector.length; ++i)
-						{
-							if (hasClass(elementsInSelector[i],"card"))
-							{
-								//Is this a transformable card?
-								if (elementsInSelector[i].getAttribute("back") != "")
-								{
-									elementsInSelector[i].src = elementsInSelector[i].getAttribute("back");
-								}
-							}
-						}
-					}
-					else
-					{
-						//Conceal all cards
-						for (i = 0; i < elementsInSelector.length; ++i)
-						{
-							if (hasClass(elementsInSelector[i],"card"))
-							{
-								elementsInSelector[i].src = document.getElementById("card sleeve image").value;
-							}
-						}
-					}
-				}
-				else
-				{
-					//flip all cards to front side
-					for (i = 0; i < elementsInSelector.length; ++i)
-					{
-						if (hasClass(elementsInSelector[i],"card"))
-						{
-							elementsInSelector[i].src = elementsInSelector[i].getAttribute("front");
-						}
-					}
-				}
-			}
-			else
-			{
-				//Is the card face up?
-				if (element.src == element.getAttribute("front"))
-				{
-					//Is this a double-faced card?
-					if (element.getAttribute("back") != "")
-					{
-						//Double-faced card, transform
-						element.src = element.getAttribute("back");
-					} else {
-						//Conceal this card
-						element.src = document.getElementById("card sleeve image").value;
-					}
-				}
-				else
-				{
-					//flip to front side
-					element.src = element.getAttribute("front");
-				}
-			}
-		}
-
-		function shuffle()
-		{
-			var xOffset = 0;
-			var yOffset = 0;
-
-			//Are any cards selected?
-			var elementsToShuffle = document.getElementById('selector').getElementsByTagName('*');
-
-			//Figure out which of the elements are cards
-			var cardsToShuffle = [];
-			var i = 0;
-			for (i = 0; i < elementsToShuffle.length; ++i)
-			{
-				if (hasClass(elementsToShuffle[i], "card"))
-				{
-					cardsToShuffle.push(elementsToShuffle[i]);
-				}
-			}
-
-			//Shuffle the cards
-			var numCards = cardsToShuffle.length;
-			
-			for (i = 0; i < numCards; ++i)
-			{
-				//Select a card at random
-				var index = Math.floor(Math.random() * cardsToShuffle.length);
-				//Conceal the card
-				cardsToShuffle[index].src = document.getElementById("card sleeve image").value;
-				//Put it into the deck
-				cardsToShuffle[index].style.top = yOffset + i + 'px';
-				cardsToShuffle[index].style.left = xOffset + i + 'px';
-				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-				//Bring it in front of the other elements
-				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
-				//Remove it from the list of cards to be shuffled
-				cardsToShuffle.splice(index,1);
-			}
-
-			//Resize document to fit
-			resizeDocument();
-		}
-
-		function newGame()
-		{
-			//Get all the elements on the playmat
-			var elementsToShuffle = document.getElementById('playmat').getElementsByTagName('*');
-			var xOffset = 400;
-			var yOffset = 700;
-			deleteAllCounters();
-			deleteAllLabels();
-			addCounter(parseInt(document.getElementById("starting life").value));
-			addCounter(parseInt(document.getElementById("starting life").value));
-			
-			//Figure out which of the elements are non-commander cards
-			var cardsToShuffle = [];
-			var i = 0;
-			for (i = 0; i < elementsToShuffle.length; ++i)
-			{
-				if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true' && elementsToShuffle[i].getAttribute('token') != 'true' )
-				{
-					cardsToShuffle.push(elementsToShuffle[i]);
-				}
-			}
-
-			//Count how many cards we need to shuffle
-			var numCards = cardsToShuffle.length;
-
-			//Draw a hand of 7 cards
-			for (i = 0; i < 7 && i < numCards; ++i)
-			{
-				//Select a card at random
-				var index = Math.floor(Math.random() * cardsToShuffle.length);
-				//Reveal the card
-				cardsToShuffle[index].src = cardsToShuffle[index].getAttribute("front");
-				//Put it below the deck
-				cardsToShuffle[index].style.top = yOffset + numCards + cardHeight + 10 + 'px';
-				cardsToShuffle[index].style.left = 10 + i * (cardWidth + 10) + 'px';
-				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-				//Bring it in front of the other elements
-				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
-				//Remove it from the list of cards to be shuffled
-				cardsToShuffle.splice(index,1);
-			}
-
-			//Shuffle the remaining cards
-			for (; i < numCards; ++i)
-			{
-				//Select a card at random
-				var index = Math.floor(Math.random() * cardsToShuffle.length);
-				//Conceal the card
-				cardsToShuffle[index].src = document.getElementById("card sleeve image").value;
-				//Put it into the deck
-				cardsToShuffle[index].style.top = yOffset + i + 'px';
-				cardsToShuffle[index].style.left = xOffset + i + 'px';
-				cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
-				//Bring it in front of the other elements
-				cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
-				//Remove it from the list of cards to be shuffled
-				cardsToShuffle.splice(index,1);
-			}
-
-			//Resize document to fit
-			resizeDocument();
-		}
-
-		function toggleSideboard()
-		{
-			var sideboard = document.getElementById('sideboard');
-			if (sideboard.style.visibility == 'visible')
-			{
-				sideboard.style.visibility = 'hidden';
-			} else {
-				sideboard.style.visibility = 'visible';
-			}
-		}
-
-		function stack()
-		{
-			//Are any cards selected?
-			var elementsToStack = document.getElementById('selector').getElementsByTagName('*');
-
-			//Figure out which of the elements are non-commander cards
-			var cardsToStack = [];
-			var i = 0;
-			for (i = 0; i < elementsToStack.length; ++i)
-			{
-				if (hasClass(elementsToStack[i], "card") )
-				{
-					cardsToStack.push(elementsToStack[i]);
-				}
-			}
-
-			//Stack the cards
-			var xOffset = 0;
-			var yOffset = 0;
-			
-			
-			for (i = 0; i < cardsToStack.length; ++i)
-			{
-				//Put it into the stack
-				cardsToStack[i].style.top = yOffset + 'px';
-				cardsToStack[i].style.left = xOffset + 'px';
-				//Is this card concealed?
-				if (cardsToStack[i].src == document.getElementById("card sleeve image").value)
-				{
-					xOffset = xOffset + 1;
-					yOffset = yOffset + 1;
-				} else {
-					yOffset = yOffset + nameHeight;
-				}
-			}
-
-			//Resize document to fit
-			resizeDocument();
-		}
-
-		
-
-		function dumpSideboard()
-		{
-			//Get all the elements in the sideboard
-			var sideboard = document.getElementById('sideboard');
-			var playmat = document.getElementById('playmat');
-			var elementsInSideboard = sideboard.getElementsByTagName('*');
-			var rect = sideboard.getBoundingClientRect();
-			var i = 0;
-			while (elementsInSideboard.length > 0)
-			{
-				//Remove sideboarded class
-				elementsInSideboard[0].className = elementsInSideboard[0].className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
-				//Put it on the playmat
-				elementsInSideboard[0].style.top = 25 + i * nameHeight + 'px';
-				elementsInSideboard[0].style.left= 10 + rect.left + 'px'; //TODO
-				playmat.appendChild(elementsInSideboard[0]);
-				++i;
-			}
-		}
-
-
-
-		function deleteSelection()
-		{
-
-			document.getElementById('magnified card view').src = "";
-			hideCardInfoMenu();
-			
-			//Get all the elements in the selection
-			var elementsInSelection = document.getElementById('selector').getElementsByTagName('*');
-
-			//Delete all the elements
-			var elementsToDelete = [];
-			for (i = 0; i < elementsInSelection.length; ++i)
-			{
-				elementsToDelete.push(elementsInSelection[i]);
-			}
-
-			for (i = 0; i < elementsToDelete.length; ++i)
-			{
-				elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
-			}
-
-			deselectAll();
-		}
-
-		function analyzeCard(){
-			//Save the changes
-			saveEditCardSettings();
-			var castingProbabilities = computeCastingProbabilitiesOfCard(selectedCard);
-			//Get the mana cost again
-			var cost = new ManaCost(selectedCard.getAttribute('casting_cost'));
-			//Figure out the first turn you can cast this on
-			var cardsDrawnByTheTurnYouCanCastIt = 6 + cost.total;
-			if (cardsDrawnByTheTurnYouCanCastIt < 7)
-			{
-				cardsDrawnByTheTurnYouCanCastIt = 7;
-			}
-
-			//For each number of cards drawn from deck
-			var i = 0;
-			for (i = 0; i < castingProbabilities.length; ++i)
-			{
-				//Set this bar's height
-				var barElement = document.getElementById('graph ' + i + ' bar');
-				var barLabelElement = document.getElementById('graph ' + i + ' bar label');
-				barElement.style.height = (200 * castingProbabilities[i]) + 'px';
-				barLabelElement.innerHTML = '&nbsp' + (Math.round(10000*castingProbabilities[i])/100) + '&nbsp';
-				if (castingProbabilities[i] < 0.5) {
-					barElement.style.background = 'red';
-					barLabelElement.className = 'graph_bar_label_outside';
-				} else if (castingProbabilities[i] < 0.6) {
-					barElement.style.background = 'orange';
-					barLabelElement.className = 'graph_bar_label_inside';
-				} else if (castingProbabilities[i] < 0.7) {
-					barElement.style.background = 'yellow';
-					barLabelElement.className = 'graph_bar_label_inside';
-				} else if (castingProbabilities[i] < 0.8) {
-					barElement.style.background = 'green';
-					barLabelElement.className = 'graph_bar_label_inside';
-				} else if (castingProbabilities[i] < 0.9) {
-					barElement.style.background = 'rgb(0, 46, 255)';
-					barLabelElement.className = 'graph_bar_label_inside';
-				} else {
-					barElement.style.background = 'purple';
-					barLabelElement.className = 'graph_bar_label_inside';
-				}
-				if (i == cardsDrawnByTheTurnYouCanCastIt)
-				{
-					barElement.className = 'highlighted_graph_bar';
-				} else {
-					barElement.className = 'graph_bar';
-				}
-			}
-
-			//Make the graph visible
-			document.getElementById('analyze card results').style.visibility = 'visible';
-		}
-
-		//Main
-		window.onload = function() {
-			//Create some cards for testing
-			document.onmousemove=dragElement;
-			document.onmouseup=stopDrag;
-			document.getElementById("card info popup").addEventListener("mouseleave", hideCardInfoMenu);
-			document.getElementById("magnified card view").addEventListener("mousedown", hideCardInfoMenu);
-			document.getElementById("playmat").addEventListener("mousedown", startSelection);
-			document.getElementById("land checkbox").onclick = permanentTypeSelected;
-			document.getElementById("creature checkbox").onclick = permanentTypeSelected;
-			document.getElementById("planeswalker checkbox").onclick = permanentTypeSelected;
-			document.getElementById("artifact checkbox").onclick = permanentTypeSelected;
-			document.getElementById("enchantment checkbox").onclick = permanentTypeSelected;
-			document.getElementById("sorcery checkbox").onclick = sorceryTypeSelected;
-			document.getElementById("instant checkbox").onclick = instantTypeSelected;
-
-			var sideboard = document.getElementById("sideboard");
-			sideboard.addEventListener("mouseover", mouseEnterSideboard);
-			sideboard.addEventListener("mouseout", mouseLeaveSideboard);
-
-			//Go through all the elements on the playmat and set up their javascript functions
-			var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
-			var i, element;
+			hideSelector();
+			//Blue selector only selects elements that are entirely within the selection box	
 			for (i = 0; i < elementsOnMat.length; ++i)
 			{
-				element = elementsOnMat[i];
-				//Set up cards
-				if (hasClass(element,'card')){
-					element.addEventListener("mousedown", mouseDownCard);
-					element.addEventListener("mouseup", mouseUpCard);
-					element.addEventListener("mouseenter", mouseEnterCard);
-					element.addEventListener("mouseleave", mouseLeaveCard);
+				//Check that this is a draggable top-level element
+				if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i],'draggable'))
+				{
+					elementStyle = window.getComputedStyle(elementsOnMat[i]);
+					elementTop = parseInt(elementsOnMat[i].style.top);
+					elementLeft = parseInt(elementsOnMat[i].style.left);
+					elementRight = elementLeft + parseInt(elementStyle.width);
+					elementBottom = elementTop + parseInt(elementStyle.height);
+
+					//Check its coordinates
+					if (elementTop >= topBoundary &&
+						elementLeft >= leftBoundary &&
+						elementBottom <= bottomBoundary &&
+						elementRight <= rightBoundary)
+					{
+						selectedElements.push(elementsOnMat[i]);
+					}
 				}
 			}
-
-			//Go through all the elements in the sideboard and set up their javascript functions
-			var elementsInSideboard = document.getElementById("sideboard").getElementsByTagName('*');
-			for (i = 0; i < elementsInSideboard.length; ++i)
+		} else if (selector.className == "green_selector"){
+			hideSelector();
+			//Green selector slects any elements that overlap the selection box
+			for (i = 0; i < elementsOnMat.length; ++i)
 			{
-				element = elementsInSideboard[i];
-				//Set up cards
-				if (hasClass(element,'card')){
-					element.addEventListener("mousedown", mouseDownCard);
-					element.addEventListener("mouseup", mouseUpCard);
-					element.addEventListener("mouseenter", mouseEnterCard);
-					element.addEventListener("mouseleave", mouseLeaveCard);
+				//Check that this is a draggable top-level element
+				if (elementsOnMat[i].parentNode == playmat && hasClass(elementsOnMat[i],'draggable'))
+				{
+					elementStyle = window.getComputedStyle(elementsOnMat[i]);
+					elementTop = parseInt(elementsOnMat[i].style.top);
+					elementLeft = parseInt(elementsOnMat[i].style.left);
+					elementRight = elementLeft + parseInt(elementStyle.width);
+					elementBottom = elementTop + parseInt(elementStyle.height);
+					//Check its coordinates
+					if (elementLeft <= rightBoundary &&
+						elementRight >= leftBoundary &&
+						elementTop <= bottomBoundary &&
+						elementBottom >= topBoundary )
+					{
+						selectedElements.push(elementsOnMat[i]);
+					}
 				}
 			}
-
-			deselectAll();
-
-			resizeDocument();
-
 		}
+		//Move the selected elements to the "selected" div for O(1) movement
+		groupSelectedElements(selectedElements);
+		
+		select = false
+	}
+}
+
+var selectedCard;
+function showCardInfoMenu(element) {
+	if (hasClass(element, 'card')){
+		selectedCard = element;
+		if (hasClass(element, 'selected'))
+		{
+			var selector = document.getElementById('selector');
+			document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + parseInt(selector.style.top)  + 'px';
+			document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + parseInt(selector.style.left) + 'px';
+		} else if (hasClass(element, 'sideboarded')) {
+			var sideboard = document.getElementById('sideboard'); //TODO
+			var documentScrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+			document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 - sideboard.scrollTop + documentScrollTop + 'px';
+			document.getElementById('card info popup').style.right = 180 + 'px';
+			document.getElementById('card info popup').style.left = "";
+		} else {
+			document.getElementById('card info popup').style.top = parseInt(selectedCard.style.top) - 5 + 'px';
+			document.getElementById('card info popup').style.left = parseInt(selectedCard.style.left) - 5 + 'px';
+		}
+		hideEditCard();
+		document.getElementById('magnified card view').src = selectedCard.src;
+		document.getElementById('card info popup').style.visibility = 'visible';
+	}
+}
+
+function hideCardInfoMenu() {
+	hideEditCard();
+	numCopies = 0;
+	document.getElementById('card info popup').style.visibility = 'hidden';
+}
+
+function loadEditCardSettings()
+{
+	//Load the settings
+	document.getElementById('card name input').value = selectedCard.getAttribute('name');
+	document.getElementById('purpose input').value = selectedCard.getAttribute('purpose');
+	document.getElementById('land checkbox').checked = selectedCard.getAttribute('land') == 'true';
+	document.getElementById('creature checkbox').checked = selectedCard.getAttribute('creature') == 'true';
+	document.getElementById('planeswalker checkbox').checked = selectedCard.getAttribute('planeswalker') == 'true';
+	document.getElementById('artifact checkbox').checked = selectedCard.getAttribute('artifact') == 'true';
+	document.getElementById('enchantment checkbox').checked = selectedCard.getAttribute('enchantment') == 'true';
+	document.getElementById('sorcery checkbox').checked = selectedCard.getAttribute('sorcery') == 'true';
+	document.getElementById('instant checkbox').checked = selectedCard.getAttribute('instant') == 'true';
+	document.getElementById('token checkbox').checked = selectedCard.getAttribute('token') == 'true';
+	document.getElementById('casting cost input').value = selectedCard.getAttribute('casting_cost');
+	document.getElementById('commander checkbox').checked = selectedCard.getAttribute('commander') == 'true';
+	var manaProductionBitVector = parseInt(selectedCard.getAttribute('mana_production_bitvector'));
+	document.getElementById('produces white checkbox').checked = manaProductionBitVector & 0x01;
+	document.getElementById('produces blue checkbox').checked = manaProductionBitVector & 0x02;
+	document.getElementById('produces black checkbox').checked = manaProductionBitVector & 0x04;
+	document.getElementById('produces red checkbox').checked = manaProductionBitVector & 0x08;
+	document.getElementById('produces green checkbox').checked = manaProductionBitVector & 0x10;
+	document.getElementById('produces colorless checkbox').checked = manaProductionBitVector & 0x20;
+	document.getElementById('card back input').value = selectedCard.getAttribute('back');
+}
+
+function saveEditCardSettings()
+{
+	selectedCard.setAttribute('name', document.getElementById('card name input').value );
+	selectedCard.setAttribute('purpose', document.getElementById('purpose input').value );
+	selectedCard.setAttribute('land', document.getElementById('land checkbox').checked );
+	selectedCard.setAttribute('creature', document.getElementById('creature checkbox').checked );
+	selectedCard.setAttribute('planeswalker', document.getElementById('planeswalker checkbox').checked );
+	selectedCard.setAttribute('artifact', document.getElementById('artifact checkbox').checked );
+	selectedCard.setAttribute('enchantment', document.getElementById('enchantment checkbox').checked );
+	selectedCard.setAttribute('sorcery', document.getElementById('sorcery checkbox').checked );
+	selectedCard.setAttribute('instant', document.getElementById('instant checkbox').checked );
+	selectedCard.setAttribute('token', document.getElementById('token checkbox').checked );
+	selectedCard.setAttribute('casting_cost', document.getElementById('casting cost input').value);
+	selectedCard.setAttribute('commander', document.getElementById('commander checkbox').checked );
+	var manaProductionBitVector = 0;
+	if (document.getElementById('produces white checkbox').checked) { manaProductionBitVector |= 0x01;}
+	if (document.getElementById('produces blue checkbox').checked) { manaProductionBitVector |= 0x02;}
+	if (document.getElementById('produces black checkbox').checked) { manaProductionBitVector |= 0x04;}
+	if (document.getElementById('produces red checkbox').checked) { manaProductionBitVector |= 0x08;}
+	if (document.getElementById('produces green checkbox').checked) { manaProductionBitVector |= 0x10;}
+	if (document.getElementById('produces colorless checkbox').checked) { manaProductionBitVector |= 0x20;}
+	selectedCard.setAttribute('mana_production_bitvector', manaProductionBitVector );
+	selectedCard.setAttribute('back', document.getElementById('card back input').value );
+}
+
+function hideEditCard()
+{
+	//Check if the user made changes
+	if (document.getElementById("edit card control panel").style.visibility == 'visible')
+	{
+		//Hide the edit card control panel and save the settings
+		saveEditCardSettings();
+		document.getElementById('land menu').style.visibility = 'hidden';
+		document.getElementById('nonland menu').style.visibility = 'hidden';
+		document.getElementById('permanent menu').style.visibility = 'hidden';
+		document.getElementById("edit card control panel").style.visibility = 'hidden';
+	}
+	document.getElementById('analyze card results').style.visibility = 'hidden';
+}
+
+function viewEditCard()
+{
+	//Load the settings and make the edit card control panel visible
+	loadEditCardSettings();
+	updateEditCardFormByType();
+	document.getElementById("edit card control panel").style.visibility = 'visible';
+}
+
+function toggleEditCard()
+{
+	//If the edit card panel was visible, hide it and save settings
+	if (document.getElementById("edit card control panel").style.visibility == 'visible')
+	{
+		hideEditCard();
+	}
+	else
+	{
+		viewEditCard();
+	}
+}
+
+function updateEditCardFormByType()
+{
+	var landMenuElement = document.getElementById('land menu');
+	var nonlandMenuElement = document.getElementById('nonland menu');
+	var permanentMenuElement = document.getElementById('permanent menu');
+	var commonDetailsMenuElement = document.getElementById('common details menu');
+	//Is this a land?
+	if (document.getElementById('land checkbox').checked)
+	{
+		//Show land stuff
+		landMenuElement.style.visibility = 'visible';
+		landMenuElement.parentNode.appendChild(landMenuElement);
+		//Is this a creature?
+		if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
+		{
+			permanentMenuElement.style.visibility = 'visible';	//In case they print a legendary land creature, so that it can be your commander
+			//Append this next
+			permanentMenuElement.parentNode.appendChild(permanentMenuElement);
+			commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+		} else {
+			permanentMenuElement.style.visibility = 'hidden';
+			//Move hidden elements to bottom so there isn't a blank space
+			commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+			permanentMenuElement.parentNode.appendChild(permanentMenuElement);
+		}
+		//move hidden elements to bottom so there isn't a blank space
+		nonlandMenuElement.style.visibility = 'hidden';
+		nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
+	}
+	else
+	{
+		//Is this a creature, planeswalker, artifact, or enchantment
+		if (document.getElementById('creature checkbox').checked || document.getElementById('planeswalker checkbox').checked || document.getElementById('artifact checkbox').checked || document.getElementById('enchantment checkbox').checked)
+		{
+			nonlandMenuElement.style.visibility = 'visible';
+			nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
+			permanentMenuElement.style.visibility = 'visible';
+			//Move hidden elements to bottom so there isn't a blank space
+			permanentMenuElement.parentNode.appendChild(permanentMenuElement);
+			commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+		}
+		else if (document.getElementById('sorcery checkbox').checked || document.getElementById('instant checkbox').checked)
+		{
+			nonlandMenuElement.style.visibility = 'visible';
+			permanentMenuElement.style.visibility = 'hidden';
+			nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
+			//Move hidden elements to bottom so there isn't a blank space
+			commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+			permanentMenuElement.parentNode.appendChild(permanentMenuElement);
+		}
+		else
+		{
+			nonlandMenuElement.style.visibility = 'hidden';
+			permanentMenuElement.style.visibility = 'hidden';
+			//Move hidden elements to bottom so there isn't a blank space
+			commonDetailsMenuElement.parentNode.appendChild(commonDetailsMenuElement);
+			nonlandMenuElement.parentNode.appendChild(nonlandMenuElement);
+			permanentMenuElement.parentNode.appendChild(permanentMenuElement);
+		}
+		//Hide land stuff
+		landMenuElement.style.visibility = 'hidden';
+		landMenuElement.parentNode.appendChild(landMenuElement);
+	}
+}
+
+function permanentTypeSelected()
+{
+	document.getElementById('sorcery checkbox').checked = false;
+	document.getElementById('instant checkbox').checked = false;
+	updateEditCardFormByType();
+}
+
+function instantTypeSelected()
+{
+	document.getElementById('land checkbox').checked = false;
+	document.getElementById('creature checkbox').checked = false;
+	document.getElementById('planeswalker checkbox').checked = false;
+	document.getElementById('artifact checkbox').checked = false;
+	document.getElementById('enchantment checkbox').checked = false;
+	document.getElementById('sorcery checkbox').checked = false;
+	updateEditCardFormByType();
+}
+
+function sorceryTypeSelected()
+{
+	document.getElementById('land checkbox').checked = false;
+	document.getElementById('creature checkbox').checked = false;
+	document.getElementById('planeswalker checkbox').checked = false;
+	document.getElementById('artifact checkbox').checked = false;
+	document.getElementById('enchantment checkbox').checked = false;
+	document.getElementById('instant checkbox').checked = false;
+	updateEditCardFormByType();
+}		
+
+var CardElement = function(imagesource) {
+	this.element = document.createElement("img");
+	this.element.src = imagesource;
+	this.element.className = "draggable card";
+	this.element.setAttribute("name", "");
+	this.element.setAttribute("purpose", "");
+	this.element.setAttribute("front", imagesource);
+	this.element.setAttribute("back", "");
+	this.element.setAttribute("land", false);
+	this.element.setAttribute("creature", false);
+	this.element.setAttribute("planeswalker", false);
+	this.element.setAttribute("artifact", false);
+	this.element.setAttribute("enchantment", false);
+	this.element.setAttribute("sorcery", false);
+	this.element.setAttribute("instant", false);
+	this.element.setAttribute("token", false);
+	this.element.setAttribute("casting_cost", "");
+	this.element.setAttribute("commander", false);
+	this.element.setAttribute('mana_production_bitvector', "0");
+	this.element.style.top = '0px';
+	this.element.style.left = '0px';
+	this.element.addEventListener("mousedown", mouseDownCard);
+	this.element.addEventListener("mouseup", mouseUpCard);
+	this.element.addEventListener("mouseenter", mouseEnterCard);
+	this.element.addEventListener("mouseleave", mouseLeaveCard);
+	document.getElementById("playmat").appendChild(this.element);
+	return this.element;
+}
+
+var Label = function(text) {
+	this.element = document.createElement("div");
+	this.element.className = "label";
+	this.element.innerHTML = text;
+	document.getElementById("playmat").appendChild(this.element);
+	return this.element;
+}
+
+function deleteAllLabels() {
+	//Get all the elements in the selection
+	var elementsOnPlaymat = document.getElementById('playmat').getElementsByTagName('DIV');
+
+	//Delete all the label elements
+	var elementsToDelete = [];
+	var i = 0;
+	for (i = 0; i < elementsOnPlaymat.length; ++i)
+	{
+		if (hasClass(elementsOnPlaymat[i], 'label'))
+		{
+			elementsToDelete.push(elementsOnPlaymat[i]);
+		}
+	}
+
+	for (i = 0; i < elementsToDelete.length; ++i)
+	{
+		elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
+	}
+}
+
+function addCard() {
+	var cardImageUrlString = String(document.getElementById("cardimageurl").value);
+	var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	var numCardsAdded = 0;
+	var padding = 5;
+	var playmat = document.getElementById("playmat");
+	var sideboard = document.getElementById("sideboard");
+	var numColumns = Math.floor((playmat.offsetWidth - sideboard.offsetWidth - 50 - padding - 25) / (cardWidth + padding));
+	if (numColumns < 3)
+	{
+		numColumns = 3;
+	}
+	var newCard;
+    cardImageUrlString.replace(urlRegex, function(url) {
+    	newCard = CardElement(url);
+    	newCard.style.top = Math.floor(numCardsAdded / numColumns) * (cardHeight + padding) + 25 + 'px';
+    	newCard.style.left = (numCardsAdded % numColumns) * (cardWidth + padding) + 25 + 'px';
+    	newCard.setAttribute("name", padToFour(numCardsAdded));
+    	numCardsAdded = numCardsAdded + 1;
+        return url;
+    });
+    if (numCardsAdded == 1)
+    {
+    	newCard.setAttribute("name", "");
+    }
+}
+
+var numCopies = 0;
+function copyCard() {
+	var clone = selectedCard.cloneNode(true);
+	clone.addEventListener("mousedown", mouseDownCard);
+	clone.addEventListener("mouseup", mouseUpCard);
+	clone.addEventListener("mouseenter", mouseEnterCard);
+	clone.addEventListener("mouseleave", mouseLeaveCard);
+	++numCopies;
+	clone.style.top = parseInt(clone.style.top) + nameHeight*numCopies + "px";
+	selectedCard.parentNode.appendChild(clone);
+}
+
+function deleteCard() {
+	document.getElementById('magnified card view').src = "";
+	hideCardInfoMenu();
+	selectedCard.parentNode.removeChild(selectedCard);
+}
+
+function clearCardImageUrlEntry() {
+	document.getElementById("cardimageurl").value = "";
+}
+
+function tapOrUntapCard(element) {
+	//Is the card sideboarded?
+	if (!hasClass(element, 'sideboarded'))
+	{
+		//Is the card already tapped?
+		if (hasClass(element, 'rotated')){
+			//Is the card part of a selection?
+			if (hasClass(element, 'selected'))
+			{
+				//Untap all cards in the selection
+				var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+				var i;
+				for (i = 0; i < elementsInSelector.length; ++i)
+				{
+					if (hasClass(elementsInSelector[i],"card"))
+					{
+						elementsInSelector[i].className = elementsInSelector[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+					}
+				}
+			}
+			else
+			{
+				//Untap just this card
+				element.className = element.className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+			}
+		} else {
+			//Is the card part of a selection?
+			if (hasClass(element, 'selected'))
+			{
+				//Tap all cards in the selection
+				var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+				var i;
+				for (i = 0; i < elementsInSelector.length; ++i)
+				{
+					if (hasClass(elementsInSelector[i],"card"))
+					{
+						if (!hasClass(elementsInSelector[i], 'rotated'))
+						{
+							elementsInSelector[i].className += ' rotated';
+						}
+					}
+				}
+			}
+			else
+			{
+				//Tap just this card
+				element.className += ' rotated';
+			}
+		}
+	}
+}
+
+function flipCard(element)
+{
+	//Is this card part of a selection?
+	if (hasClass(element, 'selected'))
+	{
+		var elementsInSelector = document.getElementById('selector').getElementsByTagName('*');
+		var i;
+		//Is the card face up?
+		if (element.src == element.getAttribute("front"))
+		{
+			//Is this a double-faced card?
+			if (element.getAttribute("back") != "")
+			{
+				//Transform all transformable cards
+				for (i = 0; i < elementsInSelector.length; ++i)
+				{
+					if (hasClass(elementsInSelector[i],"card"))
+					{
+						//Is this a transformable card?
+						if (elementsInSelector[i].getAttribute("back") != "")
+						{
+							elementsInSelector[i].src = elementsInSelector[i].getAttribute("back");
+						}
+					}
+				}
+			}
+			else
+			{
+				//Conceal all cards
+				for (i = 0; i < elementsInSelector.length; ++i)
+				{
+					if (hasClass(elementsInSelector[i],"card"))
+					{
+						elementsInSelector[i].src = document.getElementById("card sleeve image").value;
+					}
+				}
+			}
+		}
+		else
+		{
+			//flip all cards to front side
+			for (i = 0; i < elementsInSelector.length; ++i)
+			{
+				if (hasClass(elementsInSelector[i],"card"))
+				{
+					elementsInSelector[i].src = elementsInSelector[i].getAttribute("front");
+				}
+			}
+		}
+	}
+	else
+	{
+		//Is the card face up?
+		if (element.src == element.getAttribute("front"))
+		{
+			//Is this a double-faced card?
+			if (element.getAttribute("back") != "")
+			{
+				//Double-faced card, transform
+				element.src = element.getAttribute("back");
+			} else {
+				//Conceal this card
+				element.src = document.getElementById("card sleeve image").value;
+			}
+		}
+		else
+		{
+			//flip to front side
+			element.src = element.getAttribute("front");
+		}
+	}
+}
+
+function shuffle()
+{
+	var xOffset = 0;
+	var yOffset = 0;
+
+	//Are any cards selected?
+	var elementsToShuffle = document.getElementById('selector').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var cardsToShuffle = [];
+	var i = 0;
+	for (i = 0; i < elementsToShuffle.length; ++i)
+	{
+		if (hasClass(elementsToShuffle[i], "card"))
+		{
+			cardsToShuffle.push(elementsToShuffle[i]);
+		}
+	}
+
+	//Shuffle the cards
+	var numCards = cardsToShuffle.length;
+	
+	for (i = 0; i < numCards; ++i)
+	{
+		//Select a card at random
+		var index = Math.floor(Math.random() * cardsToShuffle.length);
+		//Conceal the card
+		cardsToShuffle[index].src = document.getElementById("card sleeve image").value;
+		//Put it into the deck
+		cardsToShuffle[index].style.top = yOffset + i + 'px';
+		cardsToShuffle[index].style.left = xOffset + i + 'px';
+		cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
+		//Remove it from the list of cards to be shuffled
+		cardsToShuffle.splice(index,1);
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function newGame()
+{
+	//Get all the elements on the playmat
+	var elementsToShuffle = document.getElementById('playmat').getElementsByTagName('*');
+	var xOffset = 400;
+	var yOffset = 700;
+	deleteAllCounters();
+	deleteAllLabels();
+	addCounter(parseInt(document.getElementById("starting life").value));
+	addCounter(parseInt(document.getElementById("starting life").value));
+	
+	//Figure out which of the elements are non-commander cards
+	var cardsToShuffle = [];
+	var i = 0;
+	for (i = 0; i < elementsToShuffle.length; ++i)
+	{
+		if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true' && elementsToShuffle[i].getAttribute('token') != 'true' )
+		{
+			cardsToShuffle.push(elementsToShuffle[i]);
+		}
+	}
+
+	//Count how many cards we need to shuffle
+	var numCards = cardsToShuffle.length;
+
+	//Draw a hand of 7 cards
+	for (i = 0; i < 7 && i < numCards; ++i)
+	{
+		//Select a card at random
+		var index = Math.floor(Math.random() * cardsToShuffle.length);
+		//Reveal the card
+		cardsToShuffle[index].src = cardsToShuffle[index].getAttribute("front");
+		//Put it below the deck
+		cardsToShuffle[index].style.top = yOffset + numCards + cardHeight + 10 + 'px';
+		cardsToShuffle[index].style.left = 10 + i * (cardWidth + 10) + 'px';
+		cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
+		//Remove it from the list of cards to be shuffled
+		cardsToShuffle.splice(index,1);
+	}
+
+	//Shuffle the remaining cards
+	for (; i < numCards; ++i)
+	{
+		//Select a card at random
+		var index = Math.floor(Math.random() * cardsToShuffle.length);
+		//Conceal the card
+		cardsToShuffle[index].src = document.getElementById("card sleeve image").value;
+		//Put it into the deck
+		cardsToShuffle[index].style.top = yOffset + i + 'px';
+		cardsToShuffle[index].style.left = xOffset + i + 'px';
+		cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
+		//Remove it from the list of cards to be shuffled
+		cardsToShuffle.splice(index,1);
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function toggleSideboard()
+{
+	var sideboard = document.getElementById('sideboard');
+	if (sideboard.style.visibility == 'visible')
+	{
+		sideboard.style.visibility = 'hidden';
+	} else {
+		sideboard.style.visibility = 'visible';
+	}
+}
+
+function stack()
+{
+	//Are any cards selected?
+	var elementsToStack = document.getElementById('selector').getElementsByTagName('*');
+
+	//Figure out which of the elements are non-commander cards
+	var cardsToStack = [];
+	var i = 0;
+	for (i = 0; i < elementsToStack.length; ++i)
+	{
+		if (hasClass(elementsToStack[i], "card") )
+		{
+			cardsToStack.push(elementsToStack[i]);
+		}
+	}
+
+	//Stack the cards
+	var xOffset = 0;
+	var yOffset = 0;
+	
+	
+	for (i = 0; i < cardsToStack.length; ++i)
+	{
+		//Put it into the stack
+		cardsToStack[i].style.top = yOffset + 'px';
+		cardsToStack[i].style.left = xOffset + 'px';
+		//Is this card concealed?
+		if (cardsToStack[i].src == document.getElementById("card sleeve image").value)
+		{
+			xOffset = xOffset + 1;
+			yOffset = yOffset + 1;
+		} else {
+			yOffset = yOffset + nameHeight;
+		}
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+var ManaCost = function(manaCostString)
+{
+	this.generic = 0;
+	this.w = 0;
+	this.u = 0;
+	this.b = 0;
+	this.r = 0;
+	this.g = 0;
+	this.c = 0;
+	this.wu = 0;
+	this.ub = 0;
+	this.br = 0;
+	this.rg = 0;
+	this.gw = 0;
+	this.wb = 0;
+	this.ur = 0;
+	this.bg = 0;
+	this.rw = 0;
+	this.gu = 0;
+	this.total = 0;
+	this.colorBitVector = 0;
+	this.coloredSymbolBitVectors = [];
+
+	if(manaCostString != null)
+	{
+		var lc_manaCostString = manaCostString.toLowerCase();
+		for (var c = 0; c < lc_manaCostString.length; ++c)
+		{
+			//Is this character a number?
+			if (lc_manaCostString.charCodeAt(c) >= "0".charCodeAt(0) &&
+				lc_manaCostString.charCodeAt(c) <= "9".charCodeAt(0))
+			{
+				//Add this digit to the running generic mana cost
+				this.generic = this.generic * 10 + lc_manaCostString.charCodeAt(c) - "0".charCodeAt(0);
+			} else if (lc_manaCostString[c] == 'w') {
+				this.w++;
+				this.colorBitVector |= 0x01;
+				this.coloredSymbolBitVectors.push(0x01);
+			} else if (lc_manaCostString[c] == 'u') {
+				this.u++;
+				this.colorBitVector |= 0x02;
+				this.coloredSymbolBitVectors.push(0x02);
+			} else if (lc_manaCostString[c] == 'b') {
+				this.b++;
+				this.colorBitVector |= 0x04;
+				this.coloredSymbolBitVectors.push(0x04);
+			} else if (lc_manaCostString[c] == 'r') {
+				this.r++;
+				this.colorBitVector |= 0x08;
+				this.coloredSymbolBitVectors.push(0x08);
+			} else if (lc_manaCostString[c] == 'g') {
+				this.g++;
+				this.colorBitVector |= 0x10;
+				this.coloredSymbolBitVectors.push(0x10);
+			} else if (lc_manaCostString[c] == 'c') {
+				this.c++;
+				this.colorBitVector |= 0x20;
+				this.coloredSymbolBitVectors.push(0x20);
+			} else if (lc_manaCostString[c] == '{' && (c+5) <= lc_manaCostString.length) {
+				var substring = lc_manaCostString.substring(c,c+5);
+				if ( substring       == "{w/u}") {
+					this.wu++;
+					this.colorBitVector |= 0x03;
+					this.coloredSymbolBitVectors.push(0x03);
+				} else if (substring == "{u/b}") {
+					this.ub++;
+					this.colorBitVector |= 0x06;
+					this.coloredSymbolBitVectors.push(0x06);
+				} else if (substring == "{b/r}") {
+					this.br++;
+					this.colorBitVector |= 0x0C;
+					this.coloredSymbolBitVectors.push(0x0C);
+				} else if (substring == "{r/g}") {
+					this.rg++;
+					this.colorBitVector |= 0x18;
+					this.coloredSymbolBitVectors.push(0x18);
+				} else if (substring == "{g/w}") {
+					this.gw++;
+					this.colorBitVector |= 0x11;
+					this.coloredSymbolBitVectors.push(0x11);
+				} else if (substring == "{w/b}") {
+					this.wb++;
+					this.colorBitVector |= 0x05;
+					this.coloredSymbolBitVectors.push(0x05);
+				} else if (substring == "{u/r}") {
+					this.ur++;
+					this.colorBitVector |= 0x0A;
+					this.coloredSymbolBitVectors.push(0x0A);
+				} else if (substring == "{b/g}") {
+					this.bg++;
+					this.colorBitVector |= 0x14;
+					this.coloredSymbolBitVectors.push(0x14);
+				} else if (substring == "{r/w}") {
+					this.rw++;
+					this.colorBitVector |= 0x09;
+					this.coloredSymbolBitVectors.push(0x09);
+				} else if (substring == "{g/u}") {
+					this.gu++;
+					this.colorBitVector |= 0x12;
+					this.coloredSymbolBitVectors.push(0x12);
+				}
+				c += 4;
+			}
+		}
+		this.total = this.generic + this.w + this.u + this.b + this.r + this.g + this.c + this.wu + this.ub + this.br + this.rg + this.gw + this.wb + this.ur + this.bg + this.rw + this.gu;
+	}
+}
+
+function manaCostsAreEqual(a, b)
+{
+	if (a.total != b.total ||
+		a.generic != b.generic ||
+		a.w != b.w ||
+		a.u != b.u ||
+		a.b != b.b ||
+		a.r != b.r ||
+		a.g != b.g ||
+		a.wu != b.wu ||
+		a.ub != b.ub ||
+		a.br != b.br ||
+		a.rg != b.rg ||
+		a.gw != b.gw ||
+		a.wb != b.wb ||
+		a.ur != b.ur ||
+		a.bg != b.bg ||
+		a.rw != b.rw ||
+		a.gu != b.gu
+		)
+	{
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function getTotalCost(cardElement)
+{
+	if (cardElement.getAttribute('token') == 'true')
+	{
+		return 1000000000000;
+	} else if (cardElement.getAttribute('land') == 'true') {
+		return -1;
+	} else {
+		var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+		return cost.total;
+	}
+}
+
+function getTotalCostLabel(cardElement)
+{
+	if (cardElement.getAttribute('token') == 'true')
+	{
+		return "Token";
+	} else if (cardElement.getAttribute('land') == 'true') {
+		return "Land";
+	} else {
+		var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+		return String(cost.total) + " Mana";
+	}
+}
+
+colorOrderLookupTable = [ 1,  2,  3,  7,  4, 12,  8, 17, 5, 16, 15, 22,  9, 24, 18, 31, 6, 11, 14, 21, 13, 26, 23, 30, 10, 20, 25, 29, 19, 28, 27, 32, 33, 34, 35, 39, 36, 44, 40, 49, 37, 48, 47, 54, 41, 56, 50, 63, 38, 43, 46, 53, 45, 58, 55, 62, 42, 52, 57, 61, 51, 60, 59, 64];
+
+
+function getColorOrder(cardElement)
+{
+	if (cardElement.getAttribute('token') == 'true')
+	{
+		return 65;
+	}
+	else if (cardElement.getAttribute('land') == 'true')
+	{
+		var manaProductionBitVector = parseInt(cardElement.getAttribute('mana_production_bitvector'));
+		//Ignore colorless production
+		if (manaProductionBitVector >= 32)
+		{
+			manaProductionBitVector = manaProductionBitVector - 32;
+		}
+		//Lands come after nonlands
+		return (colorOrderLookupTable[manaProductionBitVector] + 100);
+	} else {
+		var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+		return colorOrderLookupTable[cost.colorBitVector];
+	}
+}
+
+function getColorLabel(cardElement)
+{
+	if (cardElement.getAttribute('token') == 'true')
+	{
+		return 'Token';
+	}
+	else if (cardElement.getAttribute('land') == 'true')
+	{
+		var manaProductionBitVector = parseInt(cardElement.getAttribute('mana_production_bitvector'));
+		var colorLabelString = "";
+		if (manaProductionBitVector & 0x01){colorLabelString += 'W';}
+		if (manaProductionBitVector & 0x02){colorLabelString += 'U';}
+		if (manaProductionBitVector & 0x04){colorLabelString += 'B';}
+		if (manaProductionBitVector & 0x08){colorLabelString += 'R';}
+		if (manaProductionBitVector & 0x10){colorLabelString += 'G';}
+		if (colorLabelString == ""){colorLabelString += 'C';}
+
+		colorLabelString += ' Land';
+		return colorLabelString;
+	} else {
+		var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+		var colorLabelString = "";
+		if (cost.colorBitVector & 0x01){colorLabelString += 'W';}
+		if (cost.colorBitVector & 0x02){colorLabelString += 'U';}
+		if (cost.colorBitVector & 0x04){colorLabelString += 'B';}
+		if (cost.colorBitVector & 0x08){colorLabelString += 'R';}
+		if (cost.colorBitVector & 0x10){colorLabelString += 'G';}
+		if (cost.colorBitVector & 0x20){colorLabelString += 'C';}
+		if (colorLabelString == ""){colorLabelString = "Generic";}
+		return colorLabelString;
+	}
+}
+
+function getTypeOrder(cardElement)
+{
+	if (cardElement.getAttribute('token') == 'true') {
+		return 7;
+	} else if (cardElement.getAttribute('land') == 'true') {
+		return -1;
+	} else if (cardElement.getAttribute('creature') == 'true') {
+		return 1;
+	} else if (cardElement.getAttribute('planeswalker') == 'true') {
+		return 2;
+	} else if (cardElement.getAttribute('artifact') == 'true') {
+		return 3;
+	} else if (cardElement.getAttribute('enchantment') == 'true') {
+		return 4;
+	} else if (cardElement.getAttribute('sorcery') == 'true') {
+		return 5;
+	} else if (cardElement.getAttribute('instant') == 'true') {
+		return 6;
+	} else {
+		return 8;
+	}
+}
+
+function getTypeLabel(cardElement)
+{
+	if (cardElement.getAttribute('token') == 'true') {
+		return 'Token';
+	} else if (cardElement.getAttribute('land') == 'true') {
+		return 'Land';
+	} else if (cardElement.getAttribute('creature') == 'true') {
+		return 'Creature';
+	} else if (cardElement.getAttribute('planeswalker') == 'true') {
+		return 'Planeswalker';
+	} else if (cardElement.getAttribute('artifact') == 'true') {
+		return 'Artifact';
+	} else if (cardElement.getAttribute('enchantment') == 'true') {
+		return 'Enchantment';
+	} else if (cardElement.getAttribute('sorcery') == 'true') {
+		return 'Sorcery';
+	} else if (cardElement.getAttribute('instant') == 'true') {
+		return 'Instant';
+	} else {
+		return'Unknown';
+	}
+}
+
+function getPurposeLabel(cardElement)
+{
+	var purpose = cardElement.getAttribute('purpose');
+	if (purpose == null || purpose == "")
+	{
+		purpose = getTypeLabel(cardElement);
+	}
+	return purpose;
+}
+
+function dumpSideboard()
+{
+	//Get all the elements in the sideboard
+	var sideboard = document.getElementById('sideboard');
+	var playmat = document.getElementById('playmat');
+	var elementsInSideboard = sideboard.getElementsByTagName('*');
+	var rect = sideboard.getBoundingClientRect();
+	var i = 0;
+	while (elementsInSideboard.length > 0)
+	{
+		//Remove sideboarded class
+		elementsInSideboard[0].className = elementsInSideboard[0].className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
+		//Put it on the playmat
+		elementsInSideboard[0].style.top = 25 + i * nameHeight + 'px';
+		elementsInSideboard[0].style.left= 10 + rect.left + 'px'; //TODO
+		playmat.appendChild(elementsInSideboard[0]);
+		++i;
+	}
+}
+
+function sortSideboard()
+{
+	//Get all the elements in the sideboard
+	var elementsOnSideboard = document.getElementById('sideboard').getElementsByTagName('*');
+	
+	//Figure out which of the elements are cards
+	var cardsToSort = [];
+	var i = 0;
+	for (i = 0; i < elementsOnSideboard.length; ++i)
+	{
+		if (hasClass(elementsOnSideboard[i], "card"))
+		{
+			cardsToSort.push(elementsOnSideboard[i]);
+		}
+	}
+
+	//Sort the cards by cost
+	cardsToSort.sort(
+		function(a,b)
+		{
+			var ret = getColorOrder(a) - getColorOrder(b);
+			if (ret == 0)
+			{
+				ret = getTotalCost(a) - getTotalCost(b);
+				if (ret == 0)
+				{
+					var aName = a.getAttribute("name");
+					var bName = b.getAttribute("name");
+					if (aName != null && bName != null)
+					{
+						ret = aName.localeCompare(bName);
+					} else {
+						ret = 0;
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	var xOffset = 10;
+	var yOffset = 10;
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		//Reveal the card
+		cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+		//Put it into the deck
+		cardsToSort[i].style.top = yOffset + nameHeight * i + 'px';
+		cardsToSort[i].style.left = xOffset + 'px';
+		//Untap
+		cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+	}
+}
+
+function costSort()
+{
+	//Deselect any selected cards
+	deselectAll();
+	deleteAllCounters();
+	deleteAllLabels();;
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var totalNontokenCards = 0;
+	var cardsToSort = [];
+	var i = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				++totalNontokenCards;
+			}
+			cardsToSort.push(elementsOnMat[i]);
+		}
+	}
+
+	//Label the size of the previous stack
+	var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+	totalSizelabel.style.left = 0 + 'px';
+	totalSizelabel.style.top = 30 + 'px';
+
+	//Sort the cards by cost
+	cardsToSort.sort(
+		function(a,b){
+			var ret = getTotalCost(a) - getTotalCost(b);
+			if (ret == 0)
+			{
+				ret = getColorOrder(a) - getColorOrder(b);
+				if (ret == 0)
+				{
+					var aName = a.getAttribute("name");
+					var bName = b.getAttribute("name");
+					if (aName != null && bName != null)
+					{
+						ret = aName.localeCompare(bName);
+					} else {
+						ret = 0;
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Arrange the cards on the mat
+	var stackNum = 0;
+	var previousCardValue = -9000;
+	var stackHeight = 0;
+
+	var xOffset = 50;
+	var yOffset = 130;
+
+	var stackSpacing = cardWidth + 10;
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		//Is this card of a different class?
+		if (getTotalCost(cardsToSort[i]) != previousCardValue)
+		{
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			}
+
+			//Create a new stack
+			stackNum++;
+			stackHeight = 0;
+			var label = Label(getTotalCostLabel(cardsToSort[i]));
+			label.style.top = yOffset - 30 + 'px';
+			label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			previousCardValue = getTotalCost(cardsToSort[i]);
+		}
+		//Add this card to the stack
+		//Reveal the card
+		cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+		//Put it into the deck
+		cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+		cardsToSort[i].style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+		//Untap
+		cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+		stackHeight++;
+	}
+
+	//Is this the end of a stack?
+	if (stackHeight > 0)
+	{
+		//Label the size of the previous stack
+		var sizelabel = Label(String(stackHeight));
+		sizelabel.style.top = yOffset - 60 + 'px';
+		sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function typeSort()
+{
+	//Deselect any selected cards
+	deselectAll();
+	deleteAllCounters();
+	deleteAllLabels();
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var totalNontokenCards = 0;
+	var cardsToSort = [];
+	var i = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				++totalNontokenCards;
+			}
+			cardsToSort.push(elementsOnMat[i]);
+		}
+	}
+
+	//Label the size of the previous stack
+	var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+	totalSizelabel.style.left = 0 + 'px';
+	totalSizelabel.style.top = 30 + 'px';
+
+	//Sort the cards by type, then cost, then color, then name
+	cardsToSort.sort(
+		function(a,b){
+			var ret = getTypeOrder(a) - getTypeOrder(b);
+			if (ret == 0)
+			{
+				ret = getTotalCost(a) - getTotalCost(b);
+				if (ret == 0)
+				{
+					ret = getColorOrder(a) - getColorOrder(b);
+					if (ret == 0)
+					{
+						var aName = a.getAttribute("name");
+						var bName = b.getAttribute("name");
+						if (aName != null && bName != null)
+						{
+							ret = aName.localeCompare(bName);
+						} else {
+							ret = 0;
+						}
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Arrange the cards on the mat
+	var stackNum = 0;
+	var previousCardValue = -9000;
+	var stackHeight = 0;
+
+	var xOffset = 50;
+	var yOffset = 130;
+
+	var stackSpacing = cardWidth + 10;
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		//Is this card of a different class?
+		if (getTypeOrder(cardsToSort[i]) != previousCardValue)
+		{
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			}
+			//Create a new stack
+			stackNum++;
+			stackHeight = 0;
+			var label = Label(getTypeLabel(cardsToSort[i]));
+			label.style.top = yOffset - 30 + 'px';
+			label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			previousCardValue = getTypeOrder(cardsToSort[i]);
+		}
+		//Add this card to the stack
+		//Reveal the card
+		cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+		//Put it into the deck
+		cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+		cardsToSort[i].style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+		//Untap
+		cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+		stackHeight++;
+	}
+	//Is this the end of a stack?
+	if (stackHeight > 0)
+	{
+		//Label the size of the previous stack
+		var sizelabel = Label(String(stackHeight));
+		sizelabel.style.top = yOffset - 60 + 'px';
+		sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function colorSort()
+{
+	//Deselect any selected cards
+	deselectAll();
+	deleteAllCounters();
+	deleteAllLabels();
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var totalNontokenCards = 0;
+	var cardsToSort = [];
+	var i = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				++totalNontokenCards;
+			}
+			cardsToSort.push(elementsOnMat[i]);
+		}
+	}
+
+	//Label the size of the previous stack
+	var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+	totalSizelabel.style.left = 0 + 'px';
+	totalSizelabel.style.top = 30 + 'px';
+
+	//Sort the cards by color, then cost, then name
+	cardsToSort.sort(
+		function(a,b)
+		{
+			var ret = getColorOrder(a) - getColorOrder(b);
+			if (ret == 0)
+			{
+				ret = getTotalCost(a) - getTotalCost(b);
+				if (ret == 0)
+				{
+					var aName = a.getAttribute("name");
+					var bName = b.getAttribute("name");
+					if (aName != null && bName != null)
+					{
+						ret = aName.localeCompare(bName);
+					} else {
+						ret = 0;
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Figure out the necessary columns
+	var columns = [];
+	for (i = 0; i < 65; ++i)
+	{
+		columns.push(-1);
+	}
+
+	function getColumnId(colorOrder)
+	{
+		colorOrder = colorOrder - 1;
+		if (colorOrder >= 100) {
+			return colorOrder - 100;
+		} else {
+			return colorOrder;
+		}
+	}
+
+	//Figure out which columns will have cards
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		columns[getColumnId(getColorOrder(cardsToSort[i]))] = 1;
+	}
+
+	//Number off the columns that have cards
+	var columnNum = 0;
+	for (i = 0; i < columns.length; ++i)
+	{
+		if (columns[i] == 1){
+			columns[i] = columnNum;
+			columnNum++;
+		}
+	}
+
+	//Arrange the cards on the mat
+	var previousCardValue = -9000;
+	var row1Height = 0;
+	var stackHeight = 0;
+	var xOffset = 50;
+	var yOffset = 130;
+	var stackSpacing = cardWidth + 10;
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		//Is this card of a different color?
+		if ( getColorOrder(cardsToSort[i]) != previousCardValue )
+		{
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i - 1]))] + 'px';
+				if (getColorOrder(cardsToSort[i-1]) < 100)
+				{
+					sizelabel.style.top = yOffset - 60 + 'px';
+				} else {
+					sizelabel.style.top = yOffset + cardsToSort[i-1].clientHeight + nameHeight * row1Height + 60 - 60 + 'px';
+				}
+			}
+			//Create a new stack
+			stackHeight = 0;
+			//Label it
+			var label = Label(getColorLabel(cardsToSort[i]));
+			label.style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i]))] + 'px';
+			if (getColorOrder(cardsToSort[i]) < 100)
+			{
+				label.style.top = yOffset + nameHeight * stackHeight - 30 + 'px';
+			} else {
+				label.style.top = yOffset + cardsToSort[i].clientHeight + nameHeight * row1Height + 60 - 30 + 'px';
+			}
+			previousCardValue = getColorOrder(cardsToSort[i]);
+		}
+		
+		//Add this card to the stack
+		//Reveal the card
+		cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+		//Put it in its column
+		cardsToSort[i].style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i]))] + 'px';
+		//Untap
+		cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		
+		//Check if this is part of row 1
+		if ( getColorOrder(cardsToSort[i]) < 100 )
+		{
+			cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+			stackHeight++;
+			//Save the height of the largest stack in row 1
+			if (stackHeight > row1Height)
+			{
+				row1Height = stackHeight;
+			}
+		} else {
+			cardsToSort[i].style.top = yOffset + cardsToSort[i].clientHeight +  nameHeight * row1Height + nameHeight * stackHeight + 60 + 'px';
+			stackHeight++;
+		}
+
+		//Bring it in front of the other elements
+		cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+	}
+	//Is this the end of a stack?
+	if (stackHeight > 0)
+	{
+		//Label the size of the previous stack
+		var sizelabel = Label(String(stackHeight));
+		sizelabel.style.left = xOffset + stackSpacing * columns[getColumnId(getColorOrder(cardsToSort[i - 1]))] + 'px';
+		if (getColorOrder(cardsToSort[i-1]) < 100)
+		{
+			sizelabel.style.top = yOffset - 60 + 'px';
+		} else {
+			sizelabel.style.top = yOffset + cardsToSort[i-1].clientHeight + nameHeight * row1Height + 60 - 60 + 'px';
+		}
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function purposeSort()
+{
+	//Deselect any selected cards
+	deselectAll();
+	deleteAllCounters();
+	deleteAllLabels();
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var totalNontokenCards = 0;
+	var cardsToSort = [];
+	var i = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				++totalNontokenCards;
+			}
+			cardsToSort.push(elementsOnMat[i]);
+		}
+	}
+
+	//Label the size of the previous stack
+	var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+	totalSizelabel.style.left = 0 + 'px';
+	totalSizelabel.style.top = 30 + 'px';
+
+	//Sort the cards by purpose, then cost, then color, then name
+	cardsToSort.sort(
+		function(a,b){
+			var aPurpose = getPurposeLabel(a);
+			var bPurpose = getPurposeLabel(b);
+
+			if (aPurpose == "Land" && bPurpose != "Land")
+			{
+				ret = -1;
+			} else if (bPurpose == "Land" && aPurpose != "Land") {
+				ret = 1;
+			} else if (aPurpose == "Token" && bPurpose != "Token") {
+				ret = 1;
+			} else if (bPurpose == "Token" && aPurpose != "Token") {
+				ret = -1;
+			} else {
+				ret = aPurpose.localeCompare(bPurpose);
+			}
+			if (ret == 0)
+			{
+				ret = getTotalCost(a) - getTotalCost(b);
+				if (ret == 0)
+				{
+					ret = getColorOrder(a) - getColorOrder(b);
+					if (ret == 0)
+					{
+						var aName = a.getAttribute("name");
+						var bName = b.getAttribute("name");
+						if (aName != null && bName != null)
+						{
+							ret = aName.localeCompare(bName);
+						} else {
+							ret = 0;
+						}
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Arrange the cards on the mat
+	var stackNum = 0;
+	var previousCardValue = "plumbus"; //Who knows what its purpose is...
+	var stackHeight = 0;
+
+	var xOffset = 50;
+	var yOffset = 130;
+
+	var stackSpacing = cardWidth + 10;
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		//Is this card of a different class?
+		if (getPurposeLabel(cardsToSort[i]) != previousCardValue)
+		{
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			}
+			//Create a new stack
+			stackNum++;
+			stackHeight = 0;
+			var label = Label(getPurposeLabel(cardsToSort[i]));
+			label.style.top = yOffset - 30 + 'px';
+			label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			previousCardValue = getPurposeLabel(cardsToSort[i]);
+		}
+		//Add this card to the stack
+		//Reveal the card
+		cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+		//Put it into the deck
+		cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+		cardsToSort[i].style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+		//Untap
+		cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+		stackHeight++;
+	}
+	//Is this the end of a stack?
+	if (stackHeight > 0)
+	{
+		//Label the size of the previous stack
+		var sizelabel = Label(String(stackHeight));
+		sizelabel.style.top = yOffset - 60 + 'px';
+		sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function curvabilitySort()
+{
+	//Deselect any selected cards
+	deselectAll();
+	deleteAllCounters();
+	deleteAllLabels();
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	//Also compute their curvability
+	var cardsWithUniqueCosts = [];
+	var curvabilityOfCardsWithUniqueCosts = [];
+	var totalNontokenCards = 0;
+	var cardsToSort = [];
+	var i = 0;
+	var j = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				++totalNontokenCards;
+			}
+			cardsToSort.push(elementsOnMat[i]);
+			//Check if this card isn't a land
+			if (elementsOnMat[i].getAttribute("land") != 'true')
+			{
+				//Check if this card has a new cost
+				var unique = true;
+				for (j = 0; j < cardsWithUniqueCosts.length; ++j)
+				{
+					//Check if both of these cards are commanders or both not commanders
+					if (cardsWithUniqueCosts[j].getAttribute('commander') == elementsOnMat[i].getAttribute('commander'))
+					{
+						//Check if they have the same cost
+						var costA = new ManaCost(cardsWithUniqueCosts[j].getAttribute('casting_cost'));
+						var costB = new ManaCost(elementsOnMat[i].getAttribute('casting_cost'));
+						if (manaCostsAreEqual(costA, costB))
+						{
+							//Not unique
+							unique = false;
+						}
+					}
+				}
+				//If the card has a unique cost
+				if (unique)
+				{
+					//Add it
+					cardsWithUniqueCosts.push(elementsOnMat[i]);
+					//Compute the probability you can cast it on curve
+					var curvability = computeCurveCastingProbabilityOfCard(elementsOnMat[i]);
+					curvabilityOfCardsWithUniqueCosts.push(curvability);
+					//console.log(elementsOnMat[i].getAttribute('name') + ": " + curvability * 100);
+				}
+			}
+		}
+	}
+
+	//Create a label for the total number of cards
+	var totalSizelabel = Label("Total: " + String(totalNontokenCards));
+	totalSizelabel.style.left = 0 + 'px';
+	totalSizelabel.style.top = 30 + 'px';
+
+	function getCurvability(cardElement)
+	{
+		//Check that this isn't a land
+		if (cardElement.getAttribute('token') == 'true')
+		{
+			return -100; //Tokens are super duper curvable
+		}
+		else if (cardElement.getAttribute('land') == 'true')
+		{
+			return 200; //Lands are super duper curvable
+		} else {
+			var j = 0;
+			for (j = 0; j < cardsWithUniqueCosts.length; ++j)
+			{
+				//Check if both of these cards are commanders or both not commanders
+				if (cardsWithUniqueCosts[j].getAttribute('commander') == cardElement.getAttribute('commander'))
+				{
+					//Check if they have the same cost
+					var costA = new ManaCost(cardsWithUniqueCosts[j].getAttribute('casting_cost'));
+					var costB = new ManaCost(cardElement.getAttribute('casting_cost'));
+					if (manaCostsAreEqual(costA, costB))
+					{
+						//Found it
+						return curvabilityOfCardsWithUniqueCosts[j];
+					}
+				}
+			}
+			return -1; 	//This shouldn't happen
+		}
+	}
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		console.log(cardsToSort[i].getAttribute("name") + ": " + getCurvability(cardsToSort[i]));
+	}
+
+	//Sort the cards by curvability
+	cardsToSort.sort(
+		function(a,b){
+			//Compare their curvability descending order
+			var ret = getCurvability(b) - getCurvability(a);
+			if (ret == 0)
+			{
+				ret = getColorOrder(a) - getColorOrder(b);
+				if (ret == 0)
+				{
+					var aName = a.getAttribute("name");
+					var bName = b.getAttribute("name");
+					if (aName != null && bName != null)
+					{
+						ret = aName.localeCompare(bName);
+					} else {
+						ret = 0;
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Arrange the cards on the mat
+	var stackNum = 0;
+	var previousCardValue = -9000;
+	var stackHeight = 0;
+
+	var xOffset = 50;
+	var yOffset = 130;
+
+	var stackSpacing = cardWidth + 10;
+
+	for (i = 0; i < cardsToSort.length; ++i)
+	{
+		//Is this card of a different class?
+		var curvability = getCurvability(cardsToSort[i]);
+		if (curvability != previousCardValue)
+		{
+			//Is this the end of a stack?
+			if (stackHeight > 0)
+			{
+				//Label the size of the previous stack
+				var sizelabel = Label(String(stackHeight));
+				sizelabel.style.top = yOffset - 60 + 'px';
+				sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			}
+
+			//Create a new stack
+			stackNum++;
+			stackHeight = 0;
+			if (curvability == 200)
+			{
+				var label = Label("Lands");
+			} else if (curvability == -100) {
+				var label = Label("Tokens");
+			} else {
+				var label = Label(Math.round(curvability * 10000)/100 + "%");
+				if (curvability < 0.5)
+				{
+					label.style.color = 'red';
+				} else if (curvability < 0.6) {
+					label.style.color = 'orange';
+				} else if (curvability < 0.7) {
+					label.style.color = 'yellow';
+				} else if (curvability < 0.8) {
+					label.style.color = 'green';
+				} else if (curvability < 0.9) {
+					label.style.color = 'rgb(0, 46, 255)';
+				} else {
+					label.style.color = 'purple';
+				}
+			}
+			label.style.top = yOffset - 30 + 'px';
+			label.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+			previousCardValue = curvability;
+		}
+		//Add this card to the stack
+		//Reveal the card
+		cardsToSort[i].src = cardsToSort[i].getAttribute("front");
+		//Put it into the deck
+		cardsToSort[i].style.top = yOffset + nameHeight * stackHeight + 'px';
+		cardsToSort[i].style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+		//Untap
+		cardsToSort[i].className = cardsToSort[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		cardsToSort[i].parentNode.appendChild(cardsToSort[i]);
+		stackHeight++;
+	}
+
+	//Is this the end of a stack?
+	if (stackHeight > 0)
+	{
+		//Label the size of the previous stack
+		var sizelabel = Label(String(stackHeight));
+		sizelabel.style.top = yOffset - 60 + 'px';
+		sizelabel.style.left = xOffset + stackSpacing * (stackNum - 1) + 'px';
+	}
+
+	//Resize document to fit
+	resizeDocument();
+}
+
+function deleteSelection()
+{
+
+	document.getElementById('magnified card view').src = "";
+	hideCardInfoMenu();
+	
+	//Get all the elements in the selection
+	var elementsInSelection = document.getElementById('selector').getElementsByTagName('*');
+
+	//Delete all the elements
+	var elementsToDelete = [];
+	for (i = 0; i < elementsInSelection.length; ++i)
+	{
+		elementsToDelete.push(elementsInSelection[i]);
+	}
+
+	for (i = 0; i < elementsToDelete.length; ++i)
+	{
+		elementsToDelete[i].parentNode.removeChild(elementsToDelete[i]);
+	}
+
+	deselectAll();
+}
+
+//Precompute binomial coefficients for dat speed
+var pascalsTriangle = [[1]];
+function computePascalsTriangleUpTo( nn )
+{
+	//For each row
+	var n = pascalsTriangle.length;
+	for (n = pascalsTriangle.length; n <= nn; ++n)
+	{
+		var row = [];
+		row.push(1);
+		var k = 1;
+		for (k = 1; k < n; ++k)
+		{
+			row.push(pascalsTriangle[n-1][k-1] + pascalsTriangle[n-1][k]);
+		}
+		row.push(1);
+		pascalsTriangle.push(row);
+	}
+}
+
+function nChooseK(n,k)
+{
+	if (k > n)
+	{
+		return 0;
+	} else if (k < 0) {
+		return 0;
+	} else if (n < 0) {
+		return 0;
+	} else {
+		return pascalsTriangle[n][k];
+	}
+}
+
+//Given a deck of nn cards, m of which are cards you want. What is the probability that if you draw n cards, x are the kind you want?
+function hypergeometricDistribution(successesInSample, successesInPopulation, sampleSize, populationSize) {
+	computePascalsTriangleUpTo(populationSize);
+	return nChooseK(successesInPopulation, successesInSample) * nChooseK(populationSize - successesInPopulation, sampleSize - successesInSample) / nChooseK(populationSize, sampleSize);
+}
+
+//A class to represent a set of lands that can all produce the same mana. (How many UW duals do I have?)
+var LandCount = function(manaProductionBitVector)
+{
+	this.manaProductionBitVector = manaProductionBitVector;
+	this.count = 1;
+}
+
+var maxNumLands = 18;
+function computeCastingProbabilitiesOfCard(cardElement)
+{
+	//console.log("Name: " +cardElement.getAttribute('name'));
+	//Get the cost of the currently selected card
+	var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+	//console.log("Total Cost: " + cost.total);
+	//Get whether this card is a commander
+	var isCommander = cardElement.getAttribute('commander') == 'true';
+	//console.log("Is Commander: " + cardElement.getAttribute('commander'));
+	//Count how many non-commander non-token cards are on the playmat.
+	var numCardsInDeck = 0;
+	var numUsefulLandsInDeck = 0;
+	//Also count the mana production available
+	var manaProduction = [];
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var i = 0;
+	var j = 0;
+	var k = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		//Check that the element is a card
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			//Check that it's not a token
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				//Check that it's not a commander
+				if (elementsOnMat[i].getAttribute("commander") != 'true')
+				{
+					numCardsInDeck = numCardsInDeck + 1;
+				}
+				//Check if it's a land
+				if (elementsOnMat[i].getAttribute("land") == 'true')
+				{
+					//Get the mana production bitvector from it
+					var manaProductionBitVector = parseInt(elementsOnMat[i].getAttribute('mana_production_bitvector'));
+					if (manaProductionBitVector != 0)
+					{
+						//Filter the manaProductionBitVector by the colors mentioned in the cost.
+						var filteredManaProductionBitVector = manaProductionBitVector & cost.colorBitVector;
+						//If generic mana is part of the cost, each land can be used to produce generic mana
+						if (cost.generic > 0)
+						{
+							filteredManaProductionBitVector = filteredManaProductionBitVector | 0x40;
+						}
+						//Check if this land helps us pay the cost
+						if (filteredManaProductionBitVector != 0)
+						{
+							++numUsefulLandsInDeck;
+							//Check to see if we've recorded this cost
+							var found = false;
+							for ( j = 0; j < manaProduction.length; ++j)
+							{
+								//If this previously added production matches,
+								if (manaProduction[j].manaProductionBitVector == filteredManaProductionBitVector)
+								{
+									//Increment the count of lands that have this kind of production
+									++manaProduction[j].count;
+									found = true;
+									break;
+								}
+							}
+							//If we haven't found it, add it
+							if (!found)
+							{
+								manaProduction.push(new LandCount(filteredManaProductionBitVector));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//Assume we've already drawn the card from the deck
+	if (!isCommander)
+	{
+		numCardsInDeck = numCardsInDeck - 1;
+	}
+
+	//Precompute binomial coefficients
+	computePascalsTriangleUpTo(numCardsInDeck);
+
+	//console.log("Cards in Deck: " + numCardsInDeck);
+	//var manaProductionToString = "Lands: "
+	//for (j = 0; j < manaProduction.length; ++j)
+	//{
+	//	manaProductionToString = manaProductionToString + manaProduction[j].count +  ":" + manaProduction[j].manaProductionBitVector + " ";
+	//}
+	//console.log(manaProductionToString);
+
+	//Generate all combinations of up to maxNumLands lands that can't cast it
+	var combinationsThatCantCast = [];
+	var missingColorRequirement = false;
+	if (cost.total > 0 && cost.total < maxNumLands)
+	{
+		//Consider combinations that just don't have enough lands
+		var numSubCombinations = 1;
+		//Only need to consider combinations that don't exceed the number of each kind of land in our deck
+		var maxOfEachProductionToConsider = [];
+		for (i = 0; i < manaProduction.length; ++i)
+		{
+			var maxOfThisProductionToConsider = manaProduction[i].count + 1;	//Need to add one because the modulo operation won't reach a combination with .count otherwise
+			if (maxOfThisProductionToConsider > cost.total)
+			{
+				maxOfThisProductionToConsider = cost.total;
+			}
+			maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+			numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+		}
+		//TODO: This considers 6+ times as many combinations as it actually needs to. Can this be optimized?
+		for ( i = 0; i < numSubCombinations; ++i)
+		{
+			var combo = [];
+			var quotient = i;
+			var sumAmountOfManaProduction = 0;
+			//Generate the number of lands of each kind that this combination represents
+			for (j = 0; j < manaProduction.length; ++j )
+			{
+				var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+				quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
+				sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
+				combo.push(amountOfThisManaProduction);
+			}
+			
+			//If this isn't enough lands
+			if (sumAmountOfManaProduction < cost.total) {
+				//Save this combination as one that can't pay the cost
+				combinationsThatCantCast.push(combo);
+			}
+		}
+
+		function generateLandCombinations(numColorSymbols, colorBitVector)
+		{
+			//Consider combinations that don't satisfy color requirements
+			//First, check if there's any of this symbol. Also check if doing this isn't pointless
+			if (numColorSymbols > 0 && !missingColorRequirement) {
+				//console.log("Processing Color: " + colorBitVector);
+				//console.log("Num Symbols: " + numColorSymbols);
+				//Split the lands into ones that can pay these symbols, and ones that cannot
+				var colorProducers = [];
+				var others = [];
+				for (i = 0; i < manaProduction.length; ++i)
+				{
+					if (manaProduction[i].manaProductionBitVector & colorBitVector)	//Check if this land type produces a satisfactory color
+					{
+						colorProducers.push(i);
+					} else {
+						others.push(i);
+					}
+				}
+				//for (i = 0; i < colorProducers.length; ++i)
+				//{
+				//	console.log("Color Producing Land: " + manaProduction[colorProducers[i]].manaProductionBitVector);
+				//}
+				//for (i = 0; i < others.length; ++i)
+				//{
+				//	console.log("Other Land: " + manaProduction[others[i]].manaProductionBitVector);
+				//}
+				if (colorProducers.length == 0)
+				{
+					missingColorRequirement = true;
+					return;
+				}
+				//If there are fewer than cost.w white producing lands, you can't cast it.
+				//Generate all combinations of cost.w - 1 white-producing lands
+				var numSubCombinations = 1;
+				var maxOfEachProductionToConsider = [];
+				for (i = 0; i < colorProducers.length; ++i)
+				{
+					var maxOfThisProductionToConsider = manaProduction[colorProducers[i]].count + 1;
+					if (maxOfThisProductionToConsider > numColorSymbols)
+					{
+						maxOfThisProductionToConsider = numColorSymbols;
+					}
+					maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+					numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+				}
+				for (i = 0; i < numSubCombinations; ++i)
+				{
+					var subCombo = [];
+					var quotient = i;
+					var sumAmountOfManaProduction = 0;
+					for (j = 0; j < colorProducers.length; ++j)
+					{
+						var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+						quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
+						sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
+						subCombo.push(amountOfThisManaProduction);
+					}
+
+					//var comboToString = "Insufficient color producer combo: "
+					//for (j = 0; j < subCombo.length; ++j)
+					//{
+					//	comboToString = comboToString + subCombo[j] +  ":" + manaProduction[colorProducers[j]].manaProductionBitVector + " ";
+					//}
+					//console.log(comboToString);
+
+					//If this isn't enough lands of the color we need
+					if (sumAmountOfManaProduction < numColorSymbols)
+					{
+						//Generate all combinations of the other land types
+						var numSubCombinations2 = 1;
+						var maxOfEachProductionToConsider2 = [];
+						for (j = 0; j < others.length; ++j)
+						{
+							var maxOfThisProductionToConsider2 = manaProduction[others[j]].count + 1;
+							if (maxOfThisProductionToConsider2 > maxNumLands)
+							{
+								maxOfThisProductionToConsider2 = maxNumLands;
+							}
+							maxOfEachProductionToConsider2.push(maxOfThisProductionToConsider2);
+							numSubCombinations2 = numSubCombinations2 * maxOfThisProductionToConsider2;
+						}
+						for (j = 0; j < numSubCombinations2; ++j)
+						{
+							var subCombo2 = [];
+							quotient = j;
+							var sumAmountOfManaProduction2 = sumAmountOfManaProduction;
+							for (k = 0; k < others.length; ++k)
+							{
+								var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider2[k];
+								quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider2[k];
+								sumAmountOfManaProduction2 = sumAmountOfManaProduction2 + amountOfThisManaProduction;
+								subCombo2.push(amountOfThisManaProduction);
+							}
+							//Check that we didn't already cover this combo with the generic case
+							if ( sumAmountOfManaProduction2 >= cost.total)
+							{
+								//Generate the complete combo
+								var combo = [];
+								for (k = 0; k < colorProducers.length; ++k)
+								{
+									combo[colorProducers[k]] = subCombo[k];
+								}
+								for (k = 0; k < others.length; ++k)
+								{
+									combo[others[k]] = subCombo2[k];
+								}
+								//Add the combo
+								combinationsThatCantCast.push(combo);
+							}
+						}
+					}
+				}
+			}
+		} //End function
+
+		//Generate the combinations of that can't cast each mana requirement
+		generateLandCombinations(cost.w, 0x01);
+		generateLandCombinations(cost.u, 0x02);
+		generateLandCombinations(cost.b, 0x04);
+		generateLandCombinations(cost.r, 0x08);
+		generateLandCombinations(cost.g, 0x10);
+		generateLandCombinations(cost.c, 0x20);
+		//Generate the combinations of lands that can't cast each hybrid mana requirement
+		//WARNING: This assumes that you have no other costs of the hybrid mana's colors.
+		generateLandCombinations(cost.wu, 0x01 | 0x02);
+		generateLandCombinations(cost.ub, 0x02 | 0x04);
+		generateLandCombinations(cost.br, 0x04 | 0x08);
+		generateLandCombinations(cost.rg, 0x08 | 0x10);
+		generateLandCombinations(cost.gw, 0x10 | 0x01);
+		generateLandCombinations(cost.wb, 0x01 | 0x04);
+		generateLandCombinations(cost.ur, 0x02 | 0x08);
+		generateLandCombinations(cost.bg, 0x04 | 0x10);
+		generateLandCombinations(cost.rw, 0x08 | 0x01);
+		generateLandCombinations(cost.gu, 0x10 | 0x02);
+	}
+
+	//Sort the combos by the number of lands
+	combinationsThatCantCast.sort(
+		function(a,b){
+			//Compute the number of lands in each combo
+			var aSum = 0;
+			var bSum = 0;
+			var i = 0;
+			var equal = true;
+			var aHigher = false;
+			for (i = 0; i < a.length; ++i)
+			{
+				if (equal && a[i] != b[i])
+				{
+					equal = false;
+					if (a[i] > b[i])
+					{
+						aHigher = true;
+					}
+				}
+				aSum = aSum + a[i];
+				bSum = bSum + b[i];
+			}
+
+			if (aSum == bSum)
+			{
+				//Tiebreaker. Ensures duplicate combinations are adjacent for easier detection
+				if (aHigher)
+				{
+					return -1;
+				} else {
+					return 1;
+				}
+			} else {
+				return aSum - bSum;
+			}
+		}
+	);
+
+	//console.log("Num Combinations: " + combinationsThatCantCast.length);
+
+	/*for (i = 0; i < combinationsThatCantCast.length; ++i)
+	{
+		var comboToString = ""
+		for (j = 0; j < combinationsThatCantCast[i].length; ++j)
+		{
+			comboToString = comboToString + combinationsThatCantCast[i][j] +  ":" + manaProduction[j].manaProductionBitVector + " ";
+		}
+		console.log(comboToString);
+	}*/
+
+	//Plot the probabilities
+	var castingProbabilities = [];
+	var cardsDrawnFromDeck = 0;
+	//For each sample size
+	for (cardsDrawnFromDeck = 0; cardsDrawnFromDeck < maxNumLands; ++cardsDrawnFromDeck)
+	{
+		if (isCommander)
+		{
+			sampleSize = cardsDrawnFromDeck;
+		} else {
+			sampleSize = cardsDrawnFromDeck - 1;
+		}
+		//Is the samplesize even big enough for the mana cost? Also check if we aren't missing a mana color
+		if (sampleSize < cost.total || missingColorRequirement)
+		{
+			castingProbabilities.push(0);
+		} else {
+			//For each combination
+			var c = 0;
+			var sum = 0;
+			for (c = 0; c < combinationsThatCantCast.length; ++c) {
+				var duplicate = true;
+				var numLandsInCombination = 0;
+				if (c != 0)
+				{
+					//Compare this combination to the previous to check for duplicates
+					for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+					{
+						if (combinationsThatCantCast[c - 1][i] != combinationsThatCantCast[c][i])
+						{
+							duplicate = false;
+						}
+						numLandsInCombination = numLandsInCombination + combinationsThatCantCast[c][i];
+					}
+				} else {
+					duplicate = false;
+					for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+					{
+						numLandsInCombination = numLandsInCombination + combinationsThatCantCast[c][i];
+					}
+				}
+				//If the lands in the combination outnumber the sample size
+				if (numLandsInCombination > sampleSize)
+				{
+					//Don't need to consider any more combinations
+					break;
+				}
+				//Check that this combination isn't a duplicate of the previous
+				if (!duplicate)
+				{
+					//Compute the term this combination contributes to the sum
+					//First compute the term that represents the dead cards
+					var product = nChooseK(numCardsInDeck - numUsefulLandsInDeck, sampleSize - numLandsInCombination);
+					for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+					{
+						product = product * nChooseK(manaProduction[i].count, combinationsThatCantCast[c][i]);
+					}
+					sum = sum + product;
+				}
+			}
+			//Divide by the denominator
+			var probabilityCantCast = sum / nChooseK(numCardsInDeck, sampleSize);
+			castingProbabilities.push(1 - probabilityCantCast);
+		}
+	}
+
+	//for (i = 0; i < castingProbabilities.length; ++i)
+	//{
+	//	console.log("After drawing " + i + " cards: " + castingProbabilities[i] * 100 + "%");
+	//}
+
+	return castingProbabilities;
+}
+
+function computeCurveCastingProbabilityOfCard(cardElement)
+{
+	//console.log("Name: " +cardElement.getAttribute('name'));
+	//Get the cost of the currently selected card
+	var cost = new ManaCost(cardElement.getAttribute('casting_cost'));
+	//console.log("Total Cost: " + cost.total);
+	//Get whether this card is a commander
+	var isCommander = cardElement.getAttribute('commander') == 'true';
+	//console.log("Is Commander: " + cardElement.getAttribute('commander'));
+	//Count how many non-commander non-token cards are on the playmat.
+	var numCardsInDeck = 0;
+	var numUsefulLandsInDeck = 0;
+	//Also count the mana production available
+	var manaProduction = [];
+
+	//Get all the elements on the playmat
+	var elementsOnMat = document.getElementById('playmat').getElementsByTagName('*');
+
+	//Figure out which of the elements are cards
+	var i = 0;
+	var j = 0;
+	var k = 0;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		//Check that the element is a card
+		if (hasClass(elementsOnMat[i], "card"))
+		{
+			//Check that it's not a token
+			if (elementsOnMat[i].getAttribute("token") != 'true')
+			{
+				//Check that it's not a commander
+				if (elementsOnMat[i].getAttribute("commander") != 'true')
+				{
+					numCardsInDeck = numCardsInDeck + 1;
+				}
+				//Check if it's a land
+				if (elementsOnMat[i].getAttribute("land") == 'true')
+				{
+					//Get the mana production bitvector from it
+					var manaProductionBitVector = parseInt(elementsOnMat[i].getAttribute('mana_production_bitvector'));
+					if (manaProductionBitVector != 0)
+					{
+						//Filter the manaProductionBitVector by the colors mentioned in the cost.
+						var filteredManaProductionBitVector = manaProductionBitVector & cost.colorBitVector;
+						//If generic mana is part of the cost, each land can be used to produce generic mana
+						if (cost.generic > 0)
+						{
+							filteredManaProductionBitVector = filteredManaProductionBitVector | 0x40;
+						}
+						//Check if this land helps us pay the cost
+						if (filteredManaProductionBitVector != 0)
+						{
+							++numUsefulLandsInDeck;
+							//Check to see if we've recorded this cost
+							var found = false;
+							for ( j = 0; j < manaProduction.length; ++j)
+							{
+								//If this previously added production matches,
+								if (manaProduction[j].manaProductionBitVector == filteredManaProductionBitVector)
+								{
+									//Increment the count of lands that have this kind of production
+									++manaProduction[j].count;
+									found = true;
+									break;
+								}
+							}
+							//If we haven't found it, add it
+							if (!found)
+							{
+								manaProduction.push(new LandCount(filteredManaProductionBitVector));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//Assume we've already drawn the card from the deck
+	if (!isCommander)
+	{
+		numCardsInDeck = numCardsInDeck - 1;
+	}
+
+	//Precompute binomial coefficients
+	computePascalsTriangleUpTo(numCardsInDeck);
+
+	//console.log("Cards in Deck: " + numCardsInDeck);
+	//var manaProductionToString = "Lands: "
+	//for (j = 0; j < manaProduction.length; ++j)
+	//{
+	//	manaProductionToString = manaProductionToString + manaProduction[j].count +  ":" + manaProduction[j].manaProductionBitVector + " ";
+	//}
+	//console.log(manaProductionToString);
+
+	//Figure out how many cards we'll have drawn from our deck if we're tryin to play it on curve on the play
+	var cardsDrawnFromDeck = 6 + cost.total;
+	if (cardsDrawnFromDeck < 7)
+	{
+		cardsDrawnFromDeck = 7;
+	}
+
+	//Generate all combinations of up to cardsDrawnFromDeck lands that can't cast it
+	var combinationsThatCantCast = [];
+	var missingColorRequirement = false;
+	if (cost.total > 0 && cost.total < cardsDrawnFromDeck)
+	{
+		//Consider combinations that just don't have enough lands
+		var numSubCombinations = 1;
+		//Only need to consider combinations that don't exceed the number of each kind of land in our deck
+		var maxOfEachProductionToConsider = [];
+		for (i = 0; i < manaProduction.length; ++i)
+		{
+			var maxOfThisProductionToConsider = manaProduction[i].count + 1;	//Need to add one because the modulo operation won't reach a combination with .count otherwise
+			if (maxOfThisProductionToConsider > cost.total)
+			{
+				maxOfThisProductionToConsider = cost.total;
+			}
+			maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+			numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+		}
+		for ( i = 0; i < numSubCombinations; ++i)
+		{
+			var combo = [];
+			var quotient = i;
+			var sumAmountOfManaProduction = 0;
+			//Generate the number of lands of each kind that this combination represents
+			for (j = 0; j < manaProduction.length; ++j )
+			{
+				var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+				quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
+				sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
+				combo.push(amountOfThisManaProduction);
+			}
+			
+			//If this isn't enough lands
+			if (sumAmountOfManaProduction < cost.total) {
+				//Save this combination as one that can't pay the cost
+				combinationsThatCantCast.push(combo);
+			}
+		}
+
+		function generateLandCombinations(numColorSymbols, colorBitVector)
+		{
+			//Consider combinations that don't satisfy color requirements
+			//First, check if there's any of this symbol. Also check if doing this isn't pointless
+			if (numColorSymbols > 0 && !missingColorRequirement) {
+				//console.log("Processing Color: " + colorBitVector);
+				//console.log("Num Symbols: " + numColorSymbols);
+				//Split the lands into ones that can pay these symbols, and ones that cannot
+				var colorProducers = [];
+				var others = [];
+				for (i = 0; i < manaProduction.length; ++i)
+				{
+					if (manaProduction[i].manaProductionBitVector & colorBitVector)	//Check if this land type produces a satisfactory color
+					{
+						colorProducers.push(i);
+					} else {
+						others.push(i);
+					}
+				}
+				//for (i = 0; i < colorProducers.length; ++i)
+				//{
+				//	console.log("Color Producing Land: " + manaProduction[colorProducers[i]].manaProductionBitVector);
+				//}
+				//for (i = 0; i < others.length; ++i)
+				//{
+				//	console.log("Other Land: " + manaProduction[others[i]].manaProductionBitVector);
+				//}
+				if (colorProducers.length == 0)
+				{
+					missingColorRequirement = true;
+					return;
+				}
+				//If there are fewer than cost.w white producing lands, you can't cast it.
+				//Generate all combinations of cost.w - 1 white-producing lands
+				var numSubCombinations = 1;
+				var maxOfEachProductionToConsider = [];
+				for (i = 0; i < colorProducers.length; ++i)
+				{
+					var maxOfThisProductionToConsider = manaProduction[colorProducers[i]].count + 1;
+					if (maxOfThisProductionToConsider > numColorSymbols)
+					{
+						maxOfThisProductionToConsider = numColorSymbols;
+					}
+					maxOfEachProductionToConsider.push(maxOfThisProductionToConsider);
+					numSubCombinations = numSubCombinations * maxOfThisProductionToConsider;
+				}
+				for (i = 0; i < numSubCombinations; ++i)
+				{
+					var subCombo = [];
+					var quotient = i;
+					var sumAmountOfManaProduction = 0;
+					for (j = 0; j < colorProducers.length; ++j)
+					{
+						var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider[j];
+						quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider[j];
+						sumAmountOfManaProduction = sumAmountOfManaProduction + amountOfThisManaProduction;
+						subCombo.push(amountOfThisManaProduction);
+					}
+
+					//var comboToString = "Insufficient color producer combo: "
+					//for (j = 0; j < subCombo.length; ++j)
+					//{
+					//	comboToString = comboToString + subCombo[j] +  ":" + manaProduction[colorProducers[j]].manaProductionBitVector + " ";
+					//}
+					//console.log(comboToString);
+
+					//If this isn't enough lands of the color we need
+					if (sumAmountOfManaProduction < numColorSymbols)
+					{
+						//Generate all combinations of the other land types
+						var numSubCombinations2 = 1;
+						var maxOfEachProductionToConsider2 = [];
+						for (j = 0; j < others.length; ++j)
+						{
+							var maxOfThisProductionToConsider2 = manaProduction[others[j]].count + 1;
+							if (maxOfThisProductionToConsider2 > cardsDrawnFromDeck)
+							{
+								maxOfThisProductionToConsider2 = cardsDrawnFromDeck;
+							}
+							maxOfEachProductionToConsider2.push(maxOfThisProductionToConsider2);
+							numSubCombinations2 = numSubCombinations2 * maxOfThisProductionToConsider2;
+						}
+						for (j = 0; j < numSubCombinations2; ++j)
+						{
+							var subCombo2 = [];
+							quotient = j;
+							var sumAmountOfManaProduction2 = sumAmountOfManaProduction;
+							for (k = 0; k < others.length; ++k)
+							{
+								var amountOfThisManaProduction = quotient % maxOfEachProductionToConsider2[k];
+								quotient = (quotient - amountOfThisManaProduction) / maxOfEachProductionToConsider2[k];
+								sumAmountOfManaProduction2 = sumAmountOfManaProduction2 + amountOfThisManaProduction;
+								subCombo2.push(amountOfThisManaProduction);
+							}
+							//Check that we didn't already cover this combo with the generic case
+							if ( sumAmountOfManaProduction2 >= cost.total)
+							{
+								//Generate the complete combo
+								var combo = [];
+								for (k = 0; k < colorProducers.length; ++k)
+								{
+									combo[colorProducers[k]] = subCombo[k];
+								}
+								for (k = 0; k < others.length; ++k)
+								{
+									combo[others[k]] = subCombo2[k];
+								}
+								//Add the combo
+								combinationsThatCantCast.push(combo);
+							}
+						}
+					}
+				}
+			}
+		} //End function
+
+		//Generate the combinations of that can't cast each mana requirement
+		generateLandCombinations(cost.w, 0x01);
+		generateLandCombinations(cost.u, 0x02);
+		generateLandCombinations(cost.b, 0x04);
+		generateLandCombinations(cost.r, 0x08);
+		generateLandCombinations(cost.g, 0x10);
+		generateLandCombinations(cost.c, 0x20);
+		//Generate the combinations of lands that can't cast each hybrid mana requirement
+		//WARNING: This assumes that you have no other costs of the hybrid mana's colors.
+		generateLandCombinations(cost.wu, 0x01 | 0x02);
+		generateLandCombinations(cost.ub, 0x02 | 0x04);
+		generateLandCombinations(cost.br, 0x04 | 0x08);
+		generateLandCombinations(cost.rg, 0x08 | 0x10);
+		generateLandCombinations(cost.gw, 0x10 | 0x01);
+		generateLandCombinations(cost.wb, 0x01 | 0x04);
+		generateLandCombinations(cost.ur, 0x02 | 0x08);
+		generateLandCombinations(cost.bg, 0x04 | 0x10);
+		generateLandCombinations(cost.rw, 0x08 | 0x01);
+		generateLandCombinations(cost.gu, 0x10 | 0x02);
+	}
+
+	//Sort the combos by the number of lands
+	combinationsThatCantCast.sort(
+		function(a,b){
+			//Compute the number of lands in each combo
+			var aSum = 0;
+			var bSum = 0;
+			var i = 0;
+			var equal = true;
+			var aHigher = false;
+			for (i = 0; i < a.length; ++i)
+			{
+				if (equal && a[i] != b[i])
+				{
+					equal = false;
+					if (a[i] > b[i])
+					{
+						aHigher = true;
+					}
+				}
+				aSum = aSum + a[i];
+				bSum = bSum + b[i];
+			}
+
+			if (aSum == bSum)
+			{
+				//Tiebreaker. Ensures duplicate combinations are adjacent for easier detection
+				if (aHigher)
+				{
+					return -1;
+				} else {
+					return 1;
+				}
+			} else {
+				return aSum - bSum;
+			}
+		}
+	);
+
+	//console.log("Num Combinations: " + combinationsThatCantCast.length);
+
+	/*for (i = 0; i < combinationsThatCantCast.length; ++i)
+	{
+		var comboToString = ""
+		for (j = 0; j < combinationsThatCantCast[i].length; ++j)
+		{
+			comboToString = comboToString + combinationsThatCantCast[i][j] +  ":" + manaProduction[j].manaProductionBitVector + " ";
+		}
+		console.log(comboToString);
+	}*/
+
+	//Plot the probabilities
+
+	if (isCommander)
+	{
+		sampleSize = cardsDrawnFromDeck;
+	} else {
+		sampleSize = cardsDrawnFromDeck - 1;
+	}
+	//Is the samplesize even big enough for the mana cost? Also check if we aren't missing a mana color
+	if (sampleSize < cost.total || missingColorRequirement)
+	{
+		return 0;
+	} else {
+		//For each combination
+		var c = 0;
+		var sum = 0;
+		for (c = 0; c < combinationsThatCantCast.length; ++c) {
+			var duplicate = true;
+			var numLandsInCombination = 0;
+			if (c != 0)
+			{
+				//Compare this combination to the previous to check for duplicates
+				for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+				{
+					if (combinationsThatCantCast[c - 1][i] != combinationsThatCantCast[c][i])
+					{
+						duplicate = false;
+					}
+					numLandsInCombination = numLandsInCombination + combinationsThatCantCast[c][i];
+				}
+			} else {
+				duplicate = false;
+				for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+				{
+					numLandsInCombination = numLandsInCombination + combinationsThatCantCast[c][i];
+				}
+			}
+			//If the lands in the combination outnumber the sample size
+			if (numLandsInCombination > sampleSize)
+			{
+				//Don't need to consider any more combinations
+				break;
+			}
+			//Check that this combination isn't a duplicate of the previous
+			if (!duplicate)
+			{
+				//Compute the term this combination contributes to the sum
+				//First compute the term that represents the dead cards
+				var product = nChooseK(numCardsInDeck - numUsefulLandsInDeck, sampleSize - numLandsInCombination);
+				for (i = 0; i < combinationsThatCantCast[c].length; ++i)
+				{
+					product = product * nChooseK(manaProduction[i].count, combinationsThatCantCast[c][i]);
+				}
+				sum = sum + product;
+			}
+		}
+		//Divide by the denominator
+		var probabilityCantCast = sum / nChooseK(numCardsInDeck, sampleSize);
+		return 1 - probabilityCantCast;
+	}
+}
+
+function analyzeCard(){
+	//Save the changes
+	saveEditCardSettings();
+	var castingProbabilities = computeCastingProbabilitiesOfCard(selectedCard);
+	//Get the mana cost again
+	var cost = new ManaCost(selectedCard.getAttribute('casting_cost'));
+	//Figure out the first turn you can cast this on
+	var cardsDrawnByTheTurnYouCanCastIt = 6 + cost.total;
+	if (cardsDrawnByTheTurnYouCanCastIt < 7)
+	{
+		cardsDrawnByTheTurnYouCanCastIt = 7;
+	}
+
+	//For each number of cards drawn from deck
+	var i = 0;
+	for (i = 0; i < castingProbabilities.length; ++i)
+	{
+		//Set this bar's height
+		var barElement = document.getElementById('graph ' + i + ' bar');
+		var barLabelElement = document.getElementById('graph ' + i + ' bar label');
+		barElement.style.height = (200 * castingProbabilities[i]) + 'px';
+		barLabelElement.innerHTML = '&nbsp' + (Math.round(10000*castingProbabilities[i])/100) + '&nbsp';
+		if (castingProbabilities[i] < 0.5) {
+			barElement.style.background = 'red';
+			barLabelElement.className = 'graph_bar_label_outside';
+		} else if (castingProbabilities[i] < 0.6) {
+			barElement.style.background = 'orange';
+			barLabelElement.className = 'graph_bar_label_inside';
+		} else if (castingProbabilities[i] < 0.7) {
+			barElement.style.background = 'yellow';
+			barLabelElement.className = 'graph_bar_label_inside';
+		} else if (castingProbabilities[i] < 0.8) {
+			barElement.style.background = 'green';
+			barLabelElement.className = 'graph_bar_label_inside';
+		} else if (castingProbabilities[i] < 0.9) {
+			barElement.style.background = 'rgb(0, 46, 255)';
+			barLabelElement.className = 'graph_bar_label_inside';
+		} else {
+			barElement.style.background = 'purple';
+			barLabelElement.className = 'graph_bar_label_inside';
+		}
+		if (i == cardsDrawnByTheTurnYouCanCastIt)
+		{
+			barElement.className = 'highlighted_graph_bar';
+		} else {
+			barElement.className = 'graph_bar';
+		}
+	}
+
+	//Make the graph visible
+	document.getElementById('analyze card results').style.visibility = 'visible';
+}
+
+//Main
+window.onload = function() {
+	//Create some cards for testing
+	document.onmousemove=dragElement;
+	document.onmouseup=stopDrag;
+	document.getElementById("card info popup").addEventListener("mouseleave", hideCardInfoMenu);
+	document.getElementById("magnified card view").addEventListener("mousedown", hideCardInfoMenu);
+	document.getElementById("playmat").addEventListener("mousedown", startSelection);
+	document.getElementById("land checkbox").onclick = permanentTypeSelected;
+	document.getElementById("creature checkbox").onclick = permanentTypeSelected;
+	document.getElementById("planeswalker checkbox").onclick = permanentTypeSelected;
+	document.getElementById("artifact checkbox").onclick = permanentTypeSelected;
+	document.getElementById("enchantment checkbox").onclick = permanentTypeSelected;
+	document.getElementById("sorcery checkbox").onclick = sorceryTypeSelected;
+	document.getElementById("instant checkbox").onclick = instantTypeSelected;
+
+	var sideboard = document.getElementById("sideboard");
+	sideboard.addEventListener("mouseover", mouseEnterSideboard);
+	sideboard.addEventListener("mouseout", mouseLeaveSideboard);
+
+	//Go through all the elements on the playmat and set up their javascript functions
+	var elementsOnMat = document.getElementById("playmat").getElementsByTagName('*');
+	var i, element;
+	for (i = 0; i < elementsOnMat.length; ++i)
+	{
+		element = elementsOnMat[i];
+		//Set up cards
+		if (hasClass(element,'card')){
+			element.addEventListener("mousedown", mouseDownCard);
+			element.addEventListener("mouseup", mouseUpCard);
+			element.addEventListener("mouseenter", mouseEnterCard);
+			element.addEventListener("mouseleave", mouseLeaveCard);
+		}
+	}
+
+	//Go through all the elements in the sideboard and set up their javascript functions
+	var elementsInSideboard = document.getElementById("sideboard").getElementsByTagName('*');
+	for (i = 0; i < elementsInSideboard.length; ++i)
+	{
+		element = elementsInSideboard[i];
+		//Set up cards
+		if (hasClass(element,'card')){
+			element.addEventListener("mousedown", mouseDownCard);
+			element.addEventListener("mouseup", mouseUpCard);
+			element.addEventListener("mouseenter", mouseEnterCard);
+			element.addEventListener("mouseleave", mouseLeaveCard);
+		}
+	}
+
+	deselectAll();
+
+	//Resize document to fit
+	resizeDocument();
+
+}
+
+window.onbeforeunload = function() {
+	return true;
+};
 		
 	</script>
 </body>
