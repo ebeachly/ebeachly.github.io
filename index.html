@@ -669,19 +669,22 @@ function dragCounter(e){
 	startDrag(e);
 }
 
-function addCounter(initialValue){
+function addCounter(initialValue, xOffset, yOffset){
 	var playmat = document.getElementById("playmat");
 	var counterCont = document.getElementById("counter_container");
 	var counterNumber = parseInt(counterCont.getAttribute("numcounters"));
 	var counter = document.getElementById("counter_template").cloneNode(true);
 	counter.id = "counter"+counterNumber;
-	counter.style.left = 100 + 100*counterNumber + "px";
-	counter.style.top = 100 + "px";
+	counter.style.left = (xOffset || (100 + 100*counterNumber)) + "px";
+	counter.style.top = (yOffset || 100) + "px";
 	counter.style.backgroundColor = "rgb("+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+","+parseInt(Math.random()*155+100)+")";
 	playmat.appendChild(counter);
 	counterCont.setAttribute("numcounters", counterNumber+1);
-	if(initialValue && initialValue != 1){
-		var input = counter.childNodes[0];
+	var input = counter.childNodes[0];
+	if (arguments.length == 0)
+	{
+		input.innerHTML = 1;
+	} else {
 		input.innerHTML = initialValue;
 	}
 }
@@ -1719,41 +1722,65 @@ function shuffle()
 	resizeDocument();
 }
 
-function newGame()
+function newGame(handSize)
 {
 	//Get all the elements on the playmat
-	var elementsToShuffle = document.getElementById('playmat').getElementsByTagName('*');
+	var elementsOnPlaymat = document.getElementById('playmat').getElementsByTagName('*');
 	var xOffset = 400;
 	var yOffset = 700;
+	var deckXOffset = 10;
+	var deckYOffset = 40;
+	var handXOffset = 10;
+	var handYOffset = 300;
+	var commanderXOffset = 0;
+	var commanderYOffset = deckYOffset;
+	var tokensXOffset = 0;
+	var tokensYOffset = deckYOffset;
+	var lifeCounterXOffset = 300;
+	var lifeCounterYOffset = 40;
+	var cardSeparation = 10;
+	handSize = handSize || 7;
 	deleteAllCounters();
 	deleteAllLabels();
-	addCounter(parseInt(document.getElementById("starting life").value));
-	addCounter(parseInt(document.getElementById("starting life").value));
 	
 	//Figure out which of the elements are non-commander cards
 	var cardsToShuffle = [];
+	var tokensToStack = [];
+	var commandersToStack = [];
 	var i = 0;
-	for (i = 0; i < elementsToShuffle.length; ++i)
+	for (i = 0; i < elementsOnPlaymat.length; ++i)
 	{
-		if (hasClass(elementsToShuffle[i], "card") && elementsToShuffle[i].getAttribute('commander') != 'true' && elementsToShuffle[i].getAttribute('token') != 'true' )
+		if (hasClass(elementsOnPlaymat[i], "card"))
 		{
-			cardsToShuffle.push(elementsToShuffle[i]);
+			if (elementsOnPlaymat[i].getAttribute('commander') == 'true' )
+			{
+				commandersToStack.push(elementsOnPlaymat[i]);
+			} else if (elementsOnPlaymat[i].getAttribute('token') == 'true') {
+				tokensToStack.push(elementsOnPlaymat[i]);
+			} else {
+				cardsToShuffle.push(elementsOnPlaymat[i]);
+			}
 		}
 	}
 
 	//Count how many cards we need to shuffle
 	var numCards = cardsToShuffle.length;
 
-	//Draw a hand of 7 cards
-	for (i = 0; i < 7 && i < numCards; ++i)
+	var numDrawnCards = Math.min(handSize, numCards);
+	var numCardsLeftInDeck = numCards - numDrawnCards;
+
+	var xEndOfDeck = deckXOffset + numCardsLeftInDeck + cardWidth;
+
+	//Draw a hand of handSize cards
+	for (i = 0; i < numDrawnCards; ++i)
 	{
 		//Select a card at random
 		var index = Math.floor(Math.random() * cardsToShuffle.length);
 		//Reveal the card
 		cardsToShuffle[index].src = cardsToShuffle[index].getAttribute("front");
-		//Put it below the deck
-		cardsToShuffle[index].style.top = yOffset + numCards + cardHeight + 10 + 'px';
-		cardsToShuffle[index].style.left = 10 + i * (cardWidth + 10) + 'px';
+		//Put it handYOffset below the deck and handXOffset to the right
+		cardsToShuffle[index].style.top = numCardsLeftInDeck + cardHeight + deckYOffset + handYOffset + 'px';
+		cardsToShuffle[index].style.left = xEndOfDeck + handXOffset + i * (cardWidth + cardSeparation) + 'px';
 		cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
 		//Bring it in front of the other elements
 		cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
@@ -1769,13 +1796,99 @@ function newGame()
 		//Conceal the card
 		cardsToShuffle[index].src = document.getElementById("card sleeve image").value;
 		//Put it into the deck
-		cardsToShuffle[index].style.top = yOffset + i + 'px';
-		cardsToShuffle[index].style.left = xOffset + i + 'px';
+		cardsToShuffle[index].style.top = deckYOffset + (i - handSize) + 'px';
+		cardsToShuffle[index].style.left = deckXOffset + (i - handSize) + 'px';
 		cardsToShuffle[index].className = cardsToShuffle[index].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
 		//Bring it in front of the other elements
 		cardsToShuffle[index].parentNode.appendChild(cardsToShuffle[index]);
 		//Remove it from the list of cards to be shuffled
 		cardsToShuffle.splice(index,1);
+	}
+
+	var xEndOfHand = xEndOfDeck + handXOffset + numDrawnCards * (cardWidth + cardSeparation);
+
+	addCounter(parseInt(document.getElementById("starting life").value), xEndOfDeck + cardSeparation + lifeCounterXOffset, lifeCounterYOffset);
+	addCounter(parseInt(document.getElementById("starting life").value), xEndOfDeck + cardSeparation + lifeCounterXOffset + 100, lifeCounterYOffset);
+
+	//Sort the tokens by cost
+	tokensToStack.sort(
+		function(a,b){
+			var ret = getTotalCost(a) - getTotalCost(b);
+			if (ret == 0)
+			{
+				ret = getColorOrder(a) - getColorOrder(b);
+				if (ret == 0)
+				{
+					var aName = a.getAttribute("name");
+					var bName = b.getAttribute("name");
+					if (aName != null && bName != null)
+					{
+						ret = aName.localeCompare(bName);
+					} else {
+						ret = 0;
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Sort the commanders by cost
+	commandersToStack.sort(
+		function(a,b){
+			var ret = getTotalCost(a) - getTotalCost(b);
+			if (ret == 0)
+			{
+				ret = getColorOrder(a) - getColorOrder(b);
+				if (ret == 0)
+				{
+					var aName = a.getAttribute("name");
+					var bName = b.getAttribute("name");
+					if (aName != null && bName != null)
+					{
+						ret = aName.localeCompare(bName);
+					} else {
+						ret = 0;
+					}
+				}
+			}
+			return ret;
+		}
+	);
+
+	//Stack the commanders (if any)
+	var xEndOfCommanders = xEndOfHand;
+	if (commandersToStack.length > 0)
+	{
+		xEndOfCommanders = xEndOfHand + cardSeparation + cardWidth;
+		for( i = 0; i < commandersToStack.length; ++i)
+		{
+			//Reveal the card
+			commandersToStack[i].src = commandersToStack[i].getAttribute("front");
+			//Move it
+			commandersToStack[i].style.top = commanderYOffset + i * (cardHeight + cardSeparation) + 'px';
+			commandersToStack[i].style.left = xEndOfHand + cardSeparation + 'px';
+			//Untap it
+			commandersToStack[i].className = commandersToStack[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+			//Bring it in front of the other elements
+			commandersToStack[i].parentNode.appendChild(commandersToStack[i]);
+			//Add a counter
+			addCounter(0, xEndOfHand + cardSeparation + 30, commanderYOffset + i * (cardHeight + cardSeparation) + 40);
+		}
+	}
+
+	//Stack the tokens
+	for( i = 0; i < tokensToStack.length; ++i)
+	{
+		//Reveal the card
+		tokensToStack[i].src = tokensToStack[i].getAttribute("front");
+		//Move it
+		tokensToStack[i].style.top = tokensYOffset + i * nameHeight + 'px';
+		tokensToStack[i].style.left = xEndOfCommanders + cardSeparation + 'px';
+		//Untap it
+		tokensToStack[i].className = tokensToStack[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
+		//Bring it in front of the other elements
+		tokensToStack[i].parentNode.appendChild(tokensToStack[i]);
 	}
 
 	//Resize document to fit
