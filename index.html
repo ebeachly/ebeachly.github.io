@@ -57,11 +57,47 @@ dd {
 }
 
 .mana_symbol_container {
-	position: relative;
-	top: 0px;
-	left: 0px;
+	position: absolute;
+	margin-top:-15px;
+	margin-left:-15px;
 	width:30px;
 	height:30px;
+}
+
+.w_position {
+	top:-50px;
+	left:0px;
+}
+
+.u_position {
+	top:-15px;
+	left:48px;
+}
+
+.b_position {
+	top:40px;
+	left:29px;
+}
+
+.r_position {
+	top:40px;
+	left:-29px;
+}
+
+.g_position {
+	top:-15px;
+	left:-48px;
+}
+
+.c_position {
+	top:0px;
+	left:0px;
+}
+
+.wubrgc {
+	position:relative;
+	left: 50%;
+	top:75px;
 }
 
 /*Hide the checkbox*/
@@ -693,35 +729,37 @@ li {
 			&nbsp<label><input type="checkbox" id="instant checkbox" />Instant</label><br>
 			&nbsp<label><input type="checkbox" id="token checkbox" />Token</label><br>-->
 			<div id="land menu">
-				<div class="mana_symbol_container" style="top:0px left:50px">
-					<span class="mana_symbol W"></span>
-					<input type="checkbox" id="produces white checkbox"/>
-					<span class="mana_symbol_shader"></span>
-				</div>
-				<div class="mana_symbol_container">
-					<span class="mana_symbol U"></span>
-					<input type="checkbox" id="produces blue checkbox"/>
-					<span class="mana_symbol_shader"></span>
-				</div>
-				<div class="mana_symbol_container">
-					<span class="mana_symbol B"></span>
-					<input type="checkbox" id="produces black checkbox"/>
-					<span class="mana_symbol_shader"></span>
-				</div>
-				<div class="mana_symbol_container">
-					<span class="mana_symbol R"></span>
-					<input type="checkbox" id="produces red checkbox"/>
-					<span class="mana_symbol_shader"></span>
-				</div>
-				<div class="mana_symbol_container">
-					<span class="mana_symbol G"></span>
-					<input type="checkbox" id="produces green checkbox"/>
-					<span class="mana_symbol_shader"></span>
-				</div>
-				<div class="mana_symbol_container">
-					<span class="mana_symbol C"></span>
-					<input type="checkbox" id="produces colorless checkbox"/>
-					<span class="mana_symbol_shader"></span>
+				<div class="wubrgc">
+					<div class="mana_symbol_container w_position">
+						<span class="mana_symbol W"></span>
+						<input type="checkbox" id="produces white checkbox"/>
+						<span class="mana_symbol_shader"></span>
+					</div>
+					<div class="mana_symbol_container u_position">
+						<span class="mana_symbol U"></span>
+						<input type="checkbox" id="produces blue checkbox"/>
+						<span class="mana_symbol_shader"></span>
+					</div>
+					<div class="mana_symbol_container b_position">
+						<span class="mana_symbol B"></span>
+						<input type="checkbox" id="produces black checkbox"/>
+						<span class="mana_symbol_shader"></span>
+					</div>
+					<div class="mana_symbol_container r_position">
+						<span class="mana_symbol R"></span>
+						<input type="checkbox" id="produces red checkbox"/>
+						<span class="mana_symbol_shader"></span>
+					</div>
+					<div class="mana_symbol_container g_position">
+						<span class="mana_symbol G"></span>
+						<input type="checkbox" id="produces green checkbox"/>
+						<span class="mana_symbol_shader"></span>
+					</div>
+					<div class="mana_symbol_container c_position">
+						<span class="mana_symbol C"></span>
+						<input type="checkbox" id="produces colorless checkbox"/>
+						<span class="mana_symbol_shader"></span>
+					</div>
 				</div>
 				
 				<!--&nbspMana Production:<br>
