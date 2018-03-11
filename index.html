@@ -1983,8 +1983,6 @@ function newGame(handSize)
 			commandersToStack[i].className = commandersToStack[i].className.replace( /(?:^|\s)rotated(?!\S)/g , '' );
 			//Bring it in front of the other elements
 			commandersToStack[i].parentNode.appendChild(commandersToStack[i]);
-			//Add a counter
-			addCounter(0, xEndOfHand + cardSeparation + 30, commanderYOffset + i * (cardHeight + cardSeparation) + 40);
 		}
 	}
 
