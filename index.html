@@ -700,6 +700,7 @@ li {
 		<div id="edit card control panel" class="edit_card_control_panel">
 			<input type="text" id="card name input" class="dark_look edit_card_width" placeholder="Card Name" /><br>
 			<input type="text" id="purpose input" class="dark_look edit_card_width" placeholder="Purpose" /><br>
+			<input type="text" class="dark_look edit_card_width" id="card back input" placeholder="Transformed Image URL" /><br>
 			<select id="card type" class="dark_look edit_card_width">
 				<option value="land">Land</option>
 				<option value="creature">Creature</option>
@@ -717,9 +718,7 @@ li {
 				</select>
 				<!--&nbsp<label><input type="checkbox" id="commander checkbox" />Commander</label><br>-->
 			</div>
-			<div id="common details menu">
-				<input type="text" class="dark_look edit_card_width" id="card back input" placeholder="Transformed Image URL" /><br>
-			</div>
+			
 			<!--&nbsp<label><input type="checkbox" id="land checkbox" />Land</label><br>
 			&nbsp<label><input type="checkbox" id="creature checkbox" />Creature</label><br>
 			&nbsp<label><input type="checkbox" id="planeswalker checkbox" />Planeswalker</label><br>
@@ -828,8 +827,8 @@ li {
 	<div id="adding cards help" class="help_popup">
 		<header>Adding Cards</header>
 		<p>To add a card, you first need to get a link to the card image. Go to <a href="https://magiccards.info/" target="_blank" style="color:red">magiccards.info</a> or <a href=" http://gatherer.wizards.com" target="_blank" style="color:red">gatherer.wizards.com</a> or whatever your favorite card search website is and search for the card you want to add. Next, right-click on the image, and click "Copy image address". Go back to this page, and click on the input box in the top left that says "Enter card image URL here" and press Ctrl-V to paste the image URL you copied. Finally, click the "Add Card" button just to the right of the input box to add the card.</p>
-		<p>Next you need to input some information about the card. Move your mouse over the card and hover there for 2 seconds until the card magnifies. Click the "Edit" button below the magnified card to reveal more inputs for the card. You can type the card name and purpose, but these are only used to help sort the cards. Next, check the checkboxes that describe what type of card it is.</p>
-		<p>If the card is a land, you'll see additional checkboxes for the colors of mana you could use the land to produce if you were to play it. For example, a fetchland may be able to produce many colors of mana if your deck has the correct fetchable dual lands.</p>
+		<p>Next you need to input some information about the card. Move your mouse over the card and hover there for 2 seconds until the card magnifies. Click the "Edit" button below the magnified card to reveal more inputs for the card. You can type the card name and purpose, but these are only used to help sort the cards. There is also an input for the image URL to the transformed side. Next, select the card type from the drop down menu, and if it's a permanent, you can make it your commander.</p>
+		<p>If the card is a land, you'll see additional clickable icons for the colors of mana you could use the land to produce if you were to play it. For example, a fetchland may be able to produce many colors of mana if your deck has the correct fetchable dual lands.</p>
 		<p>If the card is castable, you'll see an input for the casting cost. This is also used for the analysis, and you should use the casting cost you will most likely pay for the spell in case the card has X in its mana cost, or has alternate casting costs. Type out a number representing the amount of generic mana required, then type W U B R G C for each white, blue, black, red, green, and colorless mana respectively required. Hybrid color mana can be input as {B/G}, but make sure you get the order of the colors correct (not {G/B}). The analysis does not currently support hybrid generic and colored, like {2/G}, so you'll need to enter that as either 2 or G. Here are some examples:</p>
 		<table style="padding: 0px 15px 0px 15px">
 			<tr><th>Card Name</th><th>Casting Cost</th></tr>
@@ -1851,7 +1850,6 @@ function updateEditCardFormByType()
 	var landMenuElement = document.getElementById('land menu');
 	var nonlandMenuElement = document.getElementById('nonland menu');
 	var permanentMenuElement = document.getElementById('permanent menu');
-	var commonDetailsMenuElement = document.getElementById('common details menu');
 	var selectedCardType = document.getElementById('card type').value;
 	//Is this a land?
 	if (selectedCardType == 'land')
@@ -1866,7 +1864,6 @@ function updateEditCardFormByType()
 			hideElement(permanentMenuElement);
 		}
 		hideElement(nonlandMenuElement);
-		hideElement(commonDetailsMenuElement);
 	}
 	else
 	{
