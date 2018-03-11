@@ -91,24 +91,6 @@ input[type="number"] {
 	background: transparent;
 }
 
-.confirmation_menu {
-	position: fixed;
-	text-align: center;
-	left: 50%;
-	top: 50%;
-	width: 200px;
-	margin-left: -100px;
-	height:100px;
-	margin-top: -50px;
-	padding: 10px;
-	display: none;
-	background-color: rgb(121,121,121);
-	border: 1px solid black;
-	box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-}
-
 .label {
 	pointer-events: none;
 	position:absolute;
@@ -152,7 +134,6 @@ input[type="number"] {
 	font-family: sans-serif;
 	border: none;
 
-	jborder: 1px solid rgb(100,100,100);
 	color: rgb(255,255,255);
 }
 
@@ -160,11 +141,31 @@ input[type="number"] {
 	background-color: rgb(70,70,70);
 }
 
-.dark_look:active {
+.dark_look_clickable {
+	outline:none;
+	height:40px;
+	padding-left: 15px;
+	padding-right:15px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+
+	background-color: rgb(50,50,50);
+	text-align: center;
+	font-family: sans-serif;
+	border: none;
+
+	color: rgb(255,255,255);
+}
+
+.dark_look_clickable:hover {
+	background-color: rgb(70,70,70);
+}
+
+.dark_look_clickable:active {
 	background-color: rgb(40,40,40);
 }
 
-ul {
+.toolbar {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
@@ -178,11 +179,11 @@ li {
     float: left;
 }
 
-li button, .dropbtn {
+.toolbar li button, .dropbtn {
     display: inline-block;
 }
 
-li.dropdown {
+.toolbar li.dropdown {
     display: inline-block;
 }
 
@@ -190,11 +191,16 @@ li.dropdown {
     display: none;
     position: absolute;
     width: 160px;
-    jbox-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
     z-index: 1;
 }
 
 .dropdown-content button {
+	width: 160px;
+    display: block;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
+}
+
+.dropdown-content input {
 	width: 160px;
     display: block;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
@@ -213,6 +219,32 @@ li.dropdown {
 
 .dropright:hover .dropright-content {
 	display: inline;
+}
+
+.help_popup {
+	position: fixed;
+	display: none;
+	background-color: rgb(50,50,50);
+	color: rgb(255,255,255);
+	font-family: sans-serif;
+	font-size: 14px;
+	left: 50%;
+	top: 50%;
+	width: 600px;
+	margin-left: -300px;
+	margin-top: -300px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
+}
+
+.help_popup header {
+	text-align: center;
+	font-size: 30px;
+	padding:15px;
+}
+
+.help_popup p {
+	padding-left:15px;
+	padding-right:15px;
 }
 
 .card_info_popup {
@@ -448,19 +480,20 @@ li.dropdown {
 .counter .decrement {
 	bottom: 0;
 }
+
 	</style>
 </head>
 <body id="body">
-	<ul>
+	<ul class="toolbar">
 		<li><input type="text" class="dark_look" id="cardimageurl" placeholder="Enter card image URL here" onclick="clearCardImageUrlEntry()"/></li>
-		<li><button class="dark_look" onclick="addCard()">Add Card</button></li>
-		<li><button class="dark_look" onclick="addCounter()">Add Counter</button></li>
+		<li><button class="dark_look_clickable" onclick="addCard()">Add Card</button></li>
+		<li><button class="dark_look_clickable" onclick="addCounter()">Add Counter</button></li>
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn">File</button>
 			<div class="dropdown-content">
-				<button class="dark_look" id="save button" onclick="saveDocument()" >Save</button>
+				<button class="dark_look_clickable" id="save button" onclick="saveDocument()" >Save</button>
 				<div class="dropright">
-					<button class="dark_look" >Deck Name</button>
+					<button class="dark_look" >Name</button>
 					<div class="dropright-content">
 						<input id="deck name" type="text" class="dark_look" placeholder="MTG Deck"/>
 					</div>
@@ -476,8 +509,8 @@ li.dropdown {
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn">Game</button>
 			<div class="dropdown-content">
-				<button class="dark_look" onclick="newGame()">New Game</button>
-				<button class="dark_look" onclick="mulligan()">Mulligan</button>
+				<button class="dark_look_clickable" onclick="newGame()">New Game</button>
+				<button class="dark_look_clickable" onclick="mulligan()">Mulligan</button>
 				<div class="dropright">
 					<button class="dark_look" >Starting Life</button>
 					<div class="dropright-content">
@@ -489,40 +522,40 @@ li.dropdown {
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn">Sort By</button>
 			<div class="dropdown-content">
-				<button class="dark_look" onclick="costSort()">Cost</button>
-				<button class="dark_look" onclick="colorSort()">Color</button>
-				<button class="dark_look" onclick="typeSort()">Type</button>
-				<button class="dark_look" onclick="purposeSort()">Purpose</button>
-				<button class="dark_look" onclick="curvabilitySort()">Curvability</button>
+				<button class="dark_look_clickable" onclick="costSort()">Cost</button>
+				<button class="dark_look_clickable" onclick="colorSort()">Color</button>
+				<button class="dark_look_clickable" onclick="typeSort()">Type</button>
+				<button class="dark_look_clickable" onclick="purposeSort()">Purpose</button>
+				<button class="dark_look_clickable" onclick="curvabilitySort()">Curvability</button>
 			</div>
 		</li>
 		<li class="dropdown">
-			<button class="dark_look" class="dropbtn" onclick="toggleSideboard()">Sideboard</button>
+			<button class="dark_look_clickable" class="dropbtn" onclick="toggleSideboard()">Sideboard</button>
 			<div class="dropdown-content">
-				<button id="toggle sideboard button" class="dark_look" onclick="toggleSideboard()">Show Sideboard</button>
-				<button class="dark_look" onclick="dumpSideboard()">Dump Sideboard</button>
+				<button id="toggle sideboard button" class="dark_look_clickable" onclick="toggleSideboard()">Show Sideboard</button>
+				<button class="dark_look_clickable" onclick="dumpSideboard()">Dump Sideboard</button>
 			</div>
 		</li>
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn">Selection</button>
 			<div class="dropdown-content">
-				<button class="dark_look" onclick="stack()">Stack</button>
-				<button class="dark_look" onclick="shuffle()">Shuffle</button>
+				<button class="dark_look_clickable" onclick="stack()">Stack</button>
+				<button class="dark_look_clickable" onclick="shuffle()">Shuffle</button>
 				<div class="dropright">
 					<button class="dark_look" >Delete</button>
 					<div class="dropright-content">
-						<button class="dark_look" onclick="deleteSelection()">Confirm</button>
+						<button class="dark_look_clickable" onclick="deleteSelection()">Confirm</button>
 					</div>
 				</div>
-				<button class="dark_look" onclick="selectAll()">Select All</button>
+				<button class="dark_look_clickable" onclick="selectAll()">Select All</button>
 			</div>
 		</li>
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn">Help</button>
 			<div class="dropdown-content">
-				<button class="dark_look">Adding Cards</button>
-				<button class="dark_look">User Interface</button>
-				<button class="dark_look">Analysis</button>
+				<button class="dark_look_clickable" onclick="toggleAddingCardsHelp()">Adding Cards</button>
+				<button class="dark_look_clickable" onclick="toggleUserInterfaceHelp()">User Interface</button>
+				<button class="dark_look_clickable" onclick="toggleAnalysisHelp()">Analysis</button>
 			</div>
 		</li>
 	</ul>
@@ -629,7 +662,58 @@ li.dropdown {
 	<div id="counter_container" numcounters="0">
 		<div class="counter draggable" id="counter_template"><div class="value" onmousedown="dragCounter()">1</div><button class="increment btn" onclick="incrementCounter()">+</button><button class="decrement btn" onclick="decrementCounter()">-</button></div>
 	</div>
+
+	<div id="adding cards help" class="help_popup">
+		<header>Adding Cards</header>
+		<p>To add a card, you first need to get a link to the card image. Go to <a href="https://magiccards.info/" target="_blank" style="color:red">magiccards.info</a> or <a href=" http://gatherer.wizards.com" target="_blank" style="color:red">gatherer.wizards.com</a> or whatever your favorite card search website is and search for the card you want to add. Next, right-click on the image, and click "Copy image address". Go back to this page, and click on the input box in the top left that says "Enter card image URL here" and press Ctrl-V to paste the image URL you copied. Finally, click the "Add Card" button just to the right of the input box to add the card.</p>
+		<p>Next you need to input some information about the card. Move your mouse over the card and hover there for 2 seconds until the card magnifies. Click the "Edit" button below the magnified card to reveal more inputs for the card. You can type the card name and purpose, but these are only used to help sort the cards. Next, check the checkboxes that describe what type of card it is.</p>
+		<p>If the card is a land, you'll see additional checkboxes for the colors of mana you could use the land to produce if you were to play it. For example, a fetchland may be able to produce many colors of mana if your deck has the correct fetchable dual lands.</p>
+		<p>If the card is castable, you'll see an input for the casting cost. This is also used for the analysis, and you should use the casting cost you will most likely pay for the spell in case the card has X in its mana cost, or has alternate casting costs. Type out a number representing the amount of generic mana required, then type W U B R G C for each white, blue, black, red, green, and colorless mana respectively required. Hybrid color mana can be input as {B/G}, but make sure you get the order of the colors correct (not {G/B}). The analysis does not currently support hybrid generic and colored, like {2/G}, so you'll need to enter that as either 2 or G. Here are some examples:</p>
+		<table style="width:100%">
+			<tr>
+				<th style="width:50%">Card Name</th>
+				<th style="width:50%">Casting Cost</th>
+			</tr>
+			<tr>
+				<td style="width:50%">
+					<ul style="list-style-type:none">
+						<li>Autochthon Wurm</li><br>
+						<li>Sewn-Eye Drake</li><br>
+						<li>Thought-Knot Seer</li><br>
+						<li>Gurmag Angler</li><br>
+						<li>Fireball</li><br>
+						<li>Beseech the Queen</li>
+					</ul>
+				</td>
+				<td style="width:50%">
+					<ul style="list-style-type:none">
+						<li>10GGGWW</li><br>
+						<li>2{U/R}B</li><br>
+						<li>3C</li><br>
+						<li>1B</li><br>
+						<li>4R</li><br>
+						<li>2BB</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+		<p>Now that you've entered all of this information, you probably don't want to do it again. Move your mouse and click the "Copy" button three times to make a playset of the card.</p>
+
+		<button class="dark_look_clickable" style="width:100%" onclick="toggleAddingCardsHelp()">Ok</button>
+	</div>
 	
+	<div id="ui help" class="help_popup">
+		<header>User Interface</header>
+		<p>Coming Soon</p>
+		<button class="dark_look_clickable" style="width:100%" onclick="toggleUserInterfaceHelp()">Ok</button>
+	</div>
+
+	<div id="analysis help" class="help_popup">
+		<header>Analysis</header>
+		<p>Coming Soon</p>
+		<button class="dark_look_clickable" style="width:100%" onclick="toggleAnalysisHelp()">Ok</button>
+	</div>
+
 	<script>
 var clickedElement;
 var cardWidth = 212; //156
@@ -773,6 +857,18 @@ function saveDocument(){
   \____/|_____|  \_____\___/|_| |_|\__|_|  \___/|_|_|\___|_|   
                                                                                                                    
 */
+
+function toggleAddingCardsHelp() {
+	toggleVisibility(document.getElementById("adding cards help"));
+}
+
+function toggleUserInterfaceHelp() {
+	toggleVisibility(document.getElementById("ui help"));
+}
+
+function toggleAnalysisHelp() {
+	toggleVisibility(document.getElementById("analysis help"));
+}
 
 function updateDocumentTitleWithDeckName(){
 	var deckName = document.getElementById("deck name").value || "MTG Deck";
@@ -1657,6 +1753,8 @@ function addCard() {
 
 var numCopies = 0;
 function copyCard() {
+	//Save any changes
+	saveEditCardSettings();
 	var clone = selectedCard.cloneNode(true);
 	clone.addEventListener("mousedown", mouseDownCard);
 	clone.addEventListener("mouseup", mouseUpCard);
