@@ -2433,11 +2433,26 @@ var ManaCost = function(manaCostString)
 		for (var c = 0; c < lc_manaCostString.length; ++c)
 		{
 			//Is this character a number?
-			if (lc_manaCostString.charCodeAt(c) >= "0".charCodeAt(0) &&
-				lc_manaCostString.charCodeAt(c) <= "9".charCodeAt(0))
-			{
-				//Add this digit to the running generic mana cost
-				this.generic = this.generic * 10 + lc_manaCostString.charCodeAt(c) - "0".charCodeAt(0);
+			if (lc_manaCostString[c] == '0') {
+				this.generic = this.generic * 10 + 0;
+			} else if (lc_manaCostString[c] == '1') {
+				this.generic = this.generic * 10 + 1;
+			} else if (lc_manaCostString[c] == '2') {
+				this.generic = this.generic * 10 + 2;
+			} else if (lc_manaCostString[c] == '3') {
+				this.generic = this.generic * 10 + 3;
+			} else if (lc_manaCostString[c] == '4') {
+				this.generic = this.generic * 10 + 4;
+			} else if (lc_manaCostString[c] == '5') {
+				this.generic = this.generic * 10 + 5;
+			} else if (lc_manaCostString[c] == '6') {
+				this.generic = this.generic * 10 + 6;
+			} else if (lc_manaCostString[c] == '7') {
+				this.generic = this.generic * 10 + 7;
+			} else if (lc_manaCostString[c] == '8') {
+				this.generic = this.generic * 10 + 8;
+			} else if (lc_manaCostString[c] == '9') {
+				this.generic = this.generic * 10 + 9;
 			} else if (lc_manaCostString[c] == 'w') {
 				this.w++;
 				this.colorBitVector |= 0x01;
