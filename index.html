@@ -32,6 +32,11 @@ input[type="number"] {
     -moz-appearance: textfield;
 }
 
+dd {
+	color: rgb(200,200,200);
+	padding-bottom: 10px;
+}
+
 .rotated {
 	-webkit-transform: rotate(90deg);
 	-moz-transform: rotate(90deg);
@@ -224,6 +229,7 @@ li {
 .help_popup {
 	position: fixed;
 	display: none;
+	overflow-y: scroll;
 	background-color: rgb(50,50,50);
 	color: rgb(255,255,255);
 	font-family: sans-serif;
@@ -231,8 +237,9 @@ li {
 	left: 50%;
 	top: 50%;
 	width: 600px;
+	height: 50%;
 	margin-left: -300px;
-	margin-top: -300px;
+	margin-top:-12.5%;
 	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
 }
 
@@ -669,33 +676,14 @@ li {
 		<p>Next you need to input some information about the card. Move your mouse over the card and hover there for 2 seconds until the card magnifies. Click the "Edit" button below the magnified card to reveal more inputs for the card. You can type the card name and purpose, but these are only used to help sort the cards. Next, check the checkboxes that describe what type of card it is.</p>
 		<p>If the card is a land, you'll see additional checkboxes for the colors of mana you could use the land to produce if you were to play it. For example, a fetchland may be able to produce many colors of mana if your deck has the correct fetchable dual lands.</p>
 		<p>If the card is castable, you'll see an input for the casting cost. This is also used for the analysis, and you should use the casting cost you will most likely pay for the spell in case the card has X in its mana cost, or has alternate casting costs. Type out a number representing the amount of generic mana required, then type W U B R G C for each white, blue, black, red, green, and colorless mana respectively required. Hybrid color mana can be input as {B/G}, but make sure you get the order of the colors correct (not {G/B}). The analysis does not currently support hybrid generic and colored, like {2/G}, so you'll need to enter that as either 2 or G. Here are some examples:</p>
-		<table style="width:100%">
-			<tr>
-				<th style="width:50%">Card Name</th>
-				<th style="width:50%">Casting Cost</th>
-			</tr>
-			<tr>
-				<td style="width:50%">
-					<ul style="list-style-type:none">
-						<li>Autochthon Wurm</li><br>
-						<li>Sewn-Eye Drake</li><br>
-						<li>Thought-Knot Seer</li><br>
-						<li>Gurmag Angler</li><br>
-						<li>Fireball</li><br>
-						<li>Beseech the Queen</li>
-					</ul>
-				</td>
-				<td style="width:50%">
-					<ul style="list-style-type:none">
-						<li>10GGGWW</li><br>
-						<li>2{U/R}B</li><br>
-						<li>3C</li><br>
-						<li>1B</li><br>
-						<li>4R</li><br>
-						<li>2BB</li>
-					</ul>
-				</td>
-			</tr>
+		<table style="padding: 0px 15px 0px 15px">
+			<tr><th>Card Name</th><th>Casting Cost</th></tr>
+			<tr><td>Autochthon Wurm</td><td>10GGGWW</td></tr>
+			<tr><td>Sewn-Eye Drake</td><td>2{U/R}B</td></tr>
+			<tr><td>Thought-Knot Seer</td><td>3C</td></tr>
+			<tr><td>Gurmag Angler</td><td>1B</td></tr>
+			<tr><td>Fireball</td><td>4R</td></tr>
+			<tr><td>Beseech the Queen</td><td>2BB</td></tr>
 		</table>
 		<p>Now that you've entered all of this information, you probably don't want to do it again. Move your mouse and click the "Copy" button three times to make a playset of the card.</p>
 
@@ -704,7 +692,52 @@ li {
 	
 	<div id="ui help" class="help_popup">
 		<header>User Interface</header>
-		<p>Coming Soon</p>
+		<header style="font-size:16px">Tabletop</header>
+		<dl style="padding: 0px 15px 0px 15px">
+			<dt>Single click on card</dt><dd>Tap / untap card</dd>
+			<dt>Double click on card sleeve</dt><dd>Flip card to front</dd>
+			<dt>Double click on non-transformable card</dt><dd>Flip card to sleeve</dd>
+			<dt>Double click on transformable card</dt><dd>Transform card</dd>
+			<dt>Click and drag on card</dt><dd>Move card</dd>
+			<dt>Hover over card</dt><dd>Magnify card</dd>
+			<dt>Click and drag on counter</dt><dd>Move counter</dd>
+			<dt>Single click on background</dt><dd>Deselect</dd>
+			<dt>Click and drag left on background</dt><dd>Select all cards and counters that overlap the selection box</dd>
+			<dt>Click and drag right on background</dt><dd>Select all cards and counters that are wholly within the selection box</dd>
+			<dt>Single click on untapped card in selection</dt><dd>Tap all cards in selection</dd>
+			<dt>Single click on tapped card in selection</dt><dd>Untap all cards in selection</dd>
+			<dt>Double click on card sleeve in selection</dt><dd>Flip all cards in selection to front</dd>
+			<dt>Double click on non-transformable card in selection</dt><dd>Flip all cards in selection to sleeve</dd>
+			<dt>Double click on transformable card in selection</dt><dd>Transform all transformable cards in selection</dd>
+			<dt>Click and drag on card or counter in selection</dt><dd>Move selection</dd>
+		</dl>
+		<header style="font-size:16px">Toolbar</header>
+		<dl style="padding: 0px 15px 0px 15px">
+			<dt>Enter card image URL here</dt><dd>Paste the url to a card image here</dd>
+			<dt>Add Card</dt><dd>Creates a new card with the entered card image</dd>
+			<dt>Add Counter</dt><dd>Creates a new counter</dd>
+			<dt>File&rarr;Save</dt><dd>Downloads the current state of this page</dd>
+			<dt>File&rarr;Name</dt><dd>The title of this page, and the filename when you save it</dd>
+			<dt>File&rarr;Card Sleeve Image</dt><dd>The image URL to use for the sleeve image</dd>
+			<dt>Game&rarr;New Game</dt><dd>Arranges the tabletop elements for a new game</dd>
+			<dt>Game&rarr;Mulligan</dt><dd>Arranges the tabletop elements for a new game, but with one fewer drawn card</dd>
+			<dt>Game&rarr;Starting Life</dt><dd>The initial value for the life counters in a new game</dd>
+			<dt>Sort By&rarr;Cost</dt><dd>Sorts the card by the total amount of mana required to cast them</dd>
+			<dt>Sort By&rarr;Color</dt><dd>Sorts the cards by the colors of mana required to cast them, and the colors they can produce</dd>
+			<dt>Sort By&rarr;Type</dt><dd>Sorts the cards by card type</dd>
+			<dt>Sort By&rarr;Purpose</dt><dd>Sorts the cards by the user-inputted purpose</dd>
+			<dt>Sort By&rarr;Curvability</dt><dd>Sorts the cards by the probability you can cast them on-curve, on the play, without mulliganing</dd>
+			<dt>Sideboard</dt><dd>Shows / hides the sideboard</dd>
+			<dt>Sideboard&rarr;Show / Hide Sideboard</dt><dd>Shows / hides the sideboard</dd>
+			<dt>Sideboard&rarr;Dump Sideboard</dt><dd>Dumps the cards in the sideboard onto the tabletop</dd>
+			<dt>Selection&rarr;Stack</dt><dd>Stacks the cards in the selection. Face-up cards are stacked in a column so you can see their names, Face-down cards are stacked in a pile.</dd>
+			<dt>Selection&rarr;Shuffle</dt><dd>Stacks the cards in the selection into a face-down shuffled pile</dd>
+			<dt>Selection&rarr;Delete&rarr;Confirm</dt><dd>Deletes all cards and counters in the selection</dd>
+			<dt>Selection&rarr;Select All</dt><dd>Selects all cards and counters on the tabletop</dd>
+			<dt>Help&rarr;Adding Cards</dt><dd>Shows / hides the instructions for adding cards</dd>
+			<dt>Help&rarr;User Interface</dt><dd>Shows / hides this</dd>
+			<dt>Help&rarr;Analysis</dt><dd>Shows / hides the description of the manacost analysis</dd>
+		</dl>
 		<button class="dark_look_clickable" style="width:100%" onclick="toggleUserInterfaceHelp()">Ok</button>
 	</div>
 
@@ -860,13 +893,19 @@ function saveDocument(){
 
 function toggleAddingCardsHelp() {
 	toggleVisibility(document.getElementById("adding cards help"));
+	document.getElementById("ui help").style.display = "none";
+	document.getElementById("analysis help").style.display = "none";
 }
 
 function toggleUserInterfaceHelp() {
+	document.getElementById("adding cards help").style.display = "none";
 	toggleVisibility(document.getElementById("ui help"));
+	document.getElementById("analysis help").style.display = "none";
 }
 
 function toggleAnalysisHelp() {
+	document.getElementById("adding cards help").style.display = "none";
+	document.getElementById("ui help").style.display = "none";
 	toggleVisibility(document.getElementById("analysis help"));
 }
 
