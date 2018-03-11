@@ -458,8 +458,6 @@ li.dropdown {
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn">File</button>
 			<div class="dropdown-content">
-				<button class="dark_look" onclick="newGame()">New Game</button>
-				<button class="dark_look" onclick="mulligan()">Mulligan</button>
 				<button class="dark_look" id="save button" onclick="saveDocument()" >Save</button>
 				<div class="dropright">
 					<button class="dark_look" >Deck Name</button>
@@ -468,15 +466,22 @@ li.dropdown {
 					</div>
 				</div>
 				<div class="dropright">
-					<button class="dark_look" >Starting Life</button>
-					<div class="dropright-content">
-						<input id="starting life" type="number" class="dark_look" placeholder="20"/>
-					</div>
-				</div>
-				<div class="dropright">
 					<button class="dark_look" >Card Sleeve Image</button>
 					<div class="dropright-content">
 						<input id="card sleeve image" type="text" class="dark_look" placeholder="URL" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/>
+					</div>
+				</div>
+			</div>
+		</li>
+		<li class="dropdown">
+			<button class="dark_look" class="dropbtn">Game</button>
+			<div class="dropdown-content">
+				<button class="dark_look" onclick="newGame()">New Game</button>
+				<button class="dark_look" onclick="mulligan()">Mulligan</button>
+				<div class="dropright">
+					<button class="dark_look" >Starting Life</button>
+					<div class="dropright-content">
+						<input id="starting life" type="number" class="dark_look" placeholder="20"/>
 					</div>
 				</div>
 			</div>
