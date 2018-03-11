@@ -459,6 +459,7 @@ li.dropdown {
 			<button class="dark_look" class="dropbtn">File</button>
 			<div class="dropdown-content">
 				<button class="dark_look" onclick="newGame()">New Game</button>
+				<button class="dark_look" onclick="mulligan()">Mulligan</button>
 				<button class="dark_look" id="save button" onclick="saveDocument()" >Save</button>
 				<div class="dropright">
 					<button class="dark_look" >Deck Name</button>
@@ -490,7 +491,6 @@ li.dropdown {
 				<button class="dark_look" onclick="curvabilitySort()">Curvability</button>
 			</div>
 		</li>
-		<li><button class="dark_look">Help</button></li>
 		<li class="dropdown">
 			<button class="dark_look" class="dropbtn" onclick="toggleSideboard()">Sideboard</button>
 			<div class="dropdown-content">
@@ -498,10 +498,28 @@ li.dropdown {
 				<button class="dark_look" onclick="dumpSideboard()">Dump Sideboard</button>
 			</div>
 		</li>
-		<li id="select all button"><button class="dark_look" onclick="selectAll()">Select All</button></li>
-		<li id="stack button" style="display:none"><button class="dark_look" onclick="stack()">Stack</button></li>
-		<li id="shuffle button" style="display:none"><button class="dark_look" onclick="shuffle()">Shuffle</button></li>
-		<li id="delete selection button" style="display:none"><button class="dark_look" onclick="toggleDeleteConfirmationMenu()">Delete</button></li>
+		<li class="dropdown">
+			<button class="dark_look" class="dropbtn">Selection</button>
+			<div class="dropdown-content">
+				<button class="dark_look" onclick="stack()">Stack</button>
+				<button class="dark_look" onclick="shuffle()">Shuffle</button>
+				<div class="dropright">
+					<button class="dark_look" >Delete</button>
+					<div class="dropright-content">
+						<button class="dark_look" onclick="deleteSelection()">Confirm</button>
+					</div>
+				</div>
+				<button class="dark_look" onclick="selectAll()">Select All</button>
+			</div>
+		</li>
+		<li class="dropdown">
+			<button class="dark_look" class="dropbtn">Help</button>
+			<div class="dropdown-content">
+				<button class="dark_look">Adding Cards</button>
+				<button class="dark_look">User Interface</button>
+				<button class="dark_look">Analysis</button>
+			</div>
+		</li>
 	</ul>
 
 	<div id="playmat" class="playmat">
@@ -511,12 +529,6 @@ li.dropdown {
 	</div>
 
 	<div id="sideboard" class="sideboard">
-	</div>
-
-	<div id="delete confirmation menu" class="confirmation_menu">
-		Are you sure you want to delete the selection?<br><br>
-		<button id="okay delete button" onclick="deleteSelectionAndCloseConfirmationMenu()">Delete</button>
-		<button id="okay delete button" onclick="toggleDeleteConfirmationMenu()">Cancel</button>
 	</div>
 
 	<div id="card info popup" class="card_info_popup">
@@ -760,16 +772,6 @@ function saveDocument(){
 function updateDocumentTitleWithDeckName(){
 	var deckName = document.getElementById("deck name").value || "MTG Deck";
 	document.title = deckName;
-}
-
-function toggleDeleteConfirmationMenu(){
-	var deleteConfirmationMenu = document.getElementById("delete confirmation menu");
-	toggleVisibility(deleteConfirmationMenu);
-}
-
-function deleteSelectionAndCloseConfirmationMenu(){
-	deleteSelection();
-	toggleDeleteConfirmationMenu();
 }
 
 function incrementCounter(e){
@@ -1185,10 +1187,9 @@ function groupSelectedElements(selectedElements) {
 			selectedElements[i].style.left= parseInt(selectedElements[i].style.left) - parseInt(selector.style.left) + 'px';
 			selector.appendChild(selectedElements[i]);
 		}
-		document.getElementById("shuffle button").style.display = 'block';
+		/*document.getElementById("shuffle button").style.display = 'block';
 		document.getElementById("stack button").style.display = 'block';
-		document.getElementById("delete selection button").style.display = 'block';
-		document.getElementById("select all button").style.display = 'none';
+		document.getElementById("delete selection button").style.display = 'block';*/
 	}
 }
 
@@ -1218,10 +1219,9 @@ function deselectAll()
 	{
 		selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
 	}
-	document.getElementById("shuffle button").style.display = 'none';
+	/*document.getElementById("shuffle button").style.display = 'none';
 	document.getElementById("stack button").style.display = 'none';
-	document.getElementById("delete selection button").style.display = 'none';
-	document.getElementById("select all button").style.display = 'block';
+	document.getElementById("delete selection button").style.display = 'none';*/
 }
 
 //Called whenever the mouse button goes up on the document
@@ -1839,7 +1839,23 @@ function shuffle()
 	resizeDocument();
 }
 
-function newGame(handSize)
+var handSize = 7;
+function newGame()
+{
+	handSize = 7;
+	prepareGame(handSize);
+}
+
+function mulligan()
+{
+	if (handSize > 0)
+	{
+		handSize = handSize - 1;
+	}
+	prepareGame(handSize);
+}
+
+function prepareGame(handSize)
 {
 	//Get all the elements on the playmat
 	var elementsOnPlaymat = document.getElementById('playmat').getElementsByTagName('*');
@@ -1856,7 +1872,6 @@ function newGame(handSize)
 	var lifeCounterXOffset = 300;
 	var lifeCounterYOffset = 40 + toolbarHeight;
 	var cardSeparation = 10;
-	handSize = handSize || 7;
 	deleteAllCounters();
 	deleteAllLabels();
 	
@@ -1922,7 +1937,7 @@ function newGame(handSize)
 		cardsToShuffle.splice(index,1);
 	}
 
-	var xEndOfHand = xEndOfDeck + handXOffset + numDrawnCards * (cardWidth + cardSeparation);
+	var xEndOfHand = xEndOfDeck + handXOffset + 7 * (cardWidth + cardSeparation);
 
 	addCounter(parseInt(document.getElementById("starting life").value) || 20, xEndOfDeck + cardSeparation + lifeCounterXOffset, lifeCounterYOffset);
 	addCounter(parseInt(document.getElementById("starting life").value) || 20, xEndOfDeck + cardSeparation + lifeCounterXOffset + 100, lifeCounterYOffset);
