@@ -2345,8 +2345,8 @@ function dumpSideboard()
 		//Remove sideboarded class
 		elementsInSideboard[0].className = elementsInSideboard[0].className.replace( /(?:^|\s)sideboarded(?!\S)/g , '' );
 		//Put it on the playmat
-		elementsInSideboard[0].style.top = 25 + i * nameHeight + 'px';
-		elementsInSideboard[0].style.left= 10 + rect.left + 'px'; //TODO
+		elementsInSideboard[0].style.top = 10 + getScrollY() + rect.top + i * nameHeight + 'px';
+		elementsInSideboard[0].style.left= 10 + getScrollX() + rect.left + 'px'; //TODO
 		playmat.appendChild(elementsInSideboard[0]);
 		++i;
 	}
