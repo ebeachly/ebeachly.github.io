@@ -1398,15 +1398,16 @@ function stopDrag() {
 				}
 				for (i = 0; i < selectedElements.length; ++i)
 				{
-					selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
-					if (!hasClass(selectedElements[i], 'sideboarded'))
+					//Only put cards in the sideboard
+					if (hasClass(selectedElements[i], 'card'))
 					{
-						selectedElements[i].className += ' sideboarded';
+						selectedElements[i].className = selectedElements[i].className.replace( /(?:^|\s)selected(?!\S)/g , '' )
+						if (!hasClass(selectedElements[i], 'sideboarded'))
+						{
+							selectedElements[i].className += ' sideboarded';
+						}
+						sideboard.appendChild(selectedElements[i]);
 					}
-				}
-				for (i = 0; i < selectedElements.length; ++i)
-				{
-					sideboard.appendChild(selectedElements[i]);
 				}
 				sortSideboard();
 				deselectAll();
