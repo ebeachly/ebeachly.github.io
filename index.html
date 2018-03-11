@@ -23,6 +23,15 @@ html {
 	padding:0px;
 }
 
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
 .rotated {
 	-webkit-transform: rotate(90deg);
 	-moz-transform: rotate(90deg);
@@ -82,19 +91,6 @@ html {
 	background: transparent;
 }
 
-.preferences_menu {
-	position: absolute;
-	left: 360px;
-	top: 25px;
-	padding: 10px;
-	display: none;
-	background-color: rgb(121,121,121);
-	border: 1px solid black;
-	box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-}
-
 .confirmation_menu {
 	position: fixed;
 	text-align: center;
@@ -111,12 +107,6 @@ html {
 	box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
-}
-
-.preferences_menu .close_btn {
-	position: absolute;
-	top:0;
-	right:0;
 }
 
 .label {
@@ -199,18 +189,30 @@ li.dropdown {
 .dropdown-content {
     display: none;
     position: absolute;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    width: 160px;
+    jbox-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
     z-index: 1;
 }
 
 .dropdown-content button {
-	min-width: 160px;
+	width: 160px;
     display: block;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.4);
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+.dropright-content {
+	position:absolute;
+	margin-top:-40px;
+	margin-left:160px;
+	display: none;
+}
+
+.dropright:hover .dropright-content {
+	display: inline;
 }
 
 .card_info_popup {
@@ -458,8 +460,24 @@ li.dropdown {
 			<div class="dropdown-content">
 				<button class="dark_look" onclick="newGame()">New Game</button>
 				<button class="dark_look" id="save button" onclick="saveDocument()" >Save</button>
-				<button class="dark_look" onclick="togglePreferences()">Preferences</button>
-				<button class="dark_look" onclick="dumpSideboard()">Dump Sideboard</button>
+				<div class="dropright">
+					<button class="dark_look" >Deck Name</button>
+					<div class="dropright-content">
+						<input id="deck name" type="text" class="dark_look" placeholder="MTG Deck"/>
+					</div>
+				</div>
+				<div class="dropright">
+					<button class="dark_look" >Starting Life</button>
+					<div class="dropright-content">
+						<input id="starting life" type="number" class="dark_look" placeholder="20"/>
+					</div>
+				</div>
+				<div class="dropright">
+					<button class="dark_look" >Card Sleeve Image</button>
+					<div class="dropright-content">
+						<input id="card sleeve image" type="text" class="dark_look" placeholder="URL" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/>
+					</div>
+				</div>
 			</div>
 		</li>
 		<li class="dropdown">
@@ -473,7 +491,13 @@ li.dropdown {
 			</div>
 		</li>
 		<li><button class="dark_look">Help</button></li>
-		<li><button class="dark_look" onclick="toggleSideboard()">Sideboard</button></li>
+		<li class="dropdown">
+			<button class="dark_look" class="dropbtn" onclick="toggleSideboard()">Sideboard</button>
+			<div class="dropdown-content">
+				<button id="toggle sideboard button" class="dark_look" onclick="toggleSideboard()">Show Sideboard</button>
+				<button class="dark_look" onclick="dumpSideboard()">Dump Sideboard</button>
+			</div>
+		</li>
 		<li id="select all button"><button class="dark_look" onclick="selectAll()">Select All</button></li>
 		<li id="stack button" style="display:none"><button class="dark_look" onclick="stack()">Stack</button></li>
 		<li id="shuffle button" style="display:none"><button class="dark_look" onclick="shuffle()">Shuffle</button></li>
@@ -487,14 +511,6 @@ li.dropdown {
 	</div>
 
 	<div id="sideboard" class="sideboard">
-	</div>
-
-	<div id="preferences menu" class="preferences_menu">
-		Starting Life Total:<br>
-		<input type="number" id="starting life" value="20"/><br>
-		Card Sleeve Image URL:<br>
-		<input type="text" id="card sleeve image" value="http://i.ebayimg.com/images/g/l9YAAOSweW5VX2or/s-l300.jpg"/><br>
-		
 	</div>
 
 	<div id="delete confirmation menu" class="confirmation_menu">
@@ -721,7 +737,7 @@ function padToFour(number) {
 function saveDocument(){
   // Construct the <a> element
   var link = document.createElement("a");
-  link.download = document.title + ".html";
+  link.download = (document.getElementById("deck name").value || "MTG Deck") + ".html";
   // Construct the uri
   var uri = 'data:text/csv;charset=utf-8;base64,' + window.btoa(document.documentElement.outerHTML);
   link.href = uri;
@@ -741,19 +757,9 @@ function saveDocument(){
                                                                                                                    
 */
 
-function prepareSaveButton(){
-	document.getElementById("save button").setAttribute('href', 'javascript:void(0)');
-	document.getElementById("save button").setAttribute('href', '<html></html>');
-	//document.getElementById("save button").setAttribute('href', 'data:text/html,' + document.documentElement.outerHTML);
-}
-
-function togglePreferences(){
-	var preferencesMenu = document.getElementById("preferences menu");
-	var startingLife = document.getElementById("starting life");
-	var cardSleeve = document.getElementById("card sleeve image");
-	startingLife.setAttribute("value", startingLife.value);
-	cardSleeve.setAttribute("value", cardSleeve.value);
-	toggleVisibility(preferencesMenu);
+function updateDocumentTitleWithDeckName(){
+	var deckName = document.getElementById("deck name").value || "MTG Deck";
+	document.title = deckName;
 }
 
 function toggleDeleteConfirmationMenu(){
@@ -1918,8 +1924,8 @@ function newGame(handSize)
 
 	var xEndOfHand = xEndOfDeck + handXOffset + numDrawnCards * (cardWidth + cardSeparation);
 
-	addCounter(parseInt(document.getElementById("starting life").value), xEndOfDeck + cardSeparation + lifeCounterXOffset, lifeCounterYOffset);
-	addCounter(parseInt(document.getElementById("starting life").value), xEndOfDeck + cardSeparation + lifeCounterXOffset + 100, lifeCounterYOffset);
+	addCounter(parseInt(document.getElementById("starting life").value) || 20, xEndOfDeck + cardSeparation + lifeCounterXOffset, lifeCounterYOffset);
+	addCounter(parseInt(document.getElementById("starting life").value) || 20, xEndOfDeck + cardSeparation + lifeCounterXOffset + 100, lifeCounterYOffset);
 
 	//Sort the tokens by cost
 	tokensToStack.sort(
@@ -2010,8 +2016,10 @@ function toggleSideboard()
 	if (sideboard.style.visibility == 'visible')
 	{
 		sideboard.style.visibility = 'hidden';
+		document.getElementById('toggle sideboard button').innerHTML = "Show Sideboard";
 	} else {
 		sideboard.style.visibility = 'visible';
+		document.getElementById('toggle sideboard button').innerHTML = "Hide Sideboard";
 	}
 }
 
@@ -3030,10 +3038,10 @@ function curvabilitySort()
 		}
 	}
 
-	for (i = 0; i < cardsToSort.length; ++i)
+	/*for (i = 0; i < cardsToSort.length; ++i)
 	{
 		console.log(cardsToSort[i].getAttribute("name") + ": " + getCurvability(cardsToSort[i]));
-	}
+	}*/
 
 	//Sort the cards by curvability
 	cardsToSort.sort(
@@ -4067,7 +4075,7 @@ window.onload = function() {
 	document.getElementById("enchantment checkbox").onclick = permanentTypeSelected;
 	document.getElementById("sorcery checkbox").onclick = sorceryTypeSelected;
 	document.getElementById("instant checkbox").onclick = instantTypeSelected;
-	document.getElementById("save button").addEventListener("mouseenter", prepareSaveButton);
+	document.getElementById("deck name").addEventListener("mouseout", updateDocumentTitleWithDeckName);
 
 	var sideboard = document.getElementById("sideboard");
 	sideboard.addEventListener("mouseover", mouseEnterSideboard);
