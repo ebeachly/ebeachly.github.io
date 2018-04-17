@@ -1670,6 +1670,8 @@ function showCardInfoMenu(element) {
 		}
 		hideEditCard();
 		document.getElementById('magnified card view').src = selectedCard.src;
+		loadEditCardSettings();
+		updateEditCardFormByType();
 		showElement(document.getElementById('card info popup'));
 	}
 }
@@ -1827,8 +1829,6 @@ function hideEditCard()
 function viewEditCard()
 {
 	//Load the settings and make the edit card control panel visible
-	loadEditCardSettings();
-	updateEditCardFormByType();
 	showElement(document.getElementById("edit card control panel"));
 }
 
