@@ -556,6 +556,7 @@ li {
 	width: 212px;
 	height: 296px;
 	border-radius: 11px;
+	-webkit-user-drag: none;
 }
 
 .draggable{
@@ -1700,10 +1701,10 @@ function isMouseOverElementDebug(element)
 }
 
 function onMouseLeaveCardInfoMenu() {
-	//Check that the pointer is no longer over the card info popup
-	if (isMouseOverElementDebug(document.getElementById('card info popup')))
+	//Check if the edit card control panel is shown
+	if (document.getElementById("edit card control panel").style.display == 'block')
 	{
-
+		//Don't do anything
 	} else {
 		hideCardInfoMenu();
 	}
@@ -1995,7 +1996,7 @@ function addCard() {
 	var newCard;
     cardImageUrlString.replace(urlRegex, function(url) {
     	newCard = CardElement(url);
-    	newCard.style.top = Math.floor(numCardsAdded / numColumns) * (cardHeight + padding) + 25 + 'px';
+    	newCard.style.top = Math.floor(numCardsAdded / numColumns) * (cardHeight + padding) + 40 + 25 + 'px';
     	newCard.style.left = (numCardsAdded % numColumns) * (cardWidth + padding) + 25 + 'px';
     	newCard.setAttribute("name", padToFour(numCardsAdded));
     	numCardsAdded = numCardsAdded + 1;
@@ -4454,7 +4455,7 @@ window.onload = function() {
 	//Create some cards for testing
 	document.onmousemove=dragElement;
 	document.onmouseup=stopDrag;
-	//document.getElementById("card info popup").addEventListener("mouseleave", onMouseLeaveCardInfoMenu);
+	document.getElementById("card info popup").addEventListener("mouseleave", onMouseLeaveCardInfoMenu);
 	document.getElementById("magnified card view").addEventListener("mousedown", hideCardInfoMenu);
 	document.getElementById("playmat").addEventListener("mousedown", startSelection);
 	/*document.getElementById("land checkbox").onclick = permanentTypeSelected;
