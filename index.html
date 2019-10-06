@@ -1197,6 +1197,7 @@ function mouseDownCard(e){
 	// IE uses srcElement, others use target
 	var tempClickedElement = e.target ? e.target : e.srcElement;
 	//Prevent default behavior
+	if (e.preventDefault) e.preventDefault();
 	if(tempClickedElement.preventDefault) tempClickedElement.preventDefault();
 	//If this is a different element, reset the click counter
 	if ( tempClickedElement != clickedElement )
